@@ -1,17 +1,37 @@
 # Personal Blog
 
-一个可直接部署到 GitHub Pages 的静态个人博客首版。
+一个用 Markdown 写文章、自动部署到 GitHub Pages 的个人博客。
 
 ## 本地预览
 
-直接打开 `index.html`，或在目录里启动任意静态文件服务器。
+```bash
+npm run build
+```
 
-## 更新内容
+构建后的网页在 `dist/` 目录。
 
-- 首页内容在 `index.html`
-- 样式在 `styles.css`
-- 文章在 `posts/`
+## 发布文章
+
+在 `content/posts/` 新建一个 `.md` 文件，例如 `my-new-post.md`：
+
+```md
+---
+title: 文章标题
+date: 2026-06-29
+description: 文章摘要
+readingTime: 3 分钟阅读
+---
+
+这里写正文。
+
+## 小标题
+
+- 列表项
+- 列表项
+```
+
+提交到 `main` 分支后，GitHub Actions 会自动生成首页和文章页并发布。
 
 ## GitHub Pages
 
-仓库发布后，在 GitHub 仓库的 Settings -> Pages 中选择 GitHub Actions，或使用仓库里的 Pages 工作流自动发布。
+仓库的 Settings -> Pages 使用 GitHub Actions 作为发布来源。工作流会执行 `npm run build`，并发布 `dist/`。
