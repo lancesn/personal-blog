@@ -43,7 +43,20 @@
             <h2>文章列表</h2>
             <button class="button primary" id="new-post" type="button">新建</button>
           </div>
+          <div class="studio-list-filters">
+            <label>
+              <span>搜索</span>
+              <input id="post-search" type="search" placeholder="标题、摘要、标签" />
+            </label>
+            <label>
+              <span>标签</span>
+              <select id="post-tag">
+                <option value="">全部标签</option>
+              </select>
+            </label>
+          </div>
           <div class="studio-posts" id="post-list"></div>
+          <nav class="studio-pagination" id="post-pagination" aria-label="后台文章分页"></nav>
         </aside>
 
         <form class="studio-form" id="post-form">
@@ -115,6 +128,6 @@
         </form>
       </section>
     </main>
-    <script src="./online-admin.js?v=20260701-clear-editor-feedback"></script>
+    <script src="./online-admin.js?v=20260701-paged-list"></script>
   </body>
 </html>

@@ -16,7 +16,7 @@ export default {
       const path = url.pathname.replace(/\/+$/, "") || "/";
 
       if (request.method === "GET" && path === "/posts") {
-        return json(await listPosts(env), corsHeaders);
+        return json(await listPosts(env, url.searchParams), corsHeaders);
       }
 
       const postMatch = path.match(/^\/posts\/(.+)$/);
@@ -147,7 +147,20 @@ function parseListField(value) {
     .filter(Boolean);
 }
 
-function parseMarkdown(source, fileName, sha) {
+function excerptFromMarkdown(markdown, maxLength = 90) {
+  const text = markdown
+    .replace(/!\[[^\]]*]\([^)]+\)/g, "")
+    .replace(/\[([^\]]+)]\([^)]+\)/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/[*_>#|-]/g, "")
+    .replace(/\|/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+}
+
+function parseMarkdown(source, fileName, sha, options = {}) {
   const match = source.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
   if (!match) throw httpError(`${fileName} 缺少 frontmatter。`, 500);
 
@@ -160,18 +173,21 @@ function parseMarkdown(source, fileName, sha) {
     data[key] = value.replace(/^["']|["']$/g, "");
   }
 
-  return {
+  const body = match[2].trim();
+  const post = {
     title: data.title || fileName.replace(/\.md$/, ""),
     date: data.date || "",
-    description: data.description || "",
+    description: data.description || excerptFromMarkdown(body),
     readingTime: data.readingTime || "",
     tags: parseListField(data.tags),
     status: data.status || "published",
     publishedAt: data.publishedAt || "",
     slug: fileName.replace(/\.md$/, ""),
-    sha,
-    body: match[2].trim()
+    sha
   };
+
+  if (options.includeBody) post.body = body;
+  return post;
 }
 
 function postSortTime(post) {
@@ -182,29 +198,79 @@ function postSortTime(post) {
   return Number.isFinite(date) ? date : 0;
 }
 
-async function listPosts(env) {
+function parsePositiveInt(value, fallback, max = 100) {
+  const parsed = Number.parseInt(value || "", 10);
+  if (!Number.isFinite(parsed) || parsed < 1) return fallback;
+  return Math.min(parsed, max);
+}
+
+function matchesPost(post, q, tag) {
+  const normalizedTag = tag.trim().toLowerCase();
+  if (normalizedTag && !post.tags.some((item) => item.toLowerCase() === normalizedTag)) return false;
+
+  const query = q.trim().toLowerCase();
+  if (!query) return true;
+
+  return [
+    post.title,
+    post.slug,
+    post.description,
+    post.date,
+    post.status,
+    post.tags.join(" ")
+  ]
+    .join(" ")
+    .toLowerCase()
+    .includes(query);
+}
+
+async function getPostSummary(env, slug) {
+  const filePath = `content/posts/${slug}.md`;
+  const detail = await githubRequest(env, `/contents/${encodeContentPath(filePath)}?ref=${encodeURIComponent(branch(env))}`);
+  return parseMarkdown(decodeBase64(detail.content), `${slug}.md`, detail.sha, { includeBody: false });
+}
+
+async function listPosts(env, searchParams) {
+  const page = parsePositiveInt(searchParams.get("page"), 1);
+  const limit = parsePositiveInt(searchParams.get("limit"), 10, 50);
+  const q = searchParams.get("q") || "";
+  const tag = searchParams.get("tag") || "";
   const files = await githubRequest(env, `/contents/content/posts?ref=${encodeURIComponent(branch(env))}`);
   const posts = files
     .filter((file) => file.type === "file" && file.name.endsWith(".md"))
     .map((file) => ({
-      slug: file.name.replace(/\.md$/, ""),
-      title: file.name.replace(/\.md$/, ""),
-      sha: file.sha,
-      date: ""
+      slug: file.name.replace(/\.md$/, "")
     }));
 
-  const loadedPosts = [];
+  const summaries = [];
   for (const post of posts) {
-    loadedPosts.push(await getPost(env, post.slug));
+    summaries.push(await getPostSummary(env, post.slug));
   }
-  loadedPosts.sort((a, b) => postSortTime(b) - postSortTime(a) || a.title.localeCompare(b.title, "zh-Hans"));
-  return { posts: loadedPosts };
+  summaries.sort((a, b) => postSortTime(b) - postSortTime(a) || a.title.localeCompare(b.title, "zh-Hans"));
+
+  const tags = [...new Set(summaries.flatMap((post) => post.tags))].sort((a, b) => a.localeCompare(b, "zh-Hans"));
+  const filteredPosts = summaries.filter((post) => matchesPost(post, q, tag));
+  const total = filteredPosts.length;
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+  const currentPage = Math.min(page, totalPages);
+  const start = (currentPage - 1) * limit;
+
+  return {
+    posts: filteredPosts.slice(start, start + limit),
+    page: currentPage,
+    limit,
+    total,
+    totalPages,
+    tags,
+    q,
+    tag
+  };
 }
 
 async function getPost(env, slug) {
   const filePath = `content/posts/${slug}.md`;
   const detail = await githubRequest(env, `/contents/${encodeContentPath(filePath)}?ref=${encodeURIComponent(branch(env))}`);
-  return parseMarkdown(decodeBase64(detail.content), `${slug}.md`, detail.sha);
+  return parseMarkdown(decodeBase64(detail.content), `${slug}.md`, detail.sha, { includeBody: true });
 }
 
 function slugify(value) {

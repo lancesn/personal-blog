@@ -1080,6 +1080,33 @@ h3 {
   font-size: 20px;
 }
 
+.studio-list-filters {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.studio-list-filters label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.studio-list-filters input,
+.studio-list-filters select {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  padding: 7px 10px;
+}
+
 .studio-panel button {
   border: 0;
   cursor: pointer;
@@ -1147,9 +1174,18 @@ h3 {
 }
 
 .studio-post-item span,
+.studio-post-item small,
 .studio-empty {
   color: var(--muted);
   font-size: 13px;
+}
+
+.studio-post-item small {
+  display: -webkit-box;
+  overflow: hidden;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .studio-form {
