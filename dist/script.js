@@ -116,6 +116,7 @@ if (shareBar) {
 
   const shareSummary = description ? `${title}\n\n${description}` : title;
   const shareText = `${shareSummary}\n\n阅读全文：${url}`;
+  const copyText = `${title}\n${url}`;
 
   if (previewDescription) previewDescription.textContent = description;
   if (previewUrl) previewUrl.textContent = "";
@@ -135,15 +136,15 @@ if (shareBar) {
     toggleButton.setAttribute("aria-expanded", String(open));
   }
 
-  async function copyUrl(successText = "已复制链接") {
+  async function copyUrl(successText = "已复制文章名和链接") {
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(copyText);
       hint.textContent = successText;
       window.setTimeout(() => {
         hint.textContent = "";
       }, 1600);
     } catch {
-      hint.textContent = "复制失败，请手动复制地址栏链接。";
+      hint.textContent = "复制失败，请手动复制文章名和地址栏链接。";
     }
   }
 
@@ -156,7 +157,12 @@ if (shareBar) {
   });
 
   wechatButton.addEventListener("click", () => {
-    copyUrl("链接已复制，请打开微信粘贴分享。");
+    copyUrl("文章名和链接已复制，请打开微信粘贴分享。");
+  });
+
+  mailLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    window.location.href = mailLink.href;
   });
 
   document.addEventListener("click", (event) => {
