@@ -6,7 +6,17 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://lancesn.github.io/personal-blog";
-const assetVersion = "20260630-mobile-share";
+const assetVersion = "20260630-post-og-images";
+const defaultOgImage = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
+const postOgImages = [
+  "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
+];
 
 function escapeHtml(value) {
   return value
@@ -137,6 +147,25 @@ function absoluteUrl(relativePath = "") {
   return `${siteUrl}/${relativePath.replace(/^\.\//, "").replace(/^\//, "")}`;
 }
 
+function stableIndex(value, length) {
+  let hash = 0;
+  for (const char of value) {
+    hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  }
+  return hash % length;
+}
+
+function postShareImage(post) {
+  const imageMatch = post.body.match(/!\[[^\]]*]\(([^)]+)\)/);
+  if (imageMatch) {
+    const src = imageMatch[1].trim();
+    if (/^https?:\/\//.test(src)) return src;
+    return absoluteUrl(src.replace(/^\.\.\//, "").replace(/^\.\//, ""));
+  }
+
+  return postOgImages[stableIndex(post.slug, postOgImages.length)];
+}
+
 function scriptTag(prefix = ".") {
   return `    <script src="${prefix}/script.js?v=${assetVersion}"></script>`;
 }
@@ -264,7 +293,7 @@ function markdownToHtml(markdown) {
 
 function pageShell({ title, description, body, script = "", canonical = "", image = "", ogType = "website" }) {
   const pageUrl = canonical || absoluteUrl("");
-  const ogImage = image || "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
+  const ogImage = image || defaultOgImage;
 
   return `<!doctype html>
 <html lang="zh-CN">
@@ -281,6 +310,7 @@ function pageShell({ title, description, body, script = "", canonical = "", imag
     <meta property="og:url" content="${escapeHtml(pageUrl)}" />
     <meta property="og:image" content="${escapeHtml(ogImage)}" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="${escapeHtml(ogImage)}" />
     <title>${escapeHtml(title)}</title>
 ${stylesheetTag(".")}
   </head>
@@ -638,6 +668,7 @@ function renderPost(post) {
     description: post.description,
     canonical: absoluteUrl(`posts/${post.slug}.html`),
     script: scriptTag(".."),
+    image: postShareImage(post),
     ogType: "article",
     body: `    <main class="article" data-post-slug="${escapeHtml(post.slug)}" data-post-title="${escapeHtml(post.title)}" data-post-description="${escapeHtml(postShareExcerpt)}" data-post-url="${escapeHtml(absoluteUrl(`posts/${post.slug}.html`))}">
       <nav class="article-nav"><a href="../blog.html">← 返回博客</a></nav>
