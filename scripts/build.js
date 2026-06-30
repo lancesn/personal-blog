@@ -418,7 +418,7 @@ function renderSearch(posts) {
 
     <main class="site-shell">
       <section class="hero section">
-        ${pageAvatar()}
+        ${pageAvatar("./uploads/search-avatar.png", "彩色眼睛图案")}
         <h1>搜索</h1>
         <p>按标题、正文和标签查找文章。</p>
       </section>
