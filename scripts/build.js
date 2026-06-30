@@ -893,6 +893,7 @@ async function build() {
 
   await copyFile(path.join(root, "styles.css"), path.join(distDir, "styles.css"));
   await copyFile(path.join(root, "script.js"), path.join(distDir, "script.js"));
+  await cp(path.join(root, "admin-online"), path.join(distDir, "admin-online"), { recursive: true, force: true });
   await mkdir(uploadsDir, { recursive: true });
   await cp(uploadsDir, path.join(distDir, "uploads"), { recursive: true, force: true });
   await writeFile(path.join(distDir, ".nojekyll"), "");

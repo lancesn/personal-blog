@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>蓬窗灯影录 Online Studio</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="studio-page">
+    <main class="studio-shell">
+      <section class="studio-header">
+        <div>
+          <p class="studio-kicker">Online Studio</p>
+          <h1>在线文章后台</h1>
+          <p>通过 GitHub API 直接发布 Markdown，GitHub Pages 会自动构建上线。</p>
+        </div>
+        <a class="button dark" href="../index.html">返回网站</a>
+      </section>
+
+      <section class="studio-help">
+        <h2>连接 GitHub</h2>
+        <p>请输入有仓库 Contents 读写权限的 GitHub Token。Token 只保存在当前浏览器会话，不会写入网站文件。</p>
+        <div class="studio-grid">
+          <label>
+            <span>仓库</span>
+            <input id="repo" type="text" value="lancesn/personal-blog" />
+          </label>
+          <label>
+            <span>分支</span>
+            <input id="branch" type="text" value="main" />
+          </label>
+        </div>
+        <label>
+          <span>GitHub Token</span>
+          <input id="token" type="password" placeholder="github_pat_..." autocomplete="off" />
+        </label>
+        <div class="studio-actions">
+          <button class="button primary" id="connect" type="button">连接并读取文章</button>
+          <button class="button" id="forget-token" type="button">清除 Token</button>
+          <p id="status" role="status"></p>
+        </div>
+      </section>
+
+      <section class="studio-workspace">
+        <aside class="studio-panel">
+          <div class="studio-panel-head">
+            <h2>文章列表</h2>
+            <button class="button primary" id="new-post" type="button">新建</button>
+          </div>
+          <div class="studio-posts" id="post-list"></div>
+        </aside>
+
+        <form class="studio-form" id="post-form">
+          <input name="slug" type="hidden" />
+          <input name="sha" type="hidden" />
+          <label>
+            <span>标题</span>
+            <input name="title" type="text" placeholder="例如：我的第一篇长文" required />
+          </label>
+
+          <div class="studio-grid">
+            <label>
+              <span>发布日期</span>
+              <input name="date" type="date" required />
+            </label>
+            <label>
+              <span>阅读时间</span>
+              <input name="readingTime" type="text" placeholder="3 分钟阅读" />
+            </label>
+          </div>
+
+          <div class="studio-grid">
+            <label>
+              <span>标签</span>
+              <input name="tags" type="text" placeholder="多个标签用英文逗号分隔，例如：禅宗, 随笔" />
+            </label>
+            <label>
+              <span>状态</span>
+              <select name="status">
+                <option value="published">发布</option>
+                <option value="draft">草稿</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            <span>摘要</span>
+            <textarea name="description" rows="3" placeholder="可选。不填时会从正文自动摘取。"></textarea>
+          </label>
+
+          <label>
+            <span>正文 Markdown</span>
+            <div class="studio-toolbar">
+              <button class="button" id="insert-image" type="button">上传并插入图片</button>
+              <input id="image-file" type="file" accept="image/*" hidden />
+            </div>
+            <textarea
+              class="studio-body"
+              name="body"
+              rows="18"
+              placeholder="这里写正文。支持 ## 小标题、- 列表、表格、**加粗**、[链接](https://example.com)。"
+              required
+            ></textarea>
+          </label>
+
+          <div class="studio-actions">
+            <button class="button primary" type="submit" id="save-post">发布到 GitHub</button>
+            <button class="button danger" type="button" id="delete-post" hidden>删除文章</button>
+          </div>
+        </form>
+      </section>
+    </main>
+    <script src="./online-admin.js?v=20260630-online-admin"></script>
+  </body>
+</html>
