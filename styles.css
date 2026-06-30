@@ -5,8 +5,8 @@
   --muted: #666666;
   --soft: #f6f6f4;
   --line: #e7e5e0;
-  --primary: #2563eb;
-  --primary-strong: #1747ad;
+  --primary: #5f6f64;
+  --primary-strong: #3f4c44;
   --card: #ffffff;
   --shadow: 0 18px 60px rgba(18, 18, 18, 0.08);
 }
@@ -18,8 +18,8 @@
   --muted: #aaa9a5;
   --soft: #1b1b1a;
   --line: #2c2b29;
-  --primary: #5b8cff;
-  --primary-strong: #8aafff;
+  --primary: #8b9a8f;
+  --primary-strong: #c6d0c8;
   --card: #161616;
   --shadow: 0 18px 60px rgba(0, 0, 0, 0.32);
 }
@@ -269,6 +269,10 @@ h1 {
 .button.primary {
   background: var(--primary);
   color: white;
+}
+
+.button.primary:hover {
+  background: var(--primary-strong);
 }
 
 .button.dark {
@@ -920,7 +924,7 @@ h3 {
     min-width: 72px;
     min-height: 72px;
     border-radius: 999px;
-    box-shadow: 0 16px 42px rgba(33, 107, 242, 0.28);
+    box-shadow: 0 16px 42px rgba(63, 76, 68, 0.22);
     font-size: 18px;
     padding: 0 14px;
   }
