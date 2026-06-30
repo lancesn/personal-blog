@@ -313,6 +313,10 @@ function profileAvatar() {
   return `<img class="profile-avatar" src="./uploads/lance-profile.jpg" alt="Lance Shen" />`;
 }
 
+function pageAvatar() {
+  return `<img class="profile-avatar page-avatar" src="./uploads/lance-profile.jpg" alt="Lance Shen" />`;
+}
+
 function renderHome(posts) {
   const latestPosts = posts
     .slice(0, 10)
@@ -382,6 +386,7 @@ function renderBlog(posts) {
 
     <main class="site-shell">
       <section class="hero section">
+        ${pageAvatar()}
         <h1>博客</h1>
         <p>一些想法、文章和折腾记录。</p>
       </section>
@@ -409,6 +414,7 @@ function renderSearch(posts) {
 
     <main class="site-shell">
       <section class="hero section">
+        ${pageAvatar()}
         <h1>搜索</h1>
         <p>按标题、正文和标签查找文章。</p>
       </section>
@@ -596,6 +602,7 @@ function renderArchive(posts) {
 
     <main class="site-shell">
       <section class="hero section">
+        ${pageAvatar()}
         <h1>存档</h1>
         <p>按时间整理的全部文章。</p>
       </section>
