@@ -13,6 +13,11 @@ const bodyInput = form.elements.body;
 let currentPostPage = 1;
 const postPageSize = 20;
 
+function localDateValue(date = new Date()) {
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
+}
+
 function setStatus(message, tone = "neutral") {
   statusText.textContent = message;
   statusText.dataset.tone = tone;
@@ -25,7 +30,7 @@ function isEditing() {
 function resetForm() {
   form.reset();
   form.elements.slug.value = "";
-  dateInput.valueAsDate = new Date();
+  dateInput.value = localDateValue();
   deletePostButton.hidden = true;
   savePostButton.textContent = "保存并生成网页";
   setStatus("");

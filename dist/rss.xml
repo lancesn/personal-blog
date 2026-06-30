@@ -9,7 +9,7 @@
       <title>从本地博客到在线后台：完全手搓纯静态博客部署记录</title>
       <link>https://silencegate.com/posts/从本地博客到在线后台-完全手搓纯静态博客部署记录.html</link>
       <guid>https://silencegate.com/posts/从本地博客到在线后台-完全手搓纯静态博客部署记录.html</guid>
-      <pubDate>Mon, 29 Jun 2026 16:00:00 GMT</pubDate>
+      <pubDate>Tue, 30 Jun 2026 16:00:00 GMT</pubDate>
       <description>这几天把自己的个人博客从“本地写作、本地发布”，一步步改成了可以在线管理的版本。中间踩了不少坑，尤其是 GitHub Pages、Cloudflare Worker、GitHub ...</description>
     </item>
     <item>

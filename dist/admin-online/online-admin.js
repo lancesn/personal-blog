@@ -81,11 +81,16 @@ function postSortTime(post) {
   return Number.isFinite(date) ? date : 0;
 }
 
+function localDateValue(date = new Date()) {
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
+}
+
 function resetForm() {
   form.reset();
   form.elements.slug.value = "";
   form.elements.sha.value = "";
-  form.elements.date.valueAsDate = new Date();
+  form.elements.date.value = localDateValue();
   form.elements.status.value = "published";
   deletePostButton.hidden = true;
   feedbackPanel.hidden = true;
