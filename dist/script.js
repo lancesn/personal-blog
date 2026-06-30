@@ -142,14 +142,12 @@ if (shareBar) {
 
   const shareSummary = description ? `${title}\n\n${description}` : title;
   const shareText = `${shareSummary}\n\n阅读全文：${url}`;
-  const visibleUrl = url.replace(/^https:\/\//, "https：//");
-  const xShareText = `${shareSummary}\n\n完整链接：${visibleUrl}\n\n阅读全文：${url}`;
   const copyText = `${title}\n${url}`;
 
   if (previewDescription) previewDescription.textContent = description;
   if (previewUrl) previewUrl.textContent = "";
-  xLink.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(xShareText)}`;
-  facebookLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+  xLink.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+  facebookLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(shareSummary)}`;
   whatsappLink.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
   weiboLink.href = `https://service.weibo.com/share/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(shareSummary)}&searchPic=false`;
   mailLink.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(shareText)}`;
@@ -157,6 +155,12 @@ if (shareBar) {
   [xLink, facebookLink, whatsappLink, weiboLink].forEach((link) => {
     link.target = "_blank";
     link.rel = "noopener noreferrer";
+  });
+
+  facebookLink.addEventListener("click", (event) => {
+    if (!window.matchMedia("(max-width: 760px)").matches) return;
+    event.preventDefault();
+    window.location.href = facebookLink.href;
   });
 
   function setMenu(open) {
