@@ -141,15 +141,16 @@ if (shareBar) {
   const previewUrl = shareBar.querySelector("[data-share-preview-url]");
 
   const shareSummary = description ? `${title}\n\n${description}` : title;
-  const shareText = `${shareSummary}\n\n阅读全文：${url}`;
+  const shareUrl = encodeURI(url);
+  const shareText = `${shareSummary}\n\n阅读全文：${shareUrl}`;
   const copyText = `${title}\n${url}`;
 
   if (previewDescription) previewDescription.textContent = description;
   if (previewUrl) previewUrl.textContent = "";
   xLink.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
-  facebookLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(shareSummary)}`;
+  facebookLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareSummary)}`;
   whatsappLink.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-  weiboLink.href = `https://service.weibo.com/share/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(shareSummary)}&searchPic=false`;
+  weiboLink.href = `https://service.weibo.com/share/share.php?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareSummary)}&searchPic=false`;
   mailLink.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(shareText)}`;
 
   [xLink, facebookLink, whatsappLink, weiboLink].forEach((link) => {
