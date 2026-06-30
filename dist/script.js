@@ -116,6 +116,59 @@ if (searchInput) {
   filterPosts();
 }
 
+const archiveCalendar = document.querySelector("[data-archive-calendar]");
+if (archiveCalendar) {
+  const yearSelect = archiveCalendar.querySelector("[data-archive-year]");
+  const monthSelect = archiveCalendar.querySelector("[data-archive-month]");
+  const title = archiveCalendar.querySelector("[data-archive-title]");
+  const grid = archiveCalendar.querySelector("[data-archive-grid]");
+  const posts = JSON.parse(archiveCalendar.dataset.posts || "[]");
+
+  function escapeArchiveHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
+  function postsForDate(date) {
+    return posts.filter((post) => post.date === date);
+  }
+
+  function renderArchiveCalendar() {
+    const year = Number(yearSelect.value);
+    const month = Number(monthSelect.value);
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const leadingBlanks = (new Date(year, month - 1, 1).getDay() + 6) % 7;
+    const cells = [];
+
+    title.textContent = `${year}年${month}月`;
+
+    for (let index = 0; index < leadingBlanks; index += 1) {
+      cells.push('<div class="calendar-day calendar-day-empty" aria-hidden="true"></div>');
+    }
+
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      const date = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      const dayPosts = postsForDate(date);
+      const links = dayPosts
+        .map((post) => `<a href="${escapeArchiveHtml(post.url)}">${escapeArchiveHtml(post.title)}</a>`)
+        .join("");
+      cells.push(`<div class="calendar-day${dayPosts.length ? " has-post" : ""}">
+        <time datetime="${date}">${day}</time>
+        ${links}
+      </div>`);
+    }
+
+    grid.innerHTML = cells.join("");
+  }
+
+  yearSelect.addEventListener("change", renderArchiveCalendar);
+  monthSelect.addEventListener("change", renderArchiveCalendar);
+  renderArchiveCalendar();
+}
+
 const article = document.querySelector("[data-post-slug]");
 if (article) {
   const slug = article.dataset.postSlug;

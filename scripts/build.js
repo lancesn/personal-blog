@@ -6,7 +6,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260630-encoded-share-url";
+const assetVersion = "20260701-archive-calendar";
 const blogPageSize = 30;
 const defaultOgImage = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
 const postOgImages = [
@@ -691,54 +691,23 @@ ${siteFooter()}`
 }
 
 function renderArchive(posts) {
-  const monthNames = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long" });
-  const weekDays = ["一", "二", "三", "四", "五", "六", "日"];
-  const months = new Map();
-
-  for (const post of posts) {
-    const month = post.date.slice(0, 7);
-    if (!months.has(month)) months.set(month, new Map());
-    const days = months.get(month);
-    if (!days.has(post.date)) days.set(post.date, []);
-    days.get(post.date).push(post);
-  }
-
-  const calendarGroups = [...months.entries()]
-    .map(
-      ([month, days]) => {
-        const [year, monthNumber] = month.split("-").map(Number);
-        const firstDay = new Date(year, monthNumber - 1, 1);
-        const daysInMonth = new Date(year, monthNumber, 0).getDate();
-        const leadingBlanks = (firstDay.getDay() + 6) % 7;
-        const cells = [];
-
-        for (let index = 0; index < leadingBlanks; index += 1) {
-          cells.push('<div class="calendar-day calendar-day-empty" aria-hidden="true"></div>');
-        }
-
-        for (let day = 1; day <= daysInMonth; day += 1) {
-          const date = `${year}-${String(monthNumber).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-          const dayPosts = days.get(date) || [];
-          cells.push(`<div class="calendar-day${dayPosts.length ? " has-post" : ""}">
-            <time datetime="${date}">${day}</time>
-            ${dayPosts
-              .map((post) => `<a href="./posts/${post.slug}.html">${escapeHtml(post.title)}</a>`)
-              .join("\n            ")}
-          </div>`);
-        }
-
-        return `<section class="archive-month">
-        <h2>${monthNames.format(firstDay)}</h2>
-        <div class="calendar-weekdays" aria-hidden="true">
-          ${weekDays.map((day) => `<span>${day}</span>`).join("")}
-        </div>
-        <div class="calendar-grid">
-          ${cells.join("\n          ")}
-        </div>
-      </section>`;
-      }
-    )
-    .join("\n\n      ");
+  const archivePosts = posts.map((post) => ({
+    title: post.title,
+    date: post.date,
+    url: `./posts/${post.slug}.html`
+  }));
+  const years = [...new Set(posts.map((post) => post.date.slice(0, 4)))];
+  const defaultMonth = posts[0]?.date.slice(0, 7) || new Date().toISOString().slice(0, 7);
+  const defaultYear = defaultMonth.slice(0, 4);
+  const defaultMonthNumber = Number(defaultMonth.slice(5, 7));
+  const monthOptions = Array.from({ length: 12 }, (_, index) => {
+    const month = index + 1;
+    return `<option value="${month}"${month === defaultMonthNumber ? " selected" : ""}>${month}月</option>`;
+  }).join("");
+  const yearOptions = (years.length ? years : [defaultYear])
+    .map((year) => `<option value="${year}"${year === defaultYear ? " selected" : ""}>${year}年</option>`)
+    .join("");
+  const archiveJson = escapeHtml(JSON.stringify(archivePosts));
 
   return pageShell({
     title: "存档",
@@ -755,7 +724,29 @@ function renderArchive(posts) {
       </section>
 
       <section class="section archive">
-        ${calendarGroups || '<p class="muted">还没有文章。</p>'}
+        <div class="archive-calendar" data-archive-calendar data-posts="${archiveJson}">
+          <div class="archive-controls">
+            <label>
+              <span>年份</span>
+              <select data-archive-year>
+                ${yearOptions}
+              </select>
+            </label>
+            <label>
+              <span>月份</span>
+              <select data-archive-month>
+                ${monthOptions}
+              </select>
+            </label>
+          </div>
+          <h2 data-archive-title></h2>
+          <div class="calendar-weekdays" aria-hidden="true">
+            <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+          </div>
+          <div class="calendar-grid" data-archive-grid>
+            <p class="muted">正在加载存档。</p>
+          </div>
+        </div>
       </section>
     </main>
 

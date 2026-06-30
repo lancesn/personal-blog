@@ -589,8 +589,40 @@ h3 {
   gap: 34px;
 }
 
-.archive-month h2 {
+.archive-calendar {
+  display: grid;
+  gap: 16px;
+}
+
+.archive-calendar h2 {
   margin-bottom: 14px;
+}
+
+.archive-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: end;
+}
+
+.archive-controls label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.archive-controls select {
+  min-width: 132px;
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-weight: 850;
+  padding: 8px 12px;
 }
 
 .calendar-weekdays,
@@ -918,17 +950,13 @@ h3 {
     gap: 2px;
   }
 
-  .calendar-weekdays,
-  .calendar-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .calendar-day {
+    min-height: 72px;
+    padding: 6px;
   }
 
-  .calendar-weekdays {
-    display: none;
-  }
-
-  .calendar-day-empty {
-    display: none;
+  .calendar-day a {
+    font-size: 11px;
   }
 
   .share-bar {
