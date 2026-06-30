@@ -329,9 +329,9 @@ function siteNav(current) {
   const items = [
     ["home", "./index.html", "首页"],
     ["blog", "./blog.html", "博客"],
-    ["about", "./about.html", "关于"],
     ["archive", "./archive.html", "存档"],
-    ["search", "./search.html", "搜索"]
+    ["search", "./search.html", "搜索"],
+    ["about", "./about.html", "关于"]
   ];
 
   return `    <nav class="top-nav" aria-label="主导航">
@@ -758,7 +758,9 @@ function renderPost(post) {
     script: scriptTag(".."),
     image: postShareImage(post),
     ogType: "article",
-    body: `    <main class="article" data-post-slug="${escapeHtml(post.slug)}" data-post-title="${escapeHtml(post.title)}" data-post-description="${escapeHtml(postShareExcerpt)}" data-post-url="${escapeHtml(absoluteUrl(`posts/${post.slug}.html`))}">
+    body: `${siteNav("blog").replaceAll("./", "../")}
+
+    <main class="article" data-post-slug="${escapeHtml(post.slug)}" data-post-title="${escapeHtml(post.title)}" data-post-description="${escapeHtml(postShareExcerpt)}" data-post-url="${escapeHtml(absoluteUrl(`posts/${post.slug}.html`))}">
       <nav class="article-nav"><a href="../blog.html">← 返回博客</a></nav>
       <aside class="share-bar" aria-label="分享文章">
         <button class="share-trigger" type="button" data-share-toggle aria-expanded="false">分享</button>
