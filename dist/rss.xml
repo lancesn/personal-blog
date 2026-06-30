@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+  <channel>
+    <title>Lance</title>
+    <link>https://lancesn.github.io/personal-blog</link>
+    <description>Lance 的个人博客</description>
+    <language>zh-CN</language>
+    <item>
+      <title>嵩山普寂大照禅师生平略考</title>
+      <link>https://lancesn.github.io/personal-blog/posts/嵩山普寂大照禅师生平略考.html</link>
+      <guid>https://lancesn.github.io/personal-blog/posts/嵩山普寂大照禅师生平略考.html</guid>
+      <pubDate>Mon, 29 Jun 2026 16:00:00 GMT</pubDate>
+      <description>嵩山普寂（651-739）是神秀门下影响最著的弟子，唐宋以降多在南北分宗的叙述里被定位为北宗代表。</description>
+    </item>
+  </channel>
+</rss>
