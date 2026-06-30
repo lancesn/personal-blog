@@ -114,11 +114,12 @@ if (shareBar) {
   const previewDescription = shareBar.querySelector("[data-share-preview-description]");
   const previewUrl = shareBar.querySelector("[data-share-preview-url]");
 
-  const shareText = description ? `${title}\n\n${description}\n\n阅读全文：${url}` : `${title}\n\n阅读全文：${url}`;
+  const shareSummary = description ? `${title}\n\n${description}` : title;
+  const shareText = `${shareSummary}\n\n阅读全文：${url}`;
 
   if (previewDescription) previewDescription.textContent = description;
   if (previewUrl) previewUrl.textContent = "";
-  xLink.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+  xLink.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareSummary)}&url=${encodeURIComponent(url)}`;
   facebookLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
   whatsappLink.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
   weiboLink.href = `https://service.weibo.com/share/share.php?title=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`;

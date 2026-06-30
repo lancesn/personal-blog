@@ -6,6 +6,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://lancesn.github.io/personal-blog";
+const assetVersion = "20260630-share-link";
 
 function escapeHtml(value) {
   return value
@@ -134,6 +135,10 @@ function slugify(value) {
 
 function absoluteUrl(relativePath = "") {
   return `${siteUrl}/${relativePath.replace(/^\.\//, "").replace(/^\//, "")}`;
+}
+
+function scriptTag(prefix = ".") {
+  return `    <script src="${prefix}/script.js?v=${assetVersion}"></script>`;
 }
 
 function escapeXml(value) {
@@ -318,7 +323,7 @@ function renderHome(posts) {
     title: "Lance - 个人博客",
     description: "Lance 的个人博客。记录 AI 工具、独立开发、产品思考和折腾笔记。",
     canonical: absoluteUrl("index.html"),
-    script: '    <script src="./script.js"></script>',
+    script: scriptTag("."),
     body: `${siteNav("home")}
 
     <main class="site-shell">
@@ -372,7 +377,7 @@ function renderBlog(posts) {
     title: "博客 - Lance",
     description: "Lance 的博客文章列表。",
     canonical: absoluteUrl("blog.html"),
-    script: '    <script src="./script.js"></script>',
+    script: scriptTag("."),
     body: `${siteNav("blog")}
 
     <main class="site-shell">
@@ -399,7 +404,7 @@ function renderSearch(posts) {
     title: "搜索 - Lance",
     description: "搜索 Lance 的博客文章。",
     canonical: absoluteUrl("search.html"),
-    script: '    <script src="./script.js"></script>',
+    script: scriptTag("."),
     body: `${siteNav("search")}
 
     <main class="site-shell">
@@ -445,7 +450,7 @@ function renderTagsIndex(posts) {
     title: "标签 - Lance",
     description: "Lance 的博客标签。",
     canonical: absoluteUrl("tags.html"),
-    script: '    <script src="./script.js"></script>',
+    script: scriptTag("."),
     body: `${siteNav("blog")}
 
     <main class="site-shell">
@@ -468,7 +473,7 @@ function renderTagPage(tag, posts) {
     title: `${tag} - Lance`,
     description: `标签 ${tag} 下的文章。`,
     canonical: absoluteUrl(`tags/${slugify(tag)}.html`),
-    script: '    <script src="../script.js"></script>',
+    script: scriptTag(".."),
     body: `${siteNav("blog").replaceAll("./", "../")}
 
     <main class="site-shell">
@@ -493,7 +498,7 @@ function renderAbout() {
     title: "关于 - Lance",
     description: "关于 Lance 和这个个人博客。",
     canonical: absoluteUrl("about.html"),
-    script: '    <script src="./script.js"></script>',
+    script: scriptTag("."),
     body: `${siteNav("about")}
 
     <main class="site-shell">
@@ -578,7 +583,7 @@ function renderArchive(posts) {
     title: "存档 - Lance",
     description: "Lance 的博客文章存档。",
     canonical: absoluteUrl("archive.html"),
-    script: '    <script src="./script.js"></script>',
+    script: scriptTag("."),
     body: `${siteNav("archive")}
 
     <main class="site-shell">
@@ -613,7 +618,7 @@ function renderPost(post) {
     title: `${post.title} - Lance`,
     description: post.description,
     canonical: absoluteUrl(`posts/${post.slug}.html`),
-    script: '    <script src="../script.js"></script>',
+    script: scriptTag(".."),
     ogType: "article",
     body: `    <main class="article" data-post-slug="${escapeHtml(post.slug)}" data-post-title="${escapeHtml(post.title)}" data-post-description="${escapeHtml(postShareExcerpt)}" data-post-url="${escapeHtml(absoluteUrl(`posts/${post.slug}.html`))}">
       <nav class="article-nav"><a href="../blog.html">← 返回博客</a></nav>
