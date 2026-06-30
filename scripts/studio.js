@@ -117,6 +117,16 @@ function renderMarkdown(data) {
   };
 }
 
+function postSortTime(post) {
+  const published = Date.parse(post.publishedAt || "");
+  if (Number.isFinite(published)) return published;
+
+  const date = Date.parse(`${post.date || "1970-01-01"}T00:00:00`);
+  if (Number.isFinite(date)) return date;
+
+  return Number(post.modifiedTime || 0);
+}
+
 function postPath(slug) {
   const safeSlug = slugify(slug);
   if (safeSlug !== slug) {
@@ -227,14 +237,8 @@ async function listPosts(response, url) {
       })
     );
     posts.sort((a, b) => {
-      const byDate = b.date.localeCompare(a.date);
-      if (byDate) return byDate;
-
-      const byPublishedAt = String(b.publishedAt || b.modifiedTime || "").localeCompare(String(a.publishedAt || a.modifiedTime || ""));
-      if (byPublishedAt) return byPublishedAt;
-
-      const byModified = (b.modifiedTime || 0) - (a.modifiedTime || 0);
-      if (byModified) return byModified;
+      const byTime = postSortTime(b) - postSortTime(a);
+      if (byTime) return byTime;
 
       return a.title.localeCompare(b.title, "zh-Hans");
     });

@@ -67,14 +67,26 @@ function readFileAsDataUrl(file) {
   });
 }
 
+function postSortTime(post) {
+  const published = Date.parse(post.publishedAt || "");
+  if (Number.isFinite(published)) return published;
+
+  const date = Date.parse(`${post.date || "1970-01-01"}T00:00:00`);
+  if (Number.isFinite(date)) return date;
+
+  return 0;
+}
+
 function renderPostList(posts) {
-  if (!posts.length) {
+  const sortedPosts = [...posts].sort((a, b) => postSortTime(b) - postSortTime(a) || a.title.localeCompare(b.title, "zh-Hans"));
+
+  if (!sortedPosts.length) {
     postList.innerHTML = '<p class="studio-empty">还没有文章。</p>';
     postPagination.innerHTML = "";
     return;
   }
 
-  postList.innerHTML = posts
+  postList.innerHTML = sortedPosts
     .map(
       (post) => `<button class="studio-post-item" type="button" data-slug="${post.slug}">
         <strong>${post.title}</strong>
