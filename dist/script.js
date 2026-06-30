@@ -93,20 +93,23 @@ const searchInput = document.querySelector("[data-search-input]");
 if (searchInput) {
   const cards = [...document.querySelectorAll("[data-search-card]")];
   const status = document.querySelector("[data-search-status]");
+  const results = document.querySelector("[data-search-results]");
   const resultLabel = searchInput.dataset.searchLabel || "结果";
 
   function filterPosts() {
     const query = searchInput.value.trim().toLowerCase();
     let visibleCount = 0;
 
+    if (results) results.hidden = !query;
+
     cards.forEach((card) => {
       const haystack = `${card.dataset.title} ${card.dataset.tags} ${card.dataset.body}`.toLowerCase();
-      const isVisible = !query || haystack.includes(query);
+      const isVisible = Boolean(query) && haystack.includes(query);
       card.hidden = !isVisible;
       if (isVisible) visibleCount += 1;
     });
 
-    status.textContent = query ? `找到 ${visibleCount} 个${resultLabel}` : "";
+    status.textContent = query ? `找到 ${visibleCount} 篇${resultLabel}` : "";
   }
 
   searchInput.addEventListener("input", filterPosts);

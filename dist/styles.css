@@ -559,6 +559,14 @@ h3 {
   color: var(--muted);
 }
 
+.search-result-list {
+  margin-bottom: 34px;
+}
+
+.search-tag-heading {
+  margin-top: 10px;
+}
+
 .contact-section h2 {
   margin-bottom: 18px;
 }
