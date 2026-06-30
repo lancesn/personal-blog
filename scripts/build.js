@@ -308,6 +308,8 @@ function pageShell({ title, description, body, script = "", canonical = "", imag
     <meta name="description" content="${escapeHtml(description)}" />
     <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href="${escapeHtml(pageUrl)}" />
+    <link rel="icon" type="image/png" href="/uploads/site-icon.png" />
+    <link rel="apple-touch-icon" href="/uploads/site-icon.png" />
     <link rel="alternate" type="application/rss+xml" title="我的博客 RSS" href="${escapeHtml(absoluteUrl("rss.xml"))}" />
     <meta property="og:type" content="${escapeHtml(ogType)}" />
     <meta property="og:title" content="${escapeHtml(title)}" />
