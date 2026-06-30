@@ -1267,20 +1267,24 @@ h3 {
   transform: rotate(180deg);
 }
 
-.tag-picker-options {
+.tag-picker-menu {
   position: absolute;
   z-index: 30;
   display: grid;
-  gap: 8px;
   width: 100%;
-  max-height: 240px;
-  overflow: auto;
   border: 1px solid var(--line);
   border-radius: 8px;
   margin-top: 6px;
   background: var(--card);
   box-shadow: var(--shadow);
   padding: 10px;
+}
+
+.tag-picker-options {
+  display: grid;
+  gap: 8px;
+  max-height: 210px;
+  overflow: auto;
 }
 
 .tag-picker-options label {
@@ -1300,6 +1304,21 @@ h3 {
 .tag-picker-options input {
   width: auto;
   min-height: auto;
+}
+
+.tag-picker-create {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  border-top: 1px solid var(--line);
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.tag-picker-create .button {
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
 }
 
 .studio-toolbar {

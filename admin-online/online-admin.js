@@ -9,6 +9,8 @@ const postSearchInput = document.querySelector("#post-search");
 const postTagSelect = document.querySelector("#post-tag");
 const tagSummary = document.querySelector("[data-tag-summary]");
 const tagOptions = document.querySelector("[data-tag-options]");
+const newTagInput = document.querySelector("#new-tag");
+const addTagButton = document.querySelector("#add-tag");
 const newPostButton = document.querySelector("#new-post");
 const deletePostButton = document.querySelector("#delete-post");
 const insertImageButton = document.querySelector("#insert-image");
@@ -55,12 +57,25 @@ function availableEditorTags() {
   return [...new Set([...fallbackTags, ...postTags, ...selectedTags()])].sort((a, b) => a.localeCompare(b, "zh-Hans"));
 }
 
+function rememberEditorTags(tags) {
+  postTags = [...new Set([...postTags, ...tags.map((tag) => tag.trim()).filter(Boolean)])].sort((a, b) => a.localeCompare(b, "zh-Hans"));
+  renderTagPicker();
+}
+
 function renderTagPicker() {
   const checkedTags = new Set(selectedTags());
   tagOptions.innerHTML = availableEditorTags()
     .map((tag) => `<label><input type="checkbox" value="${escapeHtml(tag)}"${checkedTags.has(tag) ? " checked" : ""} /> <span>${escapeHtml(tag)}</span></label>`)
     .join("");
   updateTagSummary();
+}
+
+function addCustomTag() {
+  const tag = newTagInput.value.trim();
+  if (!tag) return;
+  rememberEditorTags([tag]);
+  setSelectedTags([...selectedTags(), tag]);
+  newTagInput.value = "";
 }
 
 function setStatus(message, tone = "neutral") {
@@ -366,6 +381,12 @@ postTagSelect.addEventListener("change", () => {
 tagOptions.addEventListener("change", () => {
   const tags = [...tagOptions.querySelectorAll("input[type='checkbox']:checked")].map((checkbox) => checkbox.value);
   setSelectedTags(tags);
+});
+addTagButton.addEventListener("click", addCustomTag);
+newTagInput.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter") return;
+  event.preventDefault();
+  addCustomTag();
 });
 form.addEventListener("submit", savePost);
 deletePostButton.addEventListener("click", deletePost);

@@ -84,7 +84,13 @@
               <input name="tags" type="hidden" />
               <details class="tag-picker" data-tag-picker>
                 <summary data-tag-summary>选择标签</summary>
-                <div class="tag-picker-options" data-tag-options></div>
+                <div class="tag-picker-menu">
+                  <div class="tag-picker-options" data-tag-options></div>
+                  <div class="tag-picker-create">
+                    <input id="new-tag" type="text" placeholder="新增标签" />
+                    <button class="button" id="add-tag" type="button">添加</button>
+                  </div>
+                </div>
               </details>
             </div>
             <label>
@@ -132,6 +138,6 @@
         </form>
       </section>
     </main>
-    <script src="./online-admin.js?v=20260701-tag-picker"></script>
+    <script src="./online-admin.js?v=20260701-create-tags"></script>
   </body>
 </html>

@@ -3,6 +3,8 @@ const postList = document.querySelector("#post-list");
 const postPagination = document.querySelector("#post-pagination");
 const tagSummary = document.querySelector("[data-tag-summary]");
 const tagOptions = document.querySelector("[data-tag-options]");
+const newTagInput = document.querySelector("#new-tag");
+const addTagButton = document.querySelector("#add-tag");
 const newPostButton = document.querySelector("#new-post");
 const deletePostButton = document.querySelector("#delete-post");
 const savePostButton = document.querySelector("#save-post");
@@ -58,6 +60,14 @@ function renderTagPicker() {
     .map((tag) => `<label><input type="checkbox" value="${escapeHtml(tag)}"${checkedTags.has(tag) ? " checked" : ""} /> <span>${escapeHtml(tag)}</span></label>`)
     .join("");
   updateTagSummary();
+}
+
+function addCustomTag() {
+  const tag = newTagInput.value.trim();
+  if (!tag) return;
+  rememberTags([[tag]]);
+  setSelectedTags([...selectedTags(), tag]);
+  newTagInput.value = "";
 }
 
 function localDateValue(date = new Date()) {
@@ -257,6 +267,13 @@ newPostButton.addEventListener("click", resetForm);
 tagOptions.addEventListener("change", () => {
   const tags = [...tagOptions.querySelectorAll("input[type='checkbox']:checked")].map((checkbox) => checkbox.value);
   setSelectedTags(tags);
+});
+
+addTagButton.addEventListener("click", addCustomTag);
+newTagInput.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter") return;
+  event.preventDefault();
+  addCustomTag();
 });
 
 deletePostButton.addEventListener("click", async () => {
