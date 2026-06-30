@@ -142,11 +142,13 @@ if (shareBar) {
 
   const shareSummary = description ? `${title}\n\n${description}` : title;
   const shareText = `${shareSummary}\n\n阅读全文：${url}`;
+  const visibleUrl = url.replace(/^https:\/\//, "https：//");
+  const xShareText = `${shareSummary}\n\n完整链接：${visibleUrl}\n\n阅读全文：${url}`;
   const copyText = `${title}\n${url}`;
 
   if (previewDescription) previewDescription.textContent = description;
   if (previewUrl) previewUrl.textContent = "";
-  xLink.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+  xLink.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(xShareText)}`;
   facebookLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
   whatsappLink.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
   weiboLink.href = `https://service.weibo.com/share/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(shareSummary)}&searchPic=false`;
