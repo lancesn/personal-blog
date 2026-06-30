@@ -114,7 +114,7 @@ if (shareBar) {
   const previewDescription = shareBar.querySelector("[data-share-preview-description]");
   const previewUrl = shareBar.querySelector("[data-share-preview-url]");
 
-  const shareText = description ? `${title}\n\n${description}` : title;
+  const shareText = description ? `${title}\n\n${description}\n\n阅读全文：${url}` : `${title}\n\n阅读全文：${url}`;
 
   if (previewDescription) previewDescription.textContent = description;
   if (previewUrl) previewUrl.textContent = "";
