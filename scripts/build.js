@@ -6,7 +6,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://lancesn.github.io/personal-blog";
-const assetVersion = "20260630-muted-buttons";
+const assetVersion = "20260630-search-tags";
 const blogPageSize = 30;
 const defaultOgImage = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
 const postOgImages = [
@@ -503,7 +503,10 @@ ${siteFooter()}`
 }
 
 function renderSearch(posts) {
-  const postCards = posts.map(renderPostCard).join("\n          ");
+  const tags = collectTags(posts);
+  const tagItems = tags
+    .map(([tag, tagPosts]) => `<a class="tag-index-item search-tag-item" data-search-card data-title="${escapeHtml(tag)}" data-tags="${escapeHtml(tag)}" data-body="${escapeHtml(tagPosts.map((post) => post.title).join(" "))}" href="./tags/${slugify(tag)}.html">${escapeHtml(tag)}<span>${tagPosts.length}</span></a>`)
+    .join("\n          ");
 
   return pageShell({
     title: "搜索",
@@ -521,12 +524,12 @@ function renderSearch(posts) {
 
       <section class="section">
         <label class="search-box">
-          <span>搜索文章</span>
-          <input type="search" data-search-input placeholder="输入关键词..." />
+          <span>搜索标签</span>
+          <input type="search" data-search-input data-search-label="标签" placeholder="输入标签关键词..." />
         </label>
         <p class="search-status" data-search-status></p>
-        <div class="post-list" data-search-results>
-          ${postCards}
+        <div class="tag-index search-tag-grid" data-search-results>
+          ${tagItems || '<p class="muted">还没有标签。</p>'}
         </div>
       </section>
     </main>

@@ -93,6 +93,7 @@ const searchInput = document.querySelector("[data-search-input]");
 if (searchInput) {
   const cards = [...document.querySelectorAll("[data-search-card]")];
   const status = document.querySelector("[data-search-status]");
+  const resultLabel = searchInput.dataset.searchLabel || "结果";
 
   function filterPosts() {
     const query = searchInput.value.trim().toLowerCase();
@@ -105,7 +106,7 @@ if (searchInput) {
       if (isVisible) visibleCount += 1;
     });
 
-    status.textContent = query ? `找到 ${visibleCount} 篇文章` : "";
+    status.textContent = query ? `找到 ${visibleCount} 个${resultLabel}` : "";
   }
 
   searchInput.addEventListener("input", filterPosts);

@@ -513,11 +513,23 @@ h3 {
   gap: 10px;
 }
 
+.search-tag-grid {
+  margin-top: 18px;
+  gap: 12px;
+}
+
 .tag-index-item {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
+}
+
+.search-tag-item {
+  min-height: 46px;
+  border-radius: 8px;
+  font-size: 15px;
+  padding: 10px 14px;
 }
 
 .tag-index-item span {
