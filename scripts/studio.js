@@ -90,6 +90,7 @@ function parseMarkdown(source, fileName) {
     date: data.date || "",
     description: data.description || "",
     readingTime: data.readingTime || "",
+    publishedAt: data.publishedAt || "",
     tags: parseListField(data.tags),
     status: data.status || "published",
     body: match[2].trim()
@@ -100,6 +101,7 @@ function renderMarkdown(data) {
   const title = escapeFrontmatter(data.title || "");
   const date = escapeFrontmatter(data.date || "");
   const readingTime = escapeFrontmatter(data.readingTime || "3 分钟阅读");
+  const publishedAt = escapeFrontmatter(data.publishedAt || new Date().toISOString());
   const body = String(data.body || "").replaceAll("\r\n", "\n").trim();
   const description = escapeFrontmatter(data.description || excerptFromMarkdown(body));
   const tags = Array.isArray(data.tags) ? data.tags.filter(Boolean) : parseListField(data.tags || "");
@@ -111,7 +113,7 @@ function renderMarkdown(data) {
 
   return {
     slug: slugify(title),
-    markdown: `---\ntitle: "${title}"\ndate: ${date}\ndescription: "${description}"\nreadingTime: "${readingTime}"\ntags: ${formatListField(tags)}\nstatus: ${status}\n---\n\n${body}\n`
+    markdown: `---\ntitle: "${title}"\ndate: ${date}\ndescription: "${description}"\nreadingTime: "${readingTime}"\npublishedAt: "${publishedAt}"\ntags: ${formatListField(tags)}\nstatus: ${status}\n---\n\n${body}\n`
   };
 }
 
@@ -226,6 +228,9 @@ async function listPosts(response) {
       const byDate = b.date.localeCompare(a.date);
       if (byDate) return byDate;
 
+      const byPublishedAt = String(b.publishedAt || "").localeCompare(String(a.publishedAt || ""));
+      if (byPublishedAt) return byPublishedAt;
+
       const byModified = (b.modifiedTime || 0) - (a.modifiedTime || 0);
       if (byModified) return byModified;
 
@@ -257,9 +262,9 @@ async function getPost(slug, response) {
 async function updatePost(slug, request, response) {
   try {
     const currentPath = postPath(slug);
-    await readFile(currentPath, "utf8");
+    const currentPost = parseMarkdown(await readFile(currentPath, "utf8"), `${slug}.md`);
     const data = JSON.parse(await readRequest(request));
-    const rendered = renderMarkdown({ ...data, title: data.title || slug });
+    const rendered = renderMarkdown({ ...data, title: data.title || slug, publishedAt: data.publishedAt || currentPost.publishedAt });
     const nextSlug = rendered.slug;
     const nextPath = path.join(postsDir, `${nextSlug}.md`);
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+  <channel>
+    <title>我的博客</title>
+    <link>https://lancesn.github.io/personal-blog</link>
+    <description>Lance 的个人博客</description>
+    <language>zh-CN</language>
+    <item>
+      <title>山门听雨</title>
+      <link>https://lancesn.github.io/personal-blog/posts/山门听雨.html</link>
+      <guid>https://lancesn.github.io/personal-blog/posts/山门听雨.html</guid>
+      <pubDate>Mon, 29 Jun 2026 16:00:00 GMT</pubDate>
+      <description>暮色压到山腰时，雨才落下来。 寺在半山，山门旧，门钉生青，檐角微翘。雨先打在松针上，声细如筛米；继而打在瓦背上，声密如急鼓；再后，山路湿透，石阶发黑，远处溪声涨起，像有人在暗处搬动...</description>
+    </item>
+    <item>
+      <title>沩仰炉头火</title>
+      <link>https://lancesn.github.io/personal-blog/posts/沩仰炉头火.html</link>
+      <guid>https://lancesn.github.io/personal-blog/posts/沩仰炉头火.html</guid>
+      <pubDate>Mon, 29 Jun 2026 16:00:00 GMT</pubDate>
+      <description>夜宿禅院，深夜进堂，炉里的火已经睡了。表面覆着一层细白的灰，看不出热意。我用铁箸往下一拨，灰底竟泛起一点暗红。这点红色不急于发光，只稳稳地伏着，像呼吸沉到最深处的人。 唐代有一桩公...</description>
+    </item>
+    <item>
+      <title>苔痕入梦</title>
+      <link>https://lancesn.github.io/personal-blog/posts/苔痕入梦.html</link>
+      <guid>https://lancesn.github.io/personal-blog/posts/苔痕入梦.html</guid>
+      <pubDate>Mon, 29 Jun 2026 16:00:00 GMT</pubDate>
+      <description>山寺在雨后醒来，钟声未起，廊下先有苔色。 老僧推门，见石阶一夜生青，细细如烟，贴着砖缝，像有人将春水磨成粉，轻轻撒在脚边。小沙弥立在檐下，看了半晌，忽然合掌道：“师父，昨夜我梦见满...</description>
+    </item>
+    <item>
+      <title>嵩山普寂大照禅师生平略考</title>
+      <link>https://lancesn.github.io/personal-blog/posts/嵩山普寂大照禅师生平略考.html</link>
+      <guid>https://lancesn.github.io/personal-blog/posts/嵩山普寂大照禅师生平略考.html</guid>
+      <pubDate>Mon, 29 Jun 2026 16:00:00 GMT</pubDate>
+      <description>嵩山普寂（651-739）是神秀门下影响最著的弟子，唐宋以降多在南北分宗的叙述里被定位为北宗代表。</description>
+    </item>
+  </channel>
+</rss>

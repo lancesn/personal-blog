@@ -6,7 +6,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://lancesn.github.io/personal-blog";
-const assetVersion = "20260630-post-og-images";
+const assetVersion = "20260630-sort-tags";
 const defaultOgImage = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
 const postOgImages = [
   "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80",
@@ -105,6 +105,7 @@ function parseMarkdownFile(source, fileName) {
   return {
     ...data,
     description: data.description || excerptFromMarkdown(match[2]),
+    publishedAt: data.publishedAt || "",
     tags: parseListField(data.tags),
     status: data.status || "published",
     slug: fileName.replace(/\.md$/, ""),
@@ -117,6 +118,9 @@ function sortPosts(posts) {
   posts.sort((a, b) => {
     const byDate = b.date.localeCompare(a.date);
     if (byDate) return byDate;
+
+    const byPublishedAt = String(b.publishedAt || "").localeCompare(String(a.publishedAt || ""));
+    if (byPublishedAt) return byPublishedAt;
 
     const byModified = (b.modifiedTime || 0) - (a.modifiedTime || 0);
     if (byModified) return byModified;
@@ -729,6 +733,18 @@ ${items}
 `;
 }
 
+async function syncDistToRoot() {
+  const topLevelFiles = ["index.html", "blog.html", "about.html", "archive.html", "search.html", "tags.html", "rss.xml", "styles.css", "script.js", ".nojekyll"];
+  for (const file of topLevelFiles) {
+    await copyFile(path.join(distDir, file), path.join(root, file));
+  }
+
+  await rm(path.join(root, "posts"), { recursive: true, force: true });
+  await rm(path.join(root, "tags"), { recursive: true, force: true });
+  await cp(path.join(distDir, "posts"), path.join(root, "posts"), { recursive: true, force: true });
+  await cp(path.join(distDir, "tags"), path.join(root, "tags"), { recursive: true, force: true });
+}
+
 async function build() {
   await rm(distDir, { recursive: true, force: true });
   await mkdir(path.join(distDir, "posts"), { recursive: true });
@@ -763,6 +779,7 @@ async function build() {
   await mkdir(uploadsDir, { recursive: true });
   await cp(uploadsDir, path.join(distDir, "uploads"), { recursive: true, force: true });
   await writeFile(path.join(distDir, ".nojekyll"), "");
+  await syncDistToRoot();
 }
 
 build().catch((error) => {
