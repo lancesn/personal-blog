@@ -490,6 +490,42 @@ h3 {
   color: var(--muted);
 }
 
+.contact-section h2 {
+  margin-bottom: 18px;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(180px, 260px) minmax(220px, 320px);
+  align-items: start;
+  gap: 24px;
+}
+
+.contact-email {
+  justify-content: center;
+  width: fit-content;
+}
+
+.whatsapp-card {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.whatsapp-card img {
+  width: min(100%, 320px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.whatsapp-card figcaption {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+
 .archive {
   display: grid;
   gap: 34px;
@@ -814,7 +850,8 @@ h3 {
   .split,
   .feature-strip,
   .feature-grid,
-  .resource-grid {
+  .resource-grid,
+  .contact-grid {
     grid-template-columns: 1fr;
   }
 

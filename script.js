@@ -23,6 +23,18 @@ navLinks.forEach((link) => {
   });
 });
 
+const contactEmail = document.querySelector("[data-contact-email]");
+if (contactEmail) {
+  contactEmail.addEventListener("click", (event) => {
+    event.preventDefault();
+    const user = contactEmail.dataset.emailUser;
+    const domain = contactEmail.dataset.emailDomain;
+    if (user && domain) {
+      window.location.href = `mailto:${user}@${domain}`;
+    }
+  });
+}
+
 const heroCarousel = document.querySelector("[data-hero-carousel]");
 if (heroCarousel) {
   const slides = [...heroCarousel.querySelectorAll(".hero-media img")];
