@@ -146,7 +146,7 @@ if (shareBar) {
 
   if (previewDescription) previewDescription.textContent = description;
   if (previewUrl) previewUrl.textContent = "";
-  xLink.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareSummary)}&url=${encodeURIComponent(url)}`;
+  xLink.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
   facebookLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
   whatsappLink.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
   weiboLink.href = `https://service.weibo.com/share/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(shareSummary)}&searchPic=false`;

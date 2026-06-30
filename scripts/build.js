@@ -6,7 +6,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260630-weibo-share";
+const assetVersion = "20260630-full-x-share-link";
 const blogPageSize = 30;
 const defaultOgImage = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
 const postOgImages = [
