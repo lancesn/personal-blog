@@ -6,7 +6,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://lancesn.github.io/personal-blog";
-const assetVersion = "20260630-avatar-size";
+const assetVersion = "20260630-system-theme-title";
 
 function escapeHtml(value) {
   return value
@@ -274,7 +274,7 @@ function pageShell({ title, description, body, script = "", canonical = "", imag
     <meta name="description" content="${escapeHtml(description)}" />
     <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href="${escapeHtml(pageUrl)}" />
-    <link rel="alternate" type="application/rss+xml" title="Lance RSS" href="${escapeHtml(absoluteUrl("rss.xml"))}" />
+    <link rel="alternate" type="application/rss+xml" title="我的博客 RSS" href="${escapeHtml(absoluteUrl("rss.xml"))}" />
     <meta property="og:type" content="${escapeHtml(ogType)}" />
     <meta property="og:title" content="${escapeHtml(title)}" />
     <meta property="og:description" content="${escapeHtml(description)}" />
@@ -328,7 +328,7 @@ function renderHome(posts) {
     .join("\n          ");
 
   return pageShell({
-    title: "Lance - 个人博客",
+    title: "我的博客",
     description: "Lance 的个人博客。记录 AI 工具、独立开发、产品思考和折腾笔记。",
     canonical: absoluteUrl("index.html"),
     script: scriptTag("."),
@@ -382,7 +382,7 @@ function renderBlog(posts) {
     .join("\n          ");
 
   return pageShell({
-    title: "博客 - Lance",
+    title: "博客",
     description: "Lance 的博客文章列表。",
     canonical: absoluteUrl("blog.html"),
     script: scriptTag("."),
@@ -410,7 +410,7 @@ function renderSearch(posts) {
   const postCards = posts.map(renderPostCard).join("\n          ");
 
   return pageShell({
-    title: "搜索 - Lance",
+    title: "搜索",
     description: "搜索 Lance 的博客文章。",
     canonical: absoluteUrl("search.html"),
     script: scriptTag("."),
@@ -457,7 +457,7 @@ function renderTagsIndex(posts) {
     .join("\n          ");
 
   return pageShell({
-    title: "标签 - Lance",
+    title: "标签",
     description: "Lance 的博客标签。",
     canonical: absoluteUrl("tags.html"),
     script: scriptTag("."),
@@ -480,7 +480,7 @@ ${siteFooter()}`
 
 function renderTagPage(tag, posts) {
   return pageShell({
-    title: `${tag} - Lance`,
+    title: tag,
     description: `标签 ${tag} 下的文章。`,
     canonical: absoluteUrl(`tags/${slugify(tag)}.html`),
     script: scriptTag(".."),
@@ -505,7 +505,7 @@ ${siteFooter()}`
 
 function renderAbout() {
   return pageShell({
-    title: "关于 - Lance",
+    title: "关于",
     description: "关于 Lance 和这个个人博客。",
     canonical: absoluteUrl("about.html"),
     script: scriptTag("."),
@@ -598,7 +598,7 @@ function renderArchive(posts) {
     .join("\n\n      ");
 
   return pageShell({
-    title: "存档 - Lance",
+    title: "存档",
     description: "Lance 的博客文章存档。",
     canonical: absoluteUrl("archive.html"),
     script: scriptTag("."),
@@ -634,7 +634,7 @@ function renderPost(post) {
       : "";
 
   return pageShell({
-    title: `${post.title} - Lance`,
+    title: post.title,
     description: post.description,
     canonical: absoluteUrl(`posts/${post.slug}.html`),
     script: scriptTag(".."),
@@ -688,7 +688,7 @@ function renderRss(posts) {
   return `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
   <channel>
-    <title>Lance</title>
+    <title>我的博客</title>
     <link>${escapeXml(siteUrl)}</link>
     <description>Lance 的个人博客</description>
     <language>zh-CN</language>
