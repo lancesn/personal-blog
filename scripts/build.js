@@ -6,18 +6,8 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260701-archive-calendar";
+const assetVersion = "20260701-share-meta";
 const blogPageSize = 30;
-const defaultOgImage = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
-const postOgImages = [
-  "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
-];
 
 function escapeHtml(value) {
   return value
@@ -166,14 +156,6 @@ async function exists(targetPath) {
   }
 }
 
-function stableIndex(value, length) {
-  let hash = 0;
-  for (const char of value) {
-    hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
-  }
-  return hash % length;
-}
-
 function postShareImage(post) {
   const imageMatch = post.body.match(/!\[[^\]]*]\(([^)]+)\)/);
   if (imageMatch) {
@@ -182,7 +164,7 @@ function postShareImage(post) {
     return absoluteUrl(src.replace(/^\.\.\//, "").replace(/^\.\//, ""));
   }
 
-  return postOgImages[stableIndex(post.slug, postOgImages.length)];
+  return "";
 }
 
 function scriptTag(prefix = ".") {
@@ -312,7 +294,11 @@ function markdownToHtml(markdown) {
 
 function pageShell({ title, description, body, script = "", canonical = "", image = "", ogType = "website" }) {
   const pageUrl = canonical || absoluteUrl("");
-  const ogImage = image || defaultOgImage;
+  const imageMeta = image
+    ? `    <meta property="og:image" content="${escapeHtml(image)}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="${escapeHtml(image)}" />`
+    : `    <meta name="twitter:card" content="summary" />`;
 
   return `<!doctype html>
 <html lang="zh-CN">
@@ -327,9 +313,7 @@ function pageShell({ title, description, body, script = "", canonical = "", imag
     <meta property="og:title" content="${escapeHtml(title)}" />
     <meta property="og:description" content="${escapeHtml(description)}" />
     <meta property="og:url" content="${escapeHtml(pageUrl)}" />
-    <meta property="og:image" content="${escapeHtml(ogImage)}" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="${escapeHtml(ogImage)}" />
+${imageMeta}
     <title>${escapeHtml(title)}</title>
 ${stylesheetTag(".")}
   </head>
@@ -429,7 +413,7 @@ function renderHome(posts) {
 
   return pageShell({
     title: "蓬窗灯影录-博客",
-    description: "Lance 的个人博客。记录 AI 工具、独立开发、产品思考和折腾笔记。",
+    description: "蓬窗灯影录",
     canonical: absoluteUrl("index.html"),
     script: scriptTag("."),
     body: `${siteNav("home")}
@@ -825,7 +809,7 @@ function renderRss(posts) {
   <channel>
     <title>我的博客</title>
     <link>${escapeXml(siteUrl)}</link>
-    <description>Lance 的个人博客</description>
+    <description>蓬窗灯影录</description>
     <language>zh-CN</language>
 ${items}
   </channel>
