@@ -377,7 +377,7 @@ function renderHome(posts) {
     .join("\n          ");
 
   return pageShell({
-    title: "我的博客",
+    title: "蓬窗灯影录-博客",
     description: "Lance 的个人博客。记录 AI 工具、独立开发、产品思考和折腾笔记。",
     canonical: absoluteUrl("index.html"),
     script: scriptTag("."),
