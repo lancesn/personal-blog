@@ -156,7 +156,7 @@ function renderPostCard(post) {
   return `<article class="post-card" data-search-card data-title="${escapeHtml(post.title)}" data-tags="${escapeHtml(post.tags.join(" "))}" data-body="${escapeHtml(post.plainText)}">
             <time datetime="${post.date}">${formatDate(post.date)}</time>
             <h3><a class="post-title-link" href="./posts/${post.slug}.html">${escapeHtml(post.title)}</a></h3>
-            <p>${escapeHtml(post.description)}</p>
+            <a class="post-excerpt-link" href="./posts/${post.slug}.html">${escapeHtml(post.description)}</a>
             ${renderTagLinks(post.tags)}
             <a href="./posts/${post.slug}.html">读全文</a>
           </article>`;

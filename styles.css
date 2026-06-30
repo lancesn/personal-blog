@@ -407,6 +407,19 @@ h3 {
   color: var(--primary-strong);
 }
 
+.post-card .post-excerpt-link {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: 1.75;
+}
+
+.post-card .post-excerpt-link:hover {
+  color: var(--text);
+}
+
 .post-card a {
   display: inline-flex;
   margin-top: 16px;
