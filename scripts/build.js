@@ -509,7 +509,7 @@ function renderAbout() {
 
     <main class="site-shell">
       <section class="hero section">
-        ${profileAvatar()}
+        ${pageAvatar()}
         <h1>关于我</h1>
       </section>
 
