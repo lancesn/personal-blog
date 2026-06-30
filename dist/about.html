@@ -53,15 +53,18 @@
         <h2>联系我</h2>
         <div class="contact-grid">
           <a class="button primary contact-email" href="#" data-contact-email data-email-user="shenyvu" data-email-domain="gmail.com">Email 联系我</a>
-          <figure class="whatsapp-card">
-            <img src="./uploads/whatsapp-qr.jpg" alt="WhatsApp 二维码" />
-            <figcaption>WhatsApp 二维码</figcaption>
-          </figure>
+          <div class="whatsapp-contact">
+            <button class="button primary contact-whatsapp" type="button" data-whatsapp-toggle aria-expanded="false">WhatsApp 联系我</button>
+            <figure class="whatsapp-card" data-whatsapp-card hidden>
+              <img src="./uploads/whatsapp-qr.jpg" alt="WhatsApp 二维码" />
+              <figcaption>扫码添加 WhatsApp</figcaption>
+            </figure>
+          </div>
         </div>
       </section>
     </main>
 
     <footer class="footer">© 2026 Lance Shen. All rights reserved. 未经许可，禁止转载或用于商业用途。</footer>
-    <script src="./script.js?v=20260630-contact"></script>
+    <script src="./script.js?v=20260630-whatsapp-click"></script>
   </body>
 </html>

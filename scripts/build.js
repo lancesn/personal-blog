@@ -6,7 +6,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://lancesn.github.io/personal-blog";
-const assetVersion = "20260630-contact";
+const assetVersion = "20260630-whatsapp-click";
 
 function escapeHtml(value) {
   return value
@@ -528,10 +528,13 @@ function renderAbout() {
         <h2>联系我</h2>
         <div class="contact-grid">
           <a class="button primary contact-email" href="#" data-contact-email data-email-user="shenyvu" data-email-domain="gmail.com">Email 联系我</a>
-          <figure class="whatsapp-card">
-            <img src="./uploads/whatsapp-qr.jpg" alt="WhatsApp 二维码" />
-            <figcaption>WhatsApp 二维码</figcaption>
-          </figure>
+          <div class="whatsapp-contact">
+            <button class="button primary contact-whatsapp" type="button" data-whatsapp-toggle aria-expanded="false">WhatsApp 联系我</button>
+            <figure class="whatsapp-card" data-whatsapp-card hidden>
+              <img src="./uploads/whatsapp-qr.jpg" alt="WhatsApp 二维码" />
+              <figcaption>扫码添加 WhatsApp</figcaption>
+            </figure>
+          </div>
         </div>
       </section>
     </main>

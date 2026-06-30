@@ -495,15 +495,21 @@ h3 {
 }
 
 .contact-grid {
-  display: grid;
-  grid-template-columns: minmax(180px, 260px) minmax(220px, 320px);
+  display: flex;
+  flex-wrap: wrap;
   align-items: start;
   gap: 24px;
 }
 
-.contact-email {
+.contact-email,
+.contact-whatsapp {
   justify-content: center;
   width: fit-content;
+}
+
+.whatsapp-contact {
+  display: grid;
+  gap: 14px;
 }
 
 .whatsapp-card {
