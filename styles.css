@@ -389,7 +389,54 @@ h3 {
 .more-posts {
   display: flex;
   justify-content: center;
-  margin-top: 24px;
+  margin-top: 32px;
+}
+
+.more-posts-link {
+  min-height: 58px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 950;
+  padding: 16px 30px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.pagination div {
+  display: flex;
+  gap: 8px;
+}
+
+.pagination a,
+.pagination span {
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 850;
+  padding: 8px 12px;
+}
+
+.pagination a[aria-current="page"] {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.pagination span {
+  color: var(--muted);
 }
 
 .post-card {

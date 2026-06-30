@@ -6,7 +6,8 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://lancesn.github.io/personal-blog";
-const assetVersion = "20260630-sort-tags";
+const assetVersion = "20260630-blog-pagination";
+const blogPageSize = 30;
 const defaultOgImage = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
 const postOgImages = [
   "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80",
@@ -149,6 +150,15 @@ function slugify(value) {
 
 function absoluteUrl(relativePath = "") {
   return `${siteUrl}/${relativePath.replace(/^\.\//, "").replace(/^\//, "")}`;
+}
+
+async function exists(targetPath) {
+  try {
+    await stat(targetPath);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function stableIndex(value, length) {
@@ -401,7 +411,7 @@ function renderHome(posts) {
           ${latestPosts}
         </div>
         <div class="more-posts">
-          <a class="button primary" href="./blog.html">更多文章</a>
+          <a class="button primary more-posts-link" href="./blog.html">更多文章</a>
         </div>
       </section>
     </main>
@@ -410,34 +420,81 @@ ${siteFooter()}`
   });
 }
 
-function renderBlog(posts) {
-  const postCards = posts
+function blogPagePath(pageNumber, prefix = ".") {
+  return pageNumber === 1 ? `${prefix}/blog.html` : `${prefix}/blog/page/${pageNumber}.html`;
+}
+
+function renderBlogPagination(currentPage, totalPages) {
+  if (totalPages <= 1) return "";
+
+  const pages = Array.from({ length: totalPages }, (_, index) => index + 1)
+    .map((pageNumber) => {
+      const href = pageNumber === 1 ? "./blog.html" : `./blog/page/${pageNumber}.html`;
+      return `<a href="${href}"${pageNumber === currentPage ? ' aria-current="page"' : ""}>${pageNumber}</a>`;
+    })
+    .join("");
+
+  const previous = currentPage > 1 ? `<a href="${blogPagePath(currentPage - 1)}">上一页</a>` : `<span>上一页</span>`;
+  const next = currentPage < totalPages ? `<a href="${blogPagePath(currentPage + 1)}">下一页</a>` : `<span>下一页</span>`;
+
+  return `<nav class="pagination" aria-label="博客分页">
+          ${previous}
+          <div>${pages}</div>
+          ${next}
+        </nav>`;
+}
+
+function renderBlog(posts, currentPage = 1) {
+  const totalPages = Math.max(1, Math.ceil(posts.length / blogPageSize));
+  const pagePosts = posts.slice((currentPage - 1) * blogPageSize, currentPage * blogPageSize);
+  const postCards = pagePosts
     .map(renderPostCard)
     .join("\n          ");
+  const pageTitle = currentPage === 1 ? "博客" : `博客 - 第 ${currentPage} 页`;
+  const prefix = currentPage === 1 ? "." : "../..";
+  const pageScript = scriptTag(prefix);
+  const nav = currentPage === 1 ? siteNav("blog") : siteNav("blog").replaceAll("./", "../../");
+  const avatar = currentPage === 1
+    ? pageAvatar("./uploads/blog-avatar.png", "打开的书与怀表")
+    : pageAvatar("../../uploads/blog-avatar.png", "打开的书与怀表");
+  const cards = currentPage === 1
+    ? postCards
+    : postCards
+        .replaceAll('href="./posts/', 'href="../../posts/')
+        .replaceAll('href="./tags/', 'href="../../tags/');
+  const pagination = currentPage === 1
+    ? renderBlogPagination(currentPage, totalPages)
+    : renderBlogPagination(currentPage, totalPages)
+        .replaceAll('href="./blog.html"', 'href="../../blog.html"')
+        .replaceAll('href="./blog/page/', 'href="./');
 
   return pageShell({
-    title: "博客",
+    title: pageTitle,
     description: "Lance 的博客文章列表。",
-    canonical: absoluteUrl("blog.html"),
-    script: scriptTag("."),
-    body: `${siteNav("blog")}
+    canonical: absoluteUrl(currentPage === 1 ? "blog.html" : `blog/page/${currentPage}.html`),
+    script: pageScript,
+    body: `${nav}
 
     <main class="site-shell">
       <section class="hero section">
-        ${pageAvatar("./uploads/blog-avatar.png", "打开的书与怀表")}
+        ${avatar}
         <h1>博客</h1>
         <p>一些想法、文章和折腾记录。</p>
       </section>
 
       <section class="section">
         <div class="post-list">
-          ${postCards}
+          ${cards}
         </div>
+        ${pagination}
       </section>
     </main>
 
 ${siteFooter()}`
-  });
+  }).replace(
+    `href="./styles.css?v=${assetVersion}"`,
+    currentPage === 1 ? `href="./styles.css?v=${assetVersion}"` : `href="../../styles.css?v=${assetVersion}"`
+  );
 }
 
 function renderSearch(posts) {
@@ -741,14 +798,19 @@ async function syncDistToRoot() {
 
   await rm(path.join(root, "posts"), { recursive: true, force: true });
   await rm(path.join(root, "tags"), { recursive: true, force: true });
+  await rm(path.join(root, "blog", "page"), { recursive: true, force: true });
   await cp(path.join(distDir, "posts"), path.join(root, "posts"), { recursive: true, force: true });
   await cp(path.join(distDir, "tags"), path.join(root, "tags"), { recursive: true, force: true });
+  if (await exists(path.join(distDir, "blog", "page"))) {
+    await cp(path.join(distDir, "blog"), path.join(root, "blog"), { recursive: true, force: true });
+  }
 }
 
 async function build() {
   await rm(distDir, { recursive: true, force: true });
   await mkdir(path.join(distDir, "posts"), { recursive: true });
   await mkdir(path.join(distDir, "tags"), { recursive: true });
+  await mkdir(path.join(distDir, "blog", "page"), { recursive: true });
 
   const files = (await readdir(contentDir)).filter((file) => file.endsWith(".md"));
   const posts = [];
@@ -762,6 +824,9 @@ async function build() {
 
   await writeFile(path.join(distDir, "index.html"), renderHome(publishedPosts));
   await writeFile(path.join(distDir, "blog.html"), renderBlog(publishedPosts));
+  for (let pageNumber = 2; pageNumber <= Math.ceil(publishedPosts.length / blogPageSize); pageNumber += 1) {
+    await writeFile(path.join(distDir, "blog", "page", `${pageNumber}.html`), renderBlog(publishedPosts, pageNumber));
+  }
   await writeFile(path.join(distDir, "about.html"), renderAbout());
   await writeFile(path.join(distDir, "archive.html"), renderArchive(publishedPosts));
   await writeFile(path.join(distDir, "search.html"), renderSearch(publishedPosts));
