@@ -380,6 +380,12 @@ h3 {
   gap: 14px;
 }
 
+.more-posts {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
 .post-card {
   position: relative;
   padding: 22px;

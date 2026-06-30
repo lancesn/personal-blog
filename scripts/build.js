@@ -310,7 +310,7 @@ function profileAvatar() {
 
 function renderHome(posts) {
   const latestPosts = posts
-    .slice(0, 3)
+    .slice(0, 10)
     .map(renderPostCard)
     .join("\n          ");
 
@@ -352,6 +352,9 @@ function renderHome(posts) {
         </div>
         <div class="post-list">
           ${latestPosts}
+        </div>
+        <div class="more-posts">
+          <a class="button primary" href="./blog.html">更多文章</a>
         </div>
       </section>
     </main>
