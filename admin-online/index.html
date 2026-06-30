@@ -79,10 +79,14 @@
           </div>
 
           <div class="studio-grid">
-            <label>
+            <div class="studio-field">
               <span>标签</span>
-              <input name="tags" type="text" placeholder="多个标签用英文逗号分隔，例如：禅宗, 随笔" />
-            </label>
+              <input name="tags" type="hidden" />
+              <details class="tag-picker" data-tag-picker>
+                <summary data-tag-summary>选择标签</summary>
+                <div class="tag-picker-options" data-tag-options></div>
+              </details>
+            </div>
             <label>
               <span>状态</span>
               <select name="status">
@@ -128,6 +132,6 @@
         </form>
       </section>
     </main>
-    <script src="./online-admin.js?v=20260701-paged-list"></script>
+    <script src="./online-admin.js?v=20260701-tag-picker"></script>
   </body>
 </html>

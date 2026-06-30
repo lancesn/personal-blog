@@ -1200,7 +1200,8 @@ h3 {
   gap: 18px;
 }
 
-.studio-form label {
+.studio-form label,
+.studio-field {
   display: grid;
   gap: 8px;
   color: var(--text);
@@ -1210,7 +1211,8 @@ h3 {
 
 .studio-form input,
 .studio-form select,
-.studio-form textarea {
+.studio-form textarea,
+.tag-picker summary {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -1234,6 +1236,70 @@ h3 {
 .studio-form textarea {
   resize: vertical;
   padding: 10px;
+}
+
+.tag-picker {
+  position: relative;
+}
+
+.tag-picker summary {
+  min-height: 42px;
+  cursor: pointer;
+  list-style: none;
+  padding: 8px 34px 8px 10px;
+}
+
+.tag-picker summary::-webkit-details-marker {
+  display: none;
+}
+
+.tag-picker summary::after {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  content: "⌄";
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.tag-picker[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.tag-picker-options {
+  position: absolute;
+  z-index: 30;
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  max-height: 240px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-top: 6px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  padding: 10px;
+}
+
+.tag-picker-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  border-radius: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.tag-picker-options label:hover {
+  background: var(--soft);
+}
+
+.tag-picker-options input {
+  width: auto;
+  min-height: auto;
 }
 
 .studio-toolbar {

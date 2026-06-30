@@ -1,6 +1,8 @@
 const form = document.querySelector("#post-form");
 const postList = document.querySelector("#post-list");
 const postPagination = document.querySelector("#post-pagination");
+const tagSummary = document.querySelector("[data-tag-summary]");
+const tagOptions = document.querySelector("[data-tag-options]");
 const newPostButton = document.querySelector("#new-post");
 const deletePostButton = document.querySelector("#delete-post");
 const savePostButton = document.querySelector("#save-post");
@@ -12,6 +14,51 @@ const dateInput = form.elements.date;
 const bodyInput = form.elements.body;
 let currentPostPage = 1;
 const postPageSize = 20;
+const fallbackTags = ["技术", "散文", "禅宗", "随笔"];
+let editorTags = [...fallbackTags];
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function selectedTags() {
+  return form.elements.tags.value
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+}
+
+function updateTagSummary() {
+  const tags = selectedTags();
+  tagSummary.textContent = tags.length ? tags.join(", ") : "选择标签";
+}
+
+function setSelectedTags(tags) {
+  const uniqueTags = [...new Set(tags.map((tag) => tag.trim()).filter(Boolean))];
+  form.elements.tags.value = uniqueTags.join(", ");
+  tagOptions.querySelectorAll("input[type='checkbox']").forEach((checkbox) => {
+    checkbox.checked = uniqueTags.includes(checkbox.value);
+  });
+  updateTagSummary();
+}
+
+function rememberTags(postsOrTags) {
+  const tags = postsOrTags.flatMap((item) => (Array.isArray(item) ? item : item.tags || []));
+  editorTags = [...new Set([...editorTags, ...tags])].sort((a, b) => a.localeCompare(b, "zh-Hans"));
+  renderTagPicker();
+}
+
+function renderTagPicker() {
+  const checkedTags = new Set(selectedTags());
+  tagOptions.innerHTML = editorTags
+    .map((tag) => `<label><input type="checkbox" value="${escapeHtml(tag)}"${checkedTags.has(tag) ? " checked" : ""} /> <span>${escapeHtml(tag)}</span></label>`)
+    .join("");
+  updateTagSummary();
+}
 
 function localDateValue(date = new Date()) {
   const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
@@ -31,6 +78,7 @@ function resetForm() {
   form.reset();
   form.elements.slug.value = "";
   dateInput.value = localDateValue();
+  setSelectedTags([]);
   deletePostButton.hidden = true;
   savePostButton.textContent = "保存并生成网页";
   setStatus("");
@@ -87,6 +135,7 @@ function postSortTime(post) {
 
 function renderPostList(posts) {
   const sortedPosts = [...posts].sort((a, b) => postSortTime(b) - postSortTime(a) || a.title.localeCompare(b.title, "zh-Hans"));
+  rememberTags(sortedPosts);
 
   if (!sortedPosts.length) {
     postList.innerHTML = '<p class="studio-empty">还没有文章。</p>';
@@ -145,7 +194,8 @@ async function loadPost(slug) {
   form.elements.date.value = post.date;
   form.elements.description.value = post.description;
   form.elements.readingTime.value = post.readingTime || "";
-  form.elements.tags.value = (post.tags || []).join(", ");
+  rememberTags([post.tags || []]);
+  setSelectedTags(post.tags || []);
   form.elements.status.value = post.status || "published";
   form.elements.body.value = post.body;
   deletePostButton.hidden = false;
@@ -203,6 +253,11 @@ postPagination.addEventListener("click", async (event) => {
 });
 
 newPostButton.addEventListener("click", resetForm);
+
+tagOptions.addEventListener("change", () => {
+  const tags = [...tagOptions.querySelectorAll("input[type='checkbox']:checked")].map((checkbox) => checkbox.value);
+  setSelectedTags(tags);
+});
 
 deletePostButton.addEventListener("click", async () => {
   const slug = form.elements.slug.value;

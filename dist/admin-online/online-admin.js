@@ -7,6 +7,8 @@ const postList = document.querySelector("#post-list");
 const postPagination = document.querySelector("#post-pagination");
 const postSearchInput = document.querySelector("#post-search");
 const postTagSelect = document.querySelector("#post-tag");
+const tagSummary = document.querySelector("[data-tag-summary]");
+const tagOptions = document.querySelector("[data-tag-options]");
 const newPostButton = document.querySelector("#new-post");
 const deletePostButton = document.querySelector("#delete-post");
 const insertImageButton = document.querySelector("#insert-image");
@@ -26,6 +28,40 @@ let postTotalPages = 1;
 let postQuery = "";
 let postTag = "";
 let postTags = [];
+const fallbackTags = ["技术", "散文", "禅宗", "随笔"];
+
+function selectedTags() {
+  return form.elements.tags.value
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+}
+
+function updateTagSummary() {
+  const tags = selectedTags();
+  tagSummary.textContent = tags.length ? tags.join(", ") : "选择标签";
+}
+
+function setSelectedTags(tags) {
+  const uniqueTags = [...new Set(tags.map((tag) => tag.trim()).filter(Boolean))];
+  form.elements.tags.value = uniqueTags.join(", ");
+  tagOptions.querySelectorAll("input[type='checkbox']").forEach((checkbox) => {
+    checkbox.checked = uniqueTags.includes(checkbox.value);
+  });
+  updateTagSummary();
+}
+
+function availableEditorTags() {
+  return [...new Set([...fallbackTags, ...postTags, ...selectedTags()])].sort((a, b) => a.localeCompare(b, "zh-Hans"));
+}
+
+function renderTagPicker() {
+  const checkedTags = new Set(selectedTags());
+  tagOptions.innerHTML = availableEditorTags()
+    .map((tag) => `<label><input type="checkbox" value="${escapeHtml(tag)}"${checkedTags.has(tag) ? " checked" : ""} /> <span>${escapeHtml(tag)}</span></label>`)
+    .join("");
+  updateTagSummary();
+}
 
 function setStatus(message, tone = "neutral") {
   statusText.textContent = message;
@@ -94,6 +130,7 @@ function resetForm() {
   form.elements.slug.value = "";
   form.elements.sha.value = "";
   form.elements.date.value = localDateValue();
+  setSelectedTags([]);
   form.elements.status.value = "published";
   deletePostButton.hidden = true;
   feedbackPanel.hidden = true;
@@ -106,6 +143,7 @@ function renderTagFilter() {
     .map((tag) => `<option value="${escapeHtml(tag)}">${escapeHtml(tag)}</option>`)
     .join("")}`;
   postTagSelect.value = postTags.includes(currentTag) ? currentTag : "";
+  renderTagPicker();
 }
 
 function renderPagination() {
@@ -183,7 +221,7 @@ async function loadPost(slug) {
   form.elements.date.value = post.date;
   form.elements.description.value = post.description || "";
   form.elements.readingTime.value = post.readingTime || "";
-  form.elements.tags.value = (post.tags || []).join(", ");
+  setSelectedTags(post.tags || []);
   form.elements.status.value = post.status || "published";
   form.elements.body.value = post.body || "";
   deletePostButton.hidden = protectedSlugs.has(post.slug);
@@ -325,6 +363,10 @@ postTagSelect.addEventListener("change", () => {
   postTag = postTagSelect.value;
   loadPosts(1).catch((error) => setStatus(error.message, "error"));
 });
+tagOptions.addEventListener("change", () => {
+  const tags = [...tagOptions.querySelectorAll("input[type='checkbox']:checked")].map((checkbox) => checkbox.value);
+  setSelectedTags(tags);
+});
 form.addEventListener("submit", savePost);
 deletePostButton.addEventListener("click", deletePost);
 insertImageButton.addEventListener("click", () => imageFileInput.click());
@@ -332,4 +374,5 @@ imageFileInput.addEventListener("change", uploadImage);
 
 workerUrlInput.value = sessionStorage.getItem("workerUrl") || workerUrlInput.value;
 passwordInput.value = sessionStorage.getItem("adminPassword") || "";
+renderTagPicker();
 resetForm();
