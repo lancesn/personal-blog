@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "silencegate-blog-admin",
+  "main": "src/index.js",
+  "compatibility_date": "2026-06-30",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    "GITHUB_OWNER": "lancesn",
+    "GITHUB_REPO": "personal-blog",
+    "GITHUB_BRANCH": "main",
+    "ALLOWED_ORIGIN": "https://silencegate.com"
+  }
+}

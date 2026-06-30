@@ -12,31 +12,27 @@
         <div>
           <p class="studio-kicker">Online Studio</p>
           <h1>在线文章后台</h1>
-          <p>通过 GitHub API 直接发布 Markdown，GitHub Pages 会自动构建上线。</p>
+          <p>通过 Cloudflare Worker 发布 Markdown，GitHub Pages 会自动构建上线。</p>
         </div>
         <a class="button dark" href="../index.html">返回网站</a>
       </section>
 
       <section class="studio-help">
-        <h2>连接 GitHub</h2>
-        <p>请输入有仓库 Contents 读写权限的 GitHub Token。Token 只保存在当前浏览器会话，不会写入网站文件。</p>
+        <h2>连接后台</h2>
+        <p>GitHub Token 保存在 Cloudflare Worker 环境变量里。这里仅输入 Worker 地址和后台密码。</p>
         <div class="studio-grid">
           <label>
-            <span>仓库</span>
-            <input id="repo" type="text" value="lancesn/personal-blog" />
+            <span>Worker 地址</span>
+            <input id="worker-url" type="url" placeholder="https://你的-worker.workers.dev" />
           </label>
           <label>
-            <span>分支</span>
-            <input id="branch" type="text" value="main" />
+            <span>后台密码</span>
+            <input id="admin-password" type="password" placeholder="输入后台密码" autocomplete="current-password" />
           </label>
         </div>
-        <label>
-          <span>GitHub Token</span>
-          <input id="token" type="password" placeholder="github_pat_..." autocomplete="off" />
-        </label>
         <div class="studio-actions">
           <button class="button primary" id="connect" type="button">连接并读取文章</button>
-          <button class="button" id="forget-token" type="button">清除 Token</button>
+          <button class="button" id="forget-password" type="button">清除密码</button>
           <p id="status" role="status"></p>
         </div>
       </section>
@@ -110,6 +106,6 @@
         </form>
       </section>
     </main>
-    <script src="./online-admin.js?v=20260630-online-admin"></script>
+    <script src="./online-admin.js?v=20260630-worker-admin"></script>
   </body>
 </html>

@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.js",
-    "studio": "node scripts/studio.js"
+    "studio": "node scripts/studio.js",
+    "worker:deploy": "cd cloudflare-worker && npx wrangler deploy",
+    "worker:secret:github": "cd cloudflare-worker && npx wrangler secret put GITHUB_TOKEN",
+    "worker:secret:password": "cd cloudflare-worker && npx wrangler secret put ADMIN_PASSWORD"
   }
 }
