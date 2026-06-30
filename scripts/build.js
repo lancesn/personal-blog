@@ -405,6 +405,11 @@ function renderHomeHeroImages() {
     .join("\n");
 }
 
+function randomHomeShareImage() {
+  const src = homeHeroImages[Math.floor(Math.random() * homeHeroImages.length)];
+  return src.replace("w=1600", "w=1200");
+}
+
 function renderHome(posts) {
   const latestPosts = posts
     .slice(0, 10)
@@ -413,8 +418,9 @@ function renderHome(posts) {
 
   return pageShell({
     title: "蓬窗灯影录-博客",
-    description: "蓬窗灯影录",
+    description: "静处观世，灯下记心。",
     canonical: absoluteUrl("index.html"),
+    image: randomHomeShareImage(),
     script: scriptTag("."),
     body: `${siteNav("home")}
 
