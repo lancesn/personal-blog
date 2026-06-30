@@ -379,7 +379,7 @@ async function publishSite(response) {
 
     const timestamp = new Date().toISOString().slice(0, 16).replace("T", " ");
     await runGit(["commit", "-m", `Update blog ${timestamp}`]);
-    await runGit(["push"]);
+    await runGit(["push", "origin", "main"]);
     json(response, 200, { message: "已提交并推送到 GitHub。" });
   } catch (error) {
     json(response, 500, { error: error.message });
