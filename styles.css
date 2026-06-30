@@ -1041,6 +1041,44 @@ h3 {
   gap: 8px;
 }
 
+.studio-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.studio-pagination div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.studio-pagination button,
+.studio-pagination span {
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 6px 10px;
+}
+
+.studio-pagination button[aria-current="page"] {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.studio-pagination button:disabled,
+.studio-pagination span {
+  color: var(--muted);
+}
+
 .studio-post-item {
   display: grid;
   gap: 4px;

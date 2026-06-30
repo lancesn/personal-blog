@@ -213,8 +213,10 @@ async function createPost(request, response) {
   }
 }
 
-async function listPosts(response) {
+async function listPosts(response, url) {
   try {
+    const page = Math.max(1, Number(url.searchParams.get("page") || 1));
+    const pageSize = Math.min(50, Math.max(1, Number(url.searchParams.get("pageSize") || 20)));
     const views = await readViews();
     const files = (await readdir(postsDir)).filter((file) => file.endsWith(".md"));
     const posts = await Promise.all(
@@ -228,7 +230,7 @@ async function listPosts(response) {
       const byDate = b.date.localeCompare(a.date);
       if (byDate) return byDate;
 
-      const byPublishedAt = String(b.publishedAt || "").localeCompare(String(a.publishedAt || ""));
+      const byPublishedAt = String(b.publishedAt || b.modifiedTime || "").localeCompare(String(a.publishedAt || a.modifiedTime || ""));
       if (byPublishedAt) return byPublishedAt;
 
       const byModified = (b.modifiedTime || 0) - (a.modifiedTime || 0);
@@ -239,10 +241,16 @@ async function listPosts(response) {
     json(
       response,
       200,
-      posts.map(({ body, modifiedTime, ...post }) => ({
+      {
+        page,
+        pageSize,
+        total: posts.length,
+        totalPages: Math.max(1, Math.ceil(posts.length / pageSize)),
+        posts: posts.slice((page - 1) * pageSize, page * pageSize).map(({ body, modifiedTime, ...post }) => ({
         ...post,
         views: Number(views[post.slug] || 0)
       }))
+      }
     );
   } catch (error) {
     json(response, 500, { error: error.message });
@@ -433,7 +441,7 @@ const server = createServer((request, response) => {
     : "";
 
   if (request.method === "GET" && url.pathname === "/api/posts") {
-    listPosts(response);
+    listPosts(response, url);
     return;
   }
   if (request.method === "POST" && url.pathname === "/api/posts") {

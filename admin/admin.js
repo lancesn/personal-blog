@@ -1,5 +1,6 @@
 const form = document.querySelector("#post-form");
 const postList = document.querySelector("#post-list");
+const postPagination = document.querySelector("#post-pagination");
 const newPostButton = document.querySelector("#new-post");
 const deletePostButton = document.querySelector("#delete-post");
 const savePostButton = document.querySelector("#save-post");
@@ -9,6 +10,8 @@ const publishSiteButton = document.querySelector("#publish-site");
 const statusText = document.querySelector("#status");
 const dateInput = form.elements.date;
 const bodyInput = form.elements.body;
+let currentPostPage = 1;
+const postPageSize = 20;
 
 function setStatus(message, tone = "neutral") {
   statusText.textContent = message;
@@ -67,6 +70,7 @@ function readFileAsDataUrl(file) {
 function renderPostList(posts) {
   if (!posts.length) {
     postList.innerHTML = '<p class="studio-empty">还没有文章。</p>';
+    postPagination.innerHTML = "";
     return;
   }
 
@@ -80,9 +84,36 @@ function renderPostList(posts) {
     .join("");
 }
 
-async function loadPosts() {
-  const posts = await requestJson("/api/posts");
-  renderPostList(posts);
+function renderPagination({ page, totalPages, total }) {
+  if (totalPages <= 1) {
+    postPagination.innerHTML = total ? `<span>共 ${total} 篇</span>` : "";
+    return;
+  }
+
+  const pages = Array.from({ length: totalPages }, (_, index) => index + 1)
+    .map((pageNumber) => `<button type="button" data-page="${pageNumber}"${pageNumber === page ? ' aria-current="page"' : ""}>${pageNumber}</button>`)
+    .join("");
+
+  postPagination.innerHTML = `
+    <button type="button" data-page="${Math.max(1, page - 1)}"${page === 1 ? " disabled" : ""}>上一页</button>
+    <div>${pages}</div>
+    <button type="button" data-page="${Math.min(totalPages, page + 1)}"${page === totalPages ? " disabled" : ""}>下一页</button>
+    <span>共 ${total} 篇</span>
+  `;
+}
+
+async function loadPosts(page = currentPostPage) {
+  const result = await requestJson(`/api/posts?page=${page}&pageSize=${postPageSize}`);
+  if (Array.isArray(result)) {
+    currentPostPage = 1;
+    renderPostList(result.slice(0, postPageSize));
+    renderPagination({ page: 1, totalPages: Math.max(1, Math.ceil(result.length / postPageSize)), total: result.length });
+    return;
+  }
+
+  currentPostPage = result.page;
+  renderPostList(result.posts);
+  renderPagination(result);
 }
 
 async function loadPost(slug) {
@@ -122,7 +153,7 @@ form.addEventListener("submit", async (event) => {
     });
 
     setStatus(`已保存：${result.file}。可以打开 dist/posts/${result.slug}.html 预览。`, "success");
-    await loadPosts();
+    await loadPosts(1);
     await loadPost(result.slug);
   } catch (error) {
     setStatus(error.message, "error");
@@ -140,6 +171,17 @@ postList.addEventListener("click", async (event) => {
   }
 });
 
+postPagination.addEventListener("click", async (event) => {
+  const button = event.target.closest("button[data-page]");
+  if (!button || button.disabled) return;
+
+  try {
+    await loadPosts(Number(button.dataset.page));
+  } catch (error) {
+    setStatus(error.message, "error");
+  }
+});
+
 newPostButton.addEventListener("click", resetForm);
 
 deletePostButton.addEventListener("click", async () => {
@@ -151,7 +193,7 @@ deletePostButton.addEventListener("click", async () => {
   try {
     setStatus("正在删除...");
     await requestJson(`/api/posts/${encodeURIComponent(slug)}`, { method: "DELETE" });
-    await loadPosts();
+    await loadPosts(currentPostPage);
     resetForm();
     setStatus("文章已删除，并已重新生成网页。", "success");
   } catch (error) {
