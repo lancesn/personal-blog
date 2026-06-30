@@ -6,7 +6,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://lancesn.github.io/personal-blog";
-const assetVersion = "20260630-whatsapp-chat";
+const assetVersion = "20260630-avatar-size";
 
 function escapeHtml(value) {
   return value
@@ -139,6 +139,10 @@ function absoluteUrl(relativePath = "") {
 
 function scriptTag(prefix = ".") {
   return `    <script src="${prefix}/script.js?v=${assetVersion}"></script>`;
+}
+
+function stylesheetTag(prefix = ".") {
+  return `    <link rel="stylesheet" href="${prefix}/styles.css?v=${assetVersion}" />`;
 }
 
 function escapeXml(value) {
@@ -278,7 +282,7 @@ function pageShell({ title, description, body, script = "", canonical = "", imag
     <meta property="og:image" content="${escapeHtml(ogImage)}" />
     <meta name="twitter:card" content="summary_large_image" />
     <title>${escapeHtml(title)}</title>
-    <link rel="stylesheet" href="./styles.css" />
+${stylesheetTag(".")}
   </head>
   <body>
 ${body}
@@ -496,7 +500,7 @@ function renderTagPage(tag, posts) {
     </main>
 
 ${siteFooter()}`
-  }).replace('href="./styles.css"', 'href="../styles.css"');
+  }).replace(`href="./styles.css?v=${assetVersion}"`, `href="../styles.css?v=${assetVersion}"`);
 }
 
 function renderAbout() {
@@ -664,7 +668,7 @@ ${content}
       </article>
       <nav class="article-nav article-nav-bottom"><a href="../blog.html">← 返回博客</a></nav>
     </main>`
-  }).replace('href="./styles.css"', 'href="../styles.css"');
+  }).replace(`href="./styles.css?v=${assetVersion}"`, `href="../styles.css?v=${assetVersion}"`);
 }
 
 function renderRss(posts) {
