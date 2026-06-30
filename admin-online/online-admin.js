@@ -9,12 +9,30 @@ const deletePostButton = document.querySelector("#delete-post");
 const insertImageButton = document.querySelector("#insert-image");
 const imageFileInput = document.querySelector("#image-file");
 const statusText = document.querySelector("#status");
+const feedbackPanel = document.querySelector("#publish-feedback");
+const feedbackMessage = document.querySelector("#feedback-message");
+const feedbackLinks = document.querySelector("#feedback-links");
 const protectedSlugs = new Set(["嵩山普寂大照禅师生平略考"]);
+const siteUrl = "https://silencegate.com";
+const actionsUrl = "https://github.com/lancesn/personal-blog/actions";
 let posts = [];
 
 function setStatus(message, tone = "neutral") {
   statusText.textContent = message;
   statusText.dataset.tone = tone;
+}
+
+function showFeedback(message, links = []) {
+  feedbackPanel.hidden = false;
+  feedbackMessage.textContent = message;
+  feedbackLinks.innerHTML = links
+    .filter((link) => link.href)
+    .map((link) => `<a class="button" href="${escapeHtml(link.href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label)}</a>`)
+    .join("");
+}
+
+function postUrl(slug) {
+  return `${siteUrl}/posts/${encodeURIComponent(slug)}.html`;
 }
 
 function currentWorkerUrl() {
@@ -70,6 +88,7 @@ function resetForm() {
   form.elements.date.valueAsDate = new Date();
   form.elements.status.value = "published";
   deletePostButton.hidden = true;
+  feedbackPanel.hidden = true;
   document.querySelectorAll(".studio-post-item").forEach((item) => item.removeAttribute("aria-current"));
 }
 
@@ -135,6 +154,11 @@ async function savePost(event) {
       body: JSON.stringify(payload)
     });
     setStatus("已提交到 GitHub，GitHub Pages 正在自动构建。", "success");
+    showFeedback("文章已提交。GitHub Pages 通常需要 1-3 分钟完成构建和刷新。", [
+      { label: "查看文章", href: postUrl(result.slug) },
+      { label: "查看构建", href: result.actionsUrl || actionsUrl },
+      { label: "查看提交", href: result.commitUrl }
+    ]);
     await loadPosts();
     await loadPost(result.slug);
   } catch (error) {
@@ -157,6 +181,9 @@ async function deletePost() {
     resetForm();
     await loadPosts();
     setStatus("已删除，GitHub Pages 正在自动构建。", "success");
+    showFeedback("删除请求已提交。线上页面刷新可能需要等待 GitHub Pages 构建完成。", [
+      { label: "查看构建", href: actionsUrl }
+    ]);
   } catch (error) {
     setStatus(error.message, "error");
   }
@@ -202,6 +229,10 @@ async function uploadImage() {
     });
     insertAtCursor(form.elements.body, result.markdown);
     setStatus(`已插入图片：${result.file}`, "success");
+    showFeedback("图片已上传到仓库，并已插入正文。保存文章后才会在正文里正式发布。", [
+      { label: "查看构建", href: result.actionsUrl || actionsUrl },
+      { label: "查看提交", href: result.commitUrl }
+    ]);
   } catch (error) {
     setStatus(error.message, "error");
   } finally {

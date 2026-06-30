@@ -107,6 +107,10 @@ function branch(env) {
   return env.GITHUB_BRANCH || "main";
 }
 
+function actionsUrl(env) {
+  return `https://github.com/${repo(env)}/actions`;
+}
+
 function encodeContentPath(filePath) {
   return filePath.split("/").map(encodeURIComponent).join("/");
 }
@@ -249,7 +253,7 @@ async function savePost(env, slug, payload) {
 
   const content = serializePost(payload, previous || {});
   const filePath = `content/posts/${slug}.md`;
-  await githubRequest(env, `/contents/${encodeContentPath(filePath)}`, {
+  const result = await githubRequest(env, `/contents/${encodeContentPath(filePath)}`, {
     method: "PUT",
     body: JSON.stringify({
       message: previous ? `Update post: ${payload.title}` : `Add post: ${payload.title}`,
@@ -259,13 +263,18 @@ async function savePost(env, slug, payload) {
     })
   });
 
-  return { slug, file: `${slug}.md` };
+  return {
+    slug,
+    file: `${slug}.md`,
+    commitUrl: result.commit?.html_url || "",
+    actionsUrl: actionsUrl(env)
+  };
 }
 
 async function deletePost(env, slug) {
   if (protectedSlugs.has(slug)) throw httpError("这篇文章已保护，不能删除。", 403);
   const post = await getPost(env, slug);
-  await githubRequest(env, `/contents/${encodeContentPath(`content/posts/${slug}.md`)}`, {
+  const result = await githubRequest(env, `/contents/${encodeContentPath(`content/posts/${slug}.md`)}`, {
     method: "DELETE",
     body: JSON.stringify({
       message: `Delete post: ${slug}`,
@@ -273,7 +282,11 @@ async function deletePost(env, slug) {
       branch: branch(env)
     })
   });
-  return { ok: true };
+  return {
+    ok: true,
+    commitUrl: result.commit?.html_url || "",
+    actionsUrl: actionsUrl(env)
+  };
 }
 
 function safeUploadName(name) {
@@ -289,7 +302,7 @@ async function uploadImage(env, payload) {
   const file = safeUploadName(payload.name);
   const content = String(payload.data).split(",")[1];
   const filePath = `uploads/${file}`;
-  await githubRequest(env, `/contents/${encodeContentPath(filePath)}`, {
+  const result = await githubRequest(env, `/contents/${encodeContentPath(filePath)}`, {
     method: "PUT",
     body: JSON.stringify({
       message: `Upload image: ${file}`,
@@ -300,7 +313,9 @@ async function uploadImage(env, payload) {
 
   return {
     file,
-    markdown: `![${payload.name || file}](../uploads/${file})`
+    markdown: `![${payload.name || file}](../uploads/${file})`,
+    commitUrl: result.commit?.html_url || "",
+    actionsUrl: actionsUrl(env)
   };
 }
 

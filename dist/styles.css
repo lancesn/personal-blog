@@ -1028,7 +1028,8 @@ h3 {
 
 .studio-panel,
 .studio-form,
-.studio-help {
+.studio-help,
+.studio-feedback {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--card);
@@ -1218,6 +1219,36 @@ h3 {
   padding: 20px 24px;
 }
 
+.studio-feedback {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 18px;
+  padding: 20px 24px;
+}
+
+.studio-feedback[hidden] {
+  display: none;
+}
+
+.studio-feedback p {
+  color: var(--muted);
+}
+
+.studio-feedback-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.studio-feedback-links .button {
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
+}
+
 .studio-help code {
   display: block;
   margin-top: 12px;
@@ -1237,8 +1268,17 @@ h3 {
 @media (max-width: 720px) {
   .studio-header,
   .studio-workspace,
-  .studio-grid {
+  .studio-grid,
+  .studio-feedback {
     grid-template-columns: 1fr;
+  }
+
+  .studio-feedback {
+    align-items: stretch;
+  }
+
+  .studio-feedback-links {
+    justify-content: flex-start;
   }
 
   .studio-header {

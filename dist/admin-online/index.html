@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>蓬窗灯影录 Online Studio</title>
-    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../styles.css?v=20260701-publish-feedback" />
   </head>
   <body class="studio-page">
     <main class="studio-shell">
@@ -105,7 +105,16 @@
           </div>
         </form>
       </section>
+
+      <section class="studio-feedback" id="publish-feedback" hidden>
+        <div>
+          <p class="studio-kicker">Publish Feedback</p>
+          <h2>发布反馈</h2>
+          <p id="feedback-message"></p>
+        </div>
+        <div class="studio-feedback-links" id="feedback-links"></div>
+      </section>
     </main>
-    <script src="./online-admin.js?v=20260630-worker-admin"></script>
+    <script src="./online-admin.js?v=20260701-publish-feedback"></script>
   </body>
 </html>
