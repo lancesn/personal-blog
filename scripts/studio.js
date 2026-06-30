@@ -121,10 +121,11 @@ function postSortTime(post) {
   const published = Date.parse(post.publishedAt || "");
   if (Number.isFinite(published)) return published;
 
-  const date = Date.parse(`${post.date || "1970-01-01"}T00:00:00`);
-  if (Number.isFinite(date)) return date;
+  const modified = Number(post.modifiedTime || 0);
+  if (modified) return modified;
 
-  return Number(post.modifiedTime || 0);
+  const date = Date.parse(`${post.date || "1970-01-01"}T00:00:00`);
+  return Number.isFinite(date) ? date : 0;
 }
 
 function postPath(slug) {
@@ -252,6 +253,7 @@ async function listPosts(response, url) {
         totalPages: Math.max(1, Math.ceil(posts.length / pageSize)),
         posts: posts.slice((page - 1) * pageSize, page * pageSize).map(({ body, modifiedTime, ...post }) => ({
         ...post,
+        sortTime: postSortTime({ ...post, modifiedTime }),
         views: Number(views[post.slug] || 0)
       }))
       }

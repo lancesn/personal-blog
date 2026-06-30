@@ -117,17 +117,22 @@ function parseMarkdownFile(source, fileName) {
 
 function sortPosts(posts) {
   posts.sort((a, b) => {
-    const byDate = b.date.localeCompare(a.date);
-    if (byDate) return byDate;
-
-    const byPublishedAt = String(b.publishedAt || "").localeCompare(String(a.publishedAt || ""));
-    if (byPublishedAt) return byPublishedAt;
-
-    const byModified = (b.modifiedTime || 0) - (a.modifiedTime || 0);
-    if (byModified) return byModified;
+    const byTime = postSortTime(b) - postSortTime(a);
+    if (byTime) return byTime;
 
     return a.title.localeCompare(b.title, "zh-Hans");
   });
+}
+
+function postSortTime(post) {
+  const published = Date.parse(post.publishedAt || "");
+  if (Number.isFinite(published)) return published;
+
+  const modified = Number(post.modifiedTime || 0);
+  if (modified) return modified;
+
+  const date = Date.parse(`${post.date || "1970-01-01"}T00:00:00`);
+  return Number.isFinite(date) ? date : 0;
 }
 
 function inlineMarkdown(text) {

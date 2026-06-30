@@ -68,6 +68,9 @@ function readFileAsDataUrl(file) {
 }
 
 function postSortTime(post) {
+  const sortTime = Number(post.sortTime || 0);
+  if (sortTime) return sortTime;
+
   const published = Date.parse(post.publishedAt || "");
   if (Number.isFinite(published)) return published;
 
