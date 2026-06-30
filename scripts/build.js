@@ -317,8 +317,8 @@ function profileAvatar() {
   return `<img class="profile-avatar" src="./uploads/lance-profile.jpg" alt="Lance Shen" />`;
 }
 
-function pageAvatar() {
-  return `<img class="profile-avatar page-avatar" src="./uploads/lance-profile.jpg" alt="Lance Shen" />`;
+function pageAvatar(src = "./uploads/lance-profile.jpg", alt = "Lance Shen") {
+  return `<img class="profile-avatar page-avatar" src="${src}" alt="${alt}" />`;
 }
 
 function renderHome(posts) {
@@ -390,7 +390,7 @@ function renderBlog(posts) {
 
     <main class="site-shell">
       <section class="hero section">
-        ${pageAvatar()}
+        ${pageAvatar("./uploads/blog-avatar.png", "打开的书与怀表")}
         <h1>博客</h1>
         <p>一些想法、文章和折腾记录。</p>
       </section>
