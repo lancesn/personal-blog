@@ -35,16 +35,6 @@ if (contactEmail) {
   });
 }
 
-const whatsappToggle = document.querySelector("[data-whatsapp-toggle]");
-const whatsappCard = document.querySelector("[data-whatsapp-card]");
-if (whatsappToggle && whatsappCard) {
-  whatsappToggle.addEventListener("click", () => {
-    const open = whatsappCard.hidden;
-    whatsappCard.hidden = !open;
-    whatsappToggle.setAttribute("aria-expanded", String(open));
-  });
-}
-
 const heroCarousel = document.querySelector("[data-hero-carousel]");
 if (heroCarousel) {
   const slides = [...heroCarousel.querySelectorAll(".hero-media img")];

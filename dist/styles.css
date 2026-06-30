@@ -518,6 +518,10 @@ h3 {
   margin: 0;
 }
 
+.whatsapp-card a {
+  display: block;
+}
+
 .whatsapp-card img {
   width: min(100%, 320px);
   border: 1px solid var(--line);
