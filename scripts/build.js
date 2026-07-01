@@ -6,7 +6,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260701-brand-share-icons";
+const assetVersion = "20260701-brand-share-icons-large";
 const blogPageSize = 30;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.png");
 
@@ -778,7 +778,7 @@ ${siteFooter()}`
 
 function shareIcon(name) {
   const icons = {
-    copy: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7.5a4.5 4.5 0 0 1 4.5-4.5H16a5 5 0 0 1 0 10h-2.5v-2H16a3 3 0 0 0 0-6h-2.5A2.5 2.5 0 0 0 11 7.5V10H9V7.5Z"/><path d="M8 11h2.5v2H8a3 3 0 0 0 0 6h2.5A2.5 2.5 0 0 0 13 16.5V14h2v2.5a4.5 4.5 0 0 1-4.5 4.5H8a5 5 0 0 1 0-10Z"/></svg>`,
+    copy: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7.5A2.5 2.5 0 0 1 10.5 5H19a2.5 2.5 0 0 1 2.5 2.5V16a2.5 2.5 0 0 1-2.5 2.5h-8.5A2.5 2.5 0 0 1 8 16V7.5Zm2 0V16c0 .3.2.5.5.5H19c.3 0 .5-.2.5-.5V7.5c0-.3-.2-.5-.5-.5h-8.5c-.3 0-.5.2-.5.5Z"/><path d="M2.5 8A2.5 2.5 0 0 1 5 5.5h1V8H5v8.5c0 .3.2.5.5.5H6V19H5.5A2.5 2.5 0 0 1 3 16.5V8h-.5Zm2.5 11h9v1a2.5 2.5 0 0 1-2.5 2.5h-6A2.5 2.5 0 0 1 3 20v-1h2Z"/></svg>`,
     wechat: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.1 4C5.2 4 2 6.5 2 9.6c0 1.8 1.1 3.4 2.8 4.4l-.6 2 2.3-1.2c.8.2 1.6.4 2.6.4h.5a5.6 5.6 0 0 1-.2-1.4c0-3 2.9-5.4 6.4-5.4h.3C15.4 5.9 12.5 4 9.1 4Zm-2.4 4.6a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8Zm4.7 0a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8Z"/><path d="M22 13.8c0-2.5-2.6-4.6-5.8-4.6s-5.8 2.1-5.8 4.6 2.6 4.6 5.8 4.6c.7 0 1.4-.1 2.1-.3l2 1-.5-1.7c1.4-.8 2.2-2.1 2.2-3.6Zm-7.7-1.1a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4Zm3.9 0a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4Z"/></svg>`,
     whatsapp: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a9.7 9.7 0 0 0-8.4 14.6L2.5 22l5.5-1.1A9.7 9.7 0 1 0 12 2Zm0 2a7.7 7.7 0 0 1 0 15.4c-1.2 0-2.4-.3-3.4-.8l-.4-.2-3 .6.6-2.9-.2-.4A7.7 7.7 0 0 1 12 4Zm-3.1 3.9c-.2 0-.5.1-.7.4-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.9 4.5 3.9 2.2.9 2.7.7 3.2.6.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.1-1.3-.1-.1-.2-.2-.5-.4l-1.8-.9c-.3-.1-.5-.2-.7.2l-.7.9c-.1.2-.3.2-.6.1-.3-.1-1.1-.4-2-1.2-.8-.7-1.3-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.8-1.9c-.2-.4-.4-.4-.6-.4h-.6Z"/></svg>`,
     facebook: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.1 8.1V6.5c0-.8.5-1 1.1-1h1.8V2.3c-.3 0-1.5-.2-2.9-.2-2.9 0-4.8 1.7-4.8 4.9v1.1H6.1v3.6h3.2V22h3.9V11.7h3.2l.5-3.6h-3.8Z"/></svg>`,
