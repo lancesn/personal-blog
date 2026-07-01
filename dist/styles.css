@@ -759,12 +759,21 @@ h3 {
 }
 
 .footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   width: min(896px, 100%);
   margin: 0 auto;
   padding: 40px 32px 56px;
   border-inline: 1px solid var(--line);
   color: var(--muted);
   font-size: 14px;
+}
+
+.footer-rss {
+  flex: none;
 }
 
 .article {
