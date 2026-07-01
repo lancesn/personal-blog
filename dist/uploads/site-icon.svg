@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Silence Gate">
+  <defs>
+    <linearGradient id="bg" x1="92" y1="34" x2="420" y2="482" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#132847"/>
+      <stop offset="1" stop-color="#061429"/>
+    </linearGradient>
+    <linearGradient id="gate" x1="256" y1="184" x2="256" y2="369" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9bc7b3"/>
+      <stop offset="1" stop-color="#6fa28d"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <path fill="url(#gate)" d="M222 369V218c0-20 15-37 34-37s34 17 34 37v151h-68Z"/>
+  <path fill="#fff" d="M256 118c-50 0-90 41-90 91 0 34 19 65 49 81l78 41c25 13 35 44 22 69-10 18-27 28-45 29 38 1 73-20 92-55 26-50 7-112-43-138l-77-41c-11-6-18-17-18-30 0-19 14-34 32-34 50 0 90 41 90 91v102l-41-43v-59c0-27-22-49-49-49s-49 22-49 49c0 18 10 35 26 44l77 41c3 1 5 3 8 5v-91c0-57-46-104-103-104Z"/>
+</svg>
