@@ -322,7 +322,7 @@ function markdownToHtml(markdown) {
   return { html: html.join("\n"), toc };
 }
 
-function pageShell({ title, description, body, script = "", canonical = "", image = "", ogType = "website" }) {
+function pageShell({ title, description, body, script = "", canonical = "", image = "", ogType = "website", robots = "" }) {
   const pageUrl = canonical || absoluteUrl("");
   const shareImage = image || defaultShareImage;
   const imageMeta = shareImage
@@ -335,6 +335,7 @@ function pageShell({ title, description, body, script = "", canonical = "", imag
     <meta itemprop="description" content="${escapeHtml(description)}" />
     <meta itemprop="image" content="${escapeHtml(shareImage)}" />`
     : `    <meta name="twitter:card" content="summary" />`;
+  const robotsMeta = robots ? `    <meta name="robots" content="${escapeHtml(robots)}" />\n` : "";
 
   return `<!doctype html>
 <html lang="zh-CN">
@@ -343,7 +344,7 @@ function pageShell({ title, description, body, script = "", canonical = "", imag
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="${escapeHtml(description)}" />
     <meta name="theme-color" content="#ffffff" />
-    <link rel="canonical" href="${escapeHtml(pageUrl)}" />
+${robotsMeta}    <link rel="canonical" href="${escapeHtml(pageUrl)}" />
     <link rel="icon" type="image/svg+xml" href="/uploads/site-icon.svg?v=${assetVersion}" />
     <link rel="alternate icon" type="image/png" href="/uploads/site-icon.png" />
     <link rel="apple-touch-icon" href="/uploads/site-icon.png" />
@@ -654,6 +655,30 @@ function renderTagPage(tag, posts) {
 
 ${siteFooter()}`
   }).replace(`href="./styles.css?v=${assetVersion}"`, `href="../styles.css?v=${assetVersion}"`);
+}
+
+function renderNotFound() {
+  return pageShell({
+    title: "页面未找到",
+    description: "这个页面不存在，或者已经被移走了。",
+    canonical: absoluteUrl("404.html"),
+    robots: "noindex",
+    script: scriptTag("."),
+    body: `${siteNav(null)}
+
+    <main class="site-shell">
+      <section class="hero section">
+        <h1>404</h1>
+        <p>这个页面不见了，也许它去看云了。</p>
+        <div class="hero-actions">
+          <a class="button primary" href="./index.html">返回首页</a>
+          <a class="button dark" href="./blog.html">浏览博客</a>
+        </div>
+      </section>
+    </main>
+
+${siteFooter()}`
+  });
 }
 
 function renderAbout() {
@@ -976,7 +1001,7 @@ async function copyAndOptimizeUploads() {
 }
 
 async function syncDistToRoot() {
-  const topLevelFiles = ["index.html", "blog.html", "about.html", "archive.html", "search.html", "tags.html", "rss.xml", "sitemap.xml", "robots.txt", "styles.css", "script.js", ".nojekyll"];
+  const topLevelFiles = ["index.html", "blog.html", "about.html", "archive.html", "search.html", "tags.html", "404.html", "rss.xml", "sitemap.xml", "robots.txt", "styles.css", "script.js", ".nojekyll"];
   for (const file of topLevelFiles) {
     await copyFile(path.join(distDir, file), path.join(root, file));
   }
@@ -1016,6 +1041,7 @@ async function build() {
   await writeFile(path.join(distDir, "archive.html"), renderArchive(publishedPosts));
   await writeFile(path.join(distDir, "search.html"), renderSearch(publishedPosts));
   await writeFile(path.join(distDir, "tags.html"), renderTagsIndex(publishedPosts));
+  await writeFile(path.join(distDir, "404.html"), renderNotFound());
   await writeFile(path.join(distDir, "rss.xml"), renderRss(publishedPosts));
   await writeFile(path.join(distDir, "sitemap.xml"), renderSitemap(publishedPosts));
   await writeFile(path.join(distDir, "robots.txt"), renderRobots());
