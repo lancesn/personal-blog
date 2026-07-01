@@ -6,7 +6,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260701-layout-polish";
+const assetVersion = "20260701-share-icons-full";
 const blogPageSize = 30;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.png");
 
@@ -805,6 +805,9 @@ function renderPost(post) {
       ${renderTagLinks(post.tags, "..")}
       <div class="article-share-row" aria-label="分享文章">
         <button class="share-icon-button" type="button" data-share-copy aria-label="复制链接" title="复制链接">⎘</button>
+        <button class="share-icon-button" type="button" data-share-wechat aria-label="分享到微信" title="分享到微信">微</button>
+        <a class="share-icon-button" data-share-whatsapp href="#" aria-label="分享到 WhatsApp" title="分享到 WhatsApp">W</a>
+        <a class="share-icon-button" data-share-facebook href="#" aria-label="分享到 Facebook" title="分享到 Facebook">f</a>
         <a class="share-icon-button" data-share-weibo href="#" aria-label="分享到微博" title="分享到微博">微</a>
         <a class="share-icon-button" data-share-x href="#" aria-label="分享到 X" title="分享到 X">X</a>
         <p data-share-hint></p>

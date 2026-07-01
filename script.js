@@ -182,6 +182,9 @@ if (shareBar) {
   const url = article?.dataset.postUrl || window.location.href;
   const copyButton = shareBar.querySelector("[data-share-copy]");
   const xLink = shareBar.querySelector("[data-share-x]");
+  const facebookLink = shareBar.querySelector("[data-share-facebook]");
+  const whatsappLink = shareBar.querySelector("[data-share-whatsapp]");
+  const wechatButton = shareBar.querySelector("[data-share-wechat]");
   const weiboLink = shareBar.querySelector("[data-share-weibo]");
   const hint = shareBar.querySelector("[data-share-hint]");
 
@@ -194,11 +197,23 @@ if (shareBar) {
   if (weiboLink) {
     weiboLink.href = `https://service.weibo.com/share/share.php?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareSummary)}&searchPic=false`;
   }
+  if (whatsappLink) whatsappLink.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+  if (facebookLink) facebookLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
 
-  [xLink, weiboLink].filter(Boolean).forEach((link) => {
+  [xLink, weiboLink, whatsappLink, facebookLink].filter(Boolean).forEach((link) => {
     link.target = "_blank";
     link.rel = "noopener noreferrer";
   });
+
+  const canUseNativeShare = () => {
+    if (!navigator.share) return false;
+    if (!navigator.canShare) return true;
+    return navigator.canShare({ title, text: description || title, url: shareUrl });
+  };
+
+  async function nativeShare() {
+    await navigator.share({ title, text: description || title, url: shareUrl });
+  }
 
   async function copyUrl(successText = "已复制文章链接") {
     try {
@@ -214,5 +229,32 @@ if (shareBar) {
 
   copyButton?.addEventListener("click", () => {
     copyUrl();
+  });
+
+  wechatButton?.addEventListener("click", async () => {
+    if (canUseNativeShare()) {
+      try {
+        await nativeShare();
+        if (hint) hint.textContent = "";
+        return;
+      } catch (error) {
+        if (error?.name === "AbortError") return;
+      }
+    }
+
+    copyUrl("文章链接已复制，请打开微信粘贴分享。");
+  });
+
+  facebookLink?.addEventListener("click", async (event) => {
+    if (!canUseNativeShare()) return;
+    event.preventDefault();
+
+    try {
+      await nativeShare();
+      if (hint) hint.textContent = "";
+    } catch (error) {
+      if (error?.name === "AbortError") return;
+      window.location.href = facebookLink.href;
+    }
   });
 }
