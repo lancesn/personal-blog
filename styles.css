@@ -298,22 +298,25 @@ h1 {
 }
 
 .about-section {
-  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  padding-top: 24px;
+  gap: 30px;
+  max-width: 760px;
+  padding-top: 18px;
+  padding-bottom: 34px;
 }
 
 .about-copy {
   display: grid;
-  gap: 16px;
+  gap: 14px;
   color: var(--text);
-  font-size: 17px;
-  line-height: 1.9;
+  font-size: 16.5px;
+  line-height: 1.78;
 }
 
 .about-side {
-  border-left: 1px solid var(--line);
-  padding-left: 28px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
 }
 
 .section-heading {
@@ -345,8 +348,8 @@ h3 {
 
 .timeline {
   display: grid;
-  gap: 12px;
-  margin: 12px 0 0;
+  gap: 10px;
+  margin: 14px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -598,20 +601,44 @@ h3 {
 }
 
 .contact-section h2 {
-  margin-bottom: 18px;
+  margin-bottom: 16px;
+}
+
+.contact-section {
+  max-width: 760px;
+  padding-top: 26px;
 }
 
 .contact-grid {
   display: flex;
   flex-wrap: wrap;
-  align-items: start;
-  gap: 24px;
+  align-items: center;
+  gap: 14px;
 }
 
-.contact-email,
-.contact-whatsapp {
-  justify-content: center;
-  width: fit-content;
+.contact-icon-button {
+  display: inline-grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--soft) 72%, var(--bg));
+  color: var(--primary-strong);
+  text-decoration: none;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.contact-icon-button svg {
+  width: 23px;
+  height: 23px;
+  fill: currentColor;
+}
+
+.contact-icon-button:hover {
+  border-color: color-mix(in srgb, var(--primary) 48%, var(--line));
+  background: color-mix(in srgb, var(--soft) 46%, var(--primary) 14%);
+  transform: translateY(-1px);
 }
 
 .archive {
