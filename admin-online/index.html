@@ -44,12 +44,7 @@
         <aside class="studio-panel">
           <div class="studio-panel-head">
             <h2>文章列表</h2>
-            <div class="studio-panel-head-actions">
-              <button class="button" id="import-post" type="button">导入</button>
-              <button class="button primary" id="new-post" type="button">新建</button>
-            </div>
           </div>
-          <input id="import-file" type="file" accept=".md,.markdown,.txt,.docx" hidden />
           <div class="studio-list-filters">
             <label>
               <span>搜索</span>
@@ -115,7 +110,14 @@
           </label>
 
           <div class="studio-field">
-            <span>正文 Markdown</span>
+            <div class="studio-field-head">
+              <span>正文 Markdown</span>
+              <div class="studio-panel-head-actions">
+                <button class="button" id="import-post" type="button">导入</button>
+                <button class="button primary" id="new-post" type="button">新建</button>
+              </div>
+            </div>
+            <input id="import-file" type="file" accept=".md,.markdown,.txt,.docx" hidden />
             <div class="studio-toolbar" aria-label="Markdown 快捷工具栏">
               <button class="button" type="button" data-md-command="heading">标题</button>
               <button class="button" type="button" data-md-command="bold">加粗</button>

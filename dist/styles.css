@@ -1334,6 +1334,13 @@ h3 {
   font-weight: 750;
 }
 
+.studio-field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .studio-form input,
 .studio-form select,
 .studio-form textarea,
