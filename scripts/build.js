@@ -802,7 +802,59 @@ function shareIcon(name) {
   return icons[name] || "";
 }
 
-function renderPost(post, nextPost) {
+function findRelatedPosts(post, allPosts, limit = 3) {
+  if (!post.tags.length) return [];
+
+  return allPosts
+    .filter((candidate) => candidate.slug !== post.slug)
+    .map((candidate) => ({
+      post: candidate,
+      shared: candidate.tags.filter((tag) => post.tags.includes(tag)).length
+    }))
+    .filter((entry) => entry.shared > 0)
+    .sort((a, b) => b.shared - a.shared || postSortTime(b.post) - postSortTime(a.post))
+    .slice(0, limit)
+    .map((entry) => entry.post);
+}
+
+function renderRelatedPosts(relatedPosts) {
+  if (!relatedPosts.length) return "";
+
+  return `<section class="related-posts" aria-label="相关文章">
+        <h2>相关文章</h2>
+        <div class="related-post-list">
+          ${relatedPosts
+            .map(
+              (relatedPost) => `<a class="related-post-card" href="./${relatedPost.slug}.html">
+            <time datetime="${relatedPost.date}">${formatDate(relatedPost.date)}</time>
+            <strong>${escapeHtml(relatedPost.title)}</strong>
+          </a>`
+            )
+            .join("\n          ")}
+        </div>
+      </section>`;
+}
+
+function postJsonLd(post) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: shareExcerpt(post),
+    datePublished: post.publishedAt || post.date,
+    url: absoluteUrl(`posts/${post.slug}.html`),
+    inLanguage: "zh-CN",
+    author: { "@type": "Person", name: "Lance Shen" },
+    publisher: { "@type": "Organization", name: "蓬窗灯影录" },
+    mainEntityOfPage: { "@type": "WebPage", "@id": absoluteUrl(`posts/${post.slug}.html`) }
+  };
+  const shareImage = postShareImage(post) || defaultShareImage;
+  if (shareImage) data.image = shareImage;
+
+  return `<script type="application/ld+json">${JSON.stringify(data)}</script>`;
+}
+
+function renderPost(post, nextPost, allPosts) {
   const { html: content, toc } = markdownToHtml(post.body);
   const postShareExcerpt = shareExcerpt(post);
   const tableOfContents =
@@ -823,6 +875,7 @@ function renderPost(post, nextPost) {
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
       </a>`
     : "";
+  const relatedPostsSection = renderRelatedPosts(findRelatedPosts(post, allPosts));
 
   return pageShell({
     title: post.title,
@@ -834,6 +887,7 @@ function renderPost(post, nextPost) {
     body: `${siteNav("blog").replaceAll("./", "../")}
 
     <main class="article" data-post-slug="${escapeHtml(post.slug)}" data-post-title="${escapeHtml(post.title)}" data-post-description="${escapeHtml(postShareExcerpt)}" data-post-url="${escapeHtml(absoluteUrl(`posts/${post.slug}.html`))}">
+      ${postJsonLd(post)}
       <nav class="article-nav"><a href="../blog.html">← 返回博客</a></nav>
       <h1>${escapeHtml(post.title)}</h1>
       <p class="article-meta">${post.date} · ${escapeHtml(post.readingTime || "1 分钟阅读")}</p>
@@ -851,6 +905,7 @@ function renderPost(post, nextPost) {
       <article class="article-content">
 ${content}
       </article>
+      ${relatedPostsSection}
       <nav class="article-nav article-nav-bottom"><a href="../blog.html">← 返回博客</a></nav>
       ${nextPostFab}
     </main>`
@@ -893,22 +948,31 @@ function renderRedirectPage({ title, target, canonical }) {
 `;
 }
 
+function absolutizeHtmlUrls(html) {
+  return html.replace(/(src|href)="([^"]+)"/g, (match, attr, url) => {
+    if (/^(https?:)?\/\//.test(url) || url.startsWith("#") || url.startsWith("mailto:")) return match;
+    return `${attr}="${absoluteUrl(url.replace(/^\.\.\//, "").replace(/^\.\//, ""))}"`;
+  });
+}
+
 function renderRss(posts) {
   const items = posts
     .slice(0, 20)
-    .map(
-      (post) => `    <item>
+    .map((post) => {
+      const fullContent = absolutizeHtmlUrls(markdownToHtml(post.body).html);
+      return `    <item>
       <title>${escapeXml(post.title)}</title>
       <link>${escapeXml(absoluteUrl(`posts/${post.slug}.html`))}</link>
       <guid>${escapeXml(absoluteUrl(`posts/${post.slug}.html`))}</guid>
       <pubDate>${new Date(`${post.date}T00:00:00+08:00`).toUTCString()}</pubDate>
       <description>${escapeXml(post.description)}</description>
-    </item>`
-    )
+      <content:encoded><![CDATA[${fullContent}]]></content:encoded>
+    </item>`;
+    })
     .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0">
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>我的博客</title>
     <link>${escapeXml(siteUrl)}</link>
@@ -1063,7 +1127,7 @@ async function build() {
   for (let index = 0; index < publishedPosts.length; index += 1) {
     const post = publishedPosts[index];
     const nextPost = publishedPosts[index + 1];
-    await writeFile(path.join(distDir, "posts", `${post.slug}.html`), renderPost(post, nextPost));
+    await writeFile(path.join(distDir, "posts", `${post.slug}.html`), renderPost(post, nextPost, publishedPosts));
     for (const alias of [post.sourceSlug, ...post.aliases]) {
       if (alias === post.slug) continue;
       await writeFile(path.join(distDir, "posts", `${alias}.html`), renderPostRedirect(post));

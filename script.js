@@ -170,10 +170,6 @@ if (archiveCalendar) {
 }
 
 const article = document.querySelector("[data-post-slug]");
-if (article) {
-  const slug = article.dataset.postSlug;
-  fetch(`/api/views/${encodeURIComponent(slug)}`, { method: "POST" }).catch(() => {});
-}
 
 const shareBar = document.querySelector(".article-share-row");
 if (shareBar) {
