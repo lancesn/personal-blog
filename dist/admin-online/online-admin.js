@@ -15,6 +15,8 @@ const newPostButton = document.querySelector("#new-post");
 const deletePostButton = document.querySelector("#delete-post");
 const insertImageButton = document.querySelector("#insert-image");
 const imageFileInput = document.querySelector("#image-file");
+const importButton = document.querySelector("#import-post");
+const importFileInput = document.querySelector("#import-file");
 const markdownToolbar = document.querySelector(".studio-toolbar");
 const editorModeButtons = document.querySelectorAll("[data-editor-mode]");
 const studioCompose = document.querySelector(".studio-compose");
@@ -567,6 +569,118 @@ async function uploadImage() {
   }
 }
 
+function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(reader.result));
+    reader.addEventListener("error", () => reject(reader.error));
+    reader.readAsText(file);
+  });
+}
+
+function readFileAsArrayBuffer(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(reader.result));
+    reader.addEventListener("error", () => reject(reader.error));
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function loadScriptOnce(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      resolve();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = src;
+    script.addEventListener("load", () => resolve());
+    script.addEventListener("error", () => reject(new Error(`加载失败：${src}`)));
+    document.head.appendChild(script);
+  });
+}
+
+function stripFrontmatter(markdown) {
+  return markdown.replace(/^---\n[\s\S]*?\n---\n?/, "");
+}
+
+function extractTitle(markdown) {
+  const match = markdown.match(/^#\s+(.+)$/m);
+  return match ? match[1].trim() : "";
+}
+
+function removeTitleHeading(markdown, title) {
+  if (!title) return markdown;
+  return markdown.replace(/^#\s+.+\n+/, "");
+}
+
+async function uploadEmbeddedImage(dataUrl, index) {
+  const mimeMatch = dataUrl.match(/^data:([^;]+);base64,/);
+  const mime = mimeMatch ? mimeMatch[1] : "image/png";
+  const extension = mime.split("/")[1] || "png";
+  const result = await apiRequest("/uploads", {
+    method: "POST",
+    body: JSON.stringify({
+      name: `word-import-${index}.${extension}`,
+      type: mime,
+      data: dataUrl
+    })
+  });
+  const uploadedMatch = result.markdown.match(/!\[[^\]]*]\(([^)]+)\)/);
+  return uploadedMatch ? uploadedMatch[1] : dataUrl;
+}
+
+async function convertWordToMarkdown(file) {
+  await loadScriptOnce("./vendor/mammoth.browser.min.js");
+  await loadScriptOnce("./vendor/turndown.js");
+
+  const buffer = await readFileAsArrayBuffer(file);
+  const { value: html } = await window.mammoth.convertToHtml(
+    { arrayBuffer: buffer },
+    { styleMap: ["p[style-name='Title'] => h1:fresh", "p[style-name='Subtitle'] => p:fresh"] }
+  );
+
+  const turndownService = new window.TurndownService({ headingStyle: "atx" });
+  let markdown = turndownService.turndown(html);
+
+  const imageMatches = [...markdown.matchAll(/!\[([^\]]*)]\((data:[^)]+)\)/g)];
+  for (let index = 0; index < imageMatches.length; index += 1) {
+    const [fullMatch, alt, dataUrl] = imageMatches[index];
+    setStatus(`正在上传文档里的图片（${index + 1}/${imageMatches.length}）...`);
+    try {
+      const uploadedSrc = await uploadEmbeddedImage(dataUrl, index + 1);
+      markdown = markdown.replace(fullMatch, `![${alt}](${uploadedSrc})`);
+    } catch (error) {
+      console.warn("图片上传失败，已保留原始图片数据。", error);
+    }
+  }
+
+  return markdown;
+}
+
+async function importFile(file) {
+  const extension = file.name.split(".").pop().toLowerCase();
+
+  try {
+    setStatus(extension === "docx" ? "正在解析 Word 文档..." : "正在读取文件...");
+    let markdown = extension === "docx" ? await convertWordToMarkdown(file) : stripFrontmatter(await readFileAsText(file));
+
+    const title = extractTitle(markdown);
+    markdown = removeTitleHeading(markdown, title);
+
+    resetForm();
+    if (title) form.elements.title.value = title;
+    form.elements.body.value = markdown.trim();
+    updatePreview();
+    setStatus(`已导入《${file.name}》，检查无误后发布。`, "success");
+  } catch (error) {
+    setStatus(`导入失败：${error.message}`, "error");
+  } finally {
+    importFileInput.value = "";
+  }
+}
+
 connectButton.addEventListener("click", () => {
   loadPosts(1).catch((error) => setStatus(error.message, "error"));
 });
@@ -621,6 +735,11 @@ editorModeButtons.forEach((button) => {
 });
 insertImageButton.addEventListener("click", () => imageFileInput.click());
 imageFileInput.addEventListener("change", uploadImage);
+importButton.addEventListener("click", () => importFileInput.click());
+importFileInput.addEventListener("change", () => {
+  const file = importFileInput.files[0];
+  if (file) importFile(file);
+});
 
 workerUrlInput.value = sessionStorage.getItem("workerUrl") || workerUrlInput.value;
 passwordInput.value = sessionStorage.getItem("adminPassword") || "";
