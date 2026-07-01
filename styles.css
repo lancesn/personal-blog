@@ -760,6 +760,12 @@ h3 {
   line-height: 1;
 }
 
+.share-icon-button svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
 .share-icon-button:hover {
   border-color: color-mix(in srgb, var(--primary) 48%, var(--line));
   background: color-mix(in srgb, var(--primary) 12%, var(--bg));
