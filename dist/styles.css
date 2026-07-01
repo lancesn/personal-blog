@@ -1037,6 +1037,7 @@ h3 {
 }
 
 .studio-header h1 {
+  font-size: 42px;
   margin-top: 4px;
 }
 
@@ -1446,5 +1447,9 @@ h3 {
   .studio-header {
     display: grid;
     align-items: start;
+  }
+
+  .studio-header h1 {
+    font-size: 34px;
   }
 }
