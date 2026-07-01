@@ -15,6 +15,10 @@ const newPostButton = document.querySelector("#new-post");
 const deletePostButton = document.querySelector("#delete-post");
 const insertImageButton = document.querySelector("#insert-image");
 const imageFileInput = document.querySelector("#image-file");
+const markdownToolbar = document.querySelector(".studio-toolbar");
+const editorModeButtons = document.querySelectorAll("[data-editor-mode]");
+const studioCompose = document.querySelector(".studio-compose");
+const markdownPreview = document.querySelector("#markdown-preview");
 const statusText = document.querySelector("#status");
 const feedbackPanel = document.querySelector("#publish-feedback");
 const feedbackMessage = document.querySelector("#feedback-message");
@@ -135,6 +139,165 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;");
 }
 
+function safeUrl(value) {
+  const url = String(value || "").trim();
+  if (/^(https?:|mailto:|\/|#|\.\.?\/)/i.test(url)) return url;
+  return "#";
+}
+
+function renderInlineMarkdown(value) {
+  let text = String(value || "");
+  const replacements = [];
+  const store = (html) => {
+    const token = `@@MD${replacements.length}@@`;
+    replacements.push([token, html]);
+    return token;
+  };
+
+  text = text.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]+)")?\)/g, (_, alt, src, title) => {
+    const titleAttr = title ? ` title="${escapeHtml(title)}"` : "";
+    return store(`<img src="${escapeHtml(safeUrl(src))}" alt="${escapeHtml(alt)}"${titleAttr} loading="lazy" />`);
+  });
+  text = text.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]+)")?\)/g, (_, label, href, title) => {
+    const titleAttr = title ? ` title="${escapeHtml(title)}"` : "";
+    return store(`<a href="${escapeHtml(safeUrl(href))}"${titleAttr} target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`);
+  });
+  text = text.replace(/`([^`]+)`/g, (_, code) => store(`<code>${escapeHtml(code)}</code>`));
+  text = text.replace(/\*\*([^*]+)\*\*/g, (_, content) => store(`<strong>${escapeHtml(content)}</strong>`));
+
+  let html = escapeHtml(text);
+  replacements.forEach(([token, replacement]) => {
+    html = html.replaceAll(token, replacement);
+  });
+  return html;
+}
+
+function splitTableRow(line) {
+  return line
+    .trim()
+    .replace(/^\|/, "")
+    .replace(/\|$/, "")
+    .split("|")
+    .map((cell) => cell.trim());
+}
+
+function isTableDivider(line) {
+  return /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
+}
+
+function isBlockStart(line, nextLine = "") {
+  return (
+    /^#{1,6}\s+/.test(line) ||
+    /^```/.test(line) ||
+    /^>\s?/.test(line) ||
+    /^[-*]\s+/.test(line) ||
+    /^\d+\.\s+/.test(line) ||
+    (line.includes("|") && isTableDivider(nextLine))
+  );
+}
+
+function renderMarkdown(markdown) {
+  const lines = String(markdown || "").replace(/\r\n/g, "\n").split("\n");
+  const html = [];
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    const nextLine = lines[index + 1] || "";
+
+    if (!line.trim()) continue;
+
+    const fence = line.match(/^```(\w+)?/);
+    if (fence) {
+      const codeLines = [];
+      index += 1;
+      while (index < lines.length && !/^```/.test(lines[index])) {
+        codeLines.push(lines[index]);
+        index += 1;
+      }
+      const language = fence[1] ? ` data-language="${escapeHtml(fence[1])}"` : "";
+      html.push(`<pre${language}><code>${escapeHtml(codeLines.join("\n"))}</code></pre>`);
+      continue;
+    }
+
+    const heading = line.match(/^(#{1,6})\s+(.+)$/);
+    if (heading) {
+      const level = heading[1].length;
+      html.push(`<h${level}>${renderInlineMarkdown(heading[2])}</h${level}>`);
+      continue;
+    }
+
+    if (line.includes("|") && isTableDivider(nextLine)) {
+      const headers = splitTableRow(line);
+      const rows = [];
+      index += 2;
+      while (index < lines.length && lines[index].includes("|") && lines[index].trim()) {
+        rows.push(splitTableRow(lines[index]));
+        index += 1;
+      }
+      index -= 1;
+      html.push(`<div class="table-wrap"><table><thead><tr>${headers.map((cell) => `<th>${renderInlineMarkdown(cell)}</th>`).join("")}</tr></thead><tbody>${rows
+        .map((row) => `<tr>${headers.map((_, cellIndex) => `<td>${renderInlineMarkdown(row[cellIndex] || "")}</td>`).join("")}</tr>`)
+        .join("")}</tbody></table></div>`);
+      continue;
+    }
+
+    if (/^>\s?/.test(line)) {
+      const quoteLines = [];
+      while (index < lines.length && /^>\s?/.test(lines[index])) {
+        quoteLines.push(lines[index].replace(/^>\s?/, ""));
+        index += 1;
+      }
+      index -= 1;
+      html.push(`<blockquote>${renderMarkdown(quoteLines.join("\n"))}</blockquote>`);
+      continue;
+    }
+
+    if (/^[-*]\s+/.test(line)) {
+      const items = [];
+      while (index < lines.length && /^[-*]\s+/.test(lines[index])) {
+        items.push(lines[index].replace(/^[-*]\s+/, ""));
+        index += 1;
+      }
+      index -= 1;
+      html.push(`<ul>${items.map((item) => `<li>${renderInlineMarkdown(item)}</li>`).join("")}</ul>`);
+      continue;
+    }
+
+    if (/^\d+\.\s+/.test(line)) {
+      const items = [];
+      while (index < lines.length && /^\d+\.\s+/.test(lines[index])) {
+        items.push(lines[index].replace(/^\d+\.\s+/, ""));
+        index += 1;
+      }
+      index -= 1;
+      html.push(`<ol>${items.map((item) => `<li>${renderInlineMarkdown(item)}</li>`).join("")}</ol>`);
+      continue;
+    }
+
+    const paragraph = [line];
+    while (index + 1 < lines.length && lines[index + 1].trim() && !isBlockStart(lines[index + 1], lines[index + 2] || "")) {
+      paragraph.push(lines[index + 1]);
+      index += 1;
+    }
+    html.push(`<p>${renderInlineMarkdown(paragraph.join(" "))}</p>`);
+  }
+
+  return html.join("");
+}
+
+function updatePreview() {
+  const body = form.elements.body.value.trim();
+  markdownPreview.innerHTML = body ? renderMarkdown(body) : '<p class="studio-empty">开始输入 Markdown 后，这里会实时显示预览。</p>';
+}
+
+function setEditorMode(mode) {
+  studioCompose.dataset.mode = mode;
+  editorModeButtons.forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.editorMode === mode));
+  });
+  if (mode !== "edit") updatePreview();
+}
+
 function localDateValue(date = new Date()) {
   const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
   return local.toISOString().slice(0, 10);
@@ -149,6 +312,7 @@ function resetForm() {
   form.elements.status.value = "published";
   deletePostButton.hidden = true;
   feedbackPanel.hidden = true;
+  updatePreview();
   document.querySelectorAll(".studio-post-item").forEach((item) => item.removeAttribute("aria-current"));
 }
 
@@ -240,6 +404,7 @@ async function loadPost(slug) {
   form.elements.status.value = post.status || "published";
   form.elements.body.value = post.body || "";
   deletePostButton.hidden = protectedSlugs.has(post.slug);
+  updatePreview();
 
   document.querySelectorAll(".studio-post-item").forEach((item) => {
     item.toggleAttribute("aria-current", item.dataset.slug === slug);
@@ -308,6 +473,61 @@ function insertAtCursor(textarea, text) {
   textarea.focus();
   textarea.selectionStart = start + insertion.length;
   textarea.selectionEnd = start + insertion.length;
+  updatePreview();
+}
+
+function replaceSelection(textarea, text, selectionStart = text.length, selectionEnd = text.length) {
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  textarea.value = `${textarea.value.slice(0, start)}${text}${textarea.value.slice(end)}`;
+  textarea.focus();
+  textarea.selectionStart = start + selectionStart;
+  textarea.selectionEnd = start + selectionEnd;
+  updatePreview();
+}
+
+function wrapSelection(textarea, prefix, suffix, placeholder) {
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const selected = textarea.value.slice(start, end) || placeholder;
+  replaceSelection(textarea, `${prefix}${selected}${suffix}`, prefix.length, prefix.length + selected.length);
+}
+
+function prefixSelectedLines(textarea, prefix, placeholder) {
+  const selected = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd);
+  const content = selected || placeholder;
+  replaceSelection(textarea, content.split("\n").map((line) => `${prefix}${line}`).join("\n"));
+}
+
+function runToolbarCommand(command) {
+  const textarea = form.elements.body;
+  const selected = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd);
+
+  if (command === "heading") {
+    prefixSelectedLines(textarea, "## ", selected || "小标题");
+    return;
+  }
+  if (command === "bold") {
+    wrapSelection(textarea, "**", "**", "加粗文字");
+    return;
+  }
+  if (command === "quote") {
+    prefixSelectedLines(textarea, "> ", selected || "引用文字");
+    return;
+  }
+  if (command === "link") {
+    const label = selected || "链接文字";
+    replaceSelection(textarea, `[${label}](https://example.com)`, 1, 1 + label.length);
+    return;
+  }
+  if (command === "table") {
+    insertAtCursor(textarea, "| 项目 | 说明 |\n| --- | --- |\n| 示例 | 内容 |");
+    return;
+  }
+  if (command === "code") {
+    const content = selected || "console.log('hello');";
+    replaceSelection(textarea, `\`\`\`js\n${content}\n\`\`\``, 6, 6 + content.length);
+  }
 }
 
 function readFileAsDataUrl(file) {
@@ -390,6 +610,15 @@ newTagInput.addEventListener("keydown", (event) => {
 });
 form.addEventListener("submit", savePost);
 deletePostButton.addEventListener("click", deletePost);
+form.elements.body.addEventListener("input", updatePreview);
+markdownToolbar.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-md-command]");
+  if (!button) return;
+  runToolbarCommand(button.dataset.mdCommand);
+});
+editorModeButtons.forEach((button) => {
+  button.addEventListener("click", () => setEditorMode(button.dataset.editorMode));
+});
 insertImageButton.addEventListener("click", () => imageFileInput.click());
 imageFileInput.addEventListener("change", uploadImage);
 
@@ -397,3 +626,4 @@ workerUrlInput.value = sessionStorage.getItem("workerUrl") || workerUrlInput.val
 passwordInput.value = sessionStorage.getItem("adminPassword") || "";
 renderTagPicker();
 resetForm();
+setEditorMode("edit");

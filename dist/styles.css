@@ -1023,7 +1023,7 @@ h3 {
 }
 
 .studio-shell {
-  width: min(920px, 100%);
+  width: min(1280px, 100%);
   margin: 0 auto;
   padding: 48px 24px 72px;
 }
@@ -1056,7 +1056,7 @@ h3 {
 
 .studio-workspace {
   display: grid;
-  grid-template-columns: minmax(240px, 0.42fr) minmax(0, 1fr);
+  grid-template-columns: minmax(260px, 0.34fr) minmax(0, 1fr);
   gap: 18px;
   align-items: start;
 }
@@ -1341,7 +1341,191 @@ h3 {
   cursor: pointer;
 }
 
+.studio-toolbar .button:hover {
+  border-color: color-mix(in srgb, var(--primary) 38%, var(--line));
+  background: color-mix(in srgb, var(--primary) 8%, var(--bg));
+}
+
+.studio-view-toggle {
+  display: inline-flex;
+  width: fit-content;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  padding: 3px;
+}
+
+.studio-view-toggle .button {
+  min-height: 34px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.studio-view-toggle .button[aria-pressed="true"] {
+  background: var(--primary);
+  color: #fff;
+}
+
+.studio-compose {
+  display: grid;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.studio-compose[data-mode="split"] {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.studio-compose[data-mode="edit"] .studio-preview-pane,
+.studio-compose[data-mode="preview"] .studio-editor-pane {
+  display: none;
+}
+
+.studio-editor-pane,
+.studio-preview-pane {
+  min-width: 0;
+}
+
+.studio-editor-pane {
+  display: grid;
+  gap: 8px;
+}
+
+.studio-preview-pane {
+  display: grid;
+  grid-template-rows: auto minmax(520px, 1fr);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.studio-editor-pane > span,
+.studio-preview-head {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.studio-preview-head {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  border-bottom: 1px solid var(--line);
+  padding: 8px 12px;
+  background: color-mix(in srgb, var(--soft) 78%, var(--bg));
+}
+
+.studio-preview {
+  overflow: auto;
+  padding: 18px;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+.studio-preview > :first-child {
+  margin-top: 0;
+}
+
+.studio-preview > :last-child {
+  margin-bottom: 0;
+}
+
+.studio-preview h1,
+.studio-preview h2,
+.studio-preview h3,
+.studio-preview h4,
+.studio-preview h5,
+.studio-preview h6 {
+  margin: 1.2em 0 0.55em;
+  line-height: 1.25;
+}
+
+.studio-preview h1 {
+  font-size: 30px;
+}
+
+.studio-preview h2 {
+  font-size: 24px;
+}
+
+.studio-preview h3 {
+  font-size: 20px;
+}
+
+.studio-preview blockquote {
+  border-left: 4px solid var(--primary);
+  margin: 18px 0;
+  background: color-mix(in srgb, var(--primary) 7%, var(--bg));
+  padding: 10px 14px;
+  color: var(--muted);
+}
+
+.studio-preview pre {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--soft) 82%, #000 4%);
+  padding: 14px;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.studio-preview code {
+  border-radius: 6px;
+  background: var(--soft);
+  padding: 2px 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.92em;
+}
+
+.studio-preview pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.studio-preview img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin: 16px 0;
+}
+
+.studio-preview .table-wrap {
+  overflow-x: auto;
+  margin: 18px 0;
+}
+
+.studio-preview table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 420px;
+  font-size: 15px;
+}
+
+.studio-preview th,
+.studio-preview td {
+  border: 1px solid var(--line);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.studio-preview th {
+  background: var(--soft);
+  font-weight: 850;
+}
+
 .studio-body {
+  min-height: 620px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
@@ -1432,8 +1616,17 @@ h3 {
   .studio-header,
   .studio-workspace,
   .studio-grid,
+  .studio-compose[data-mode="split"],
   .studio-feedback {
     grid-template-columns: 1fr;
+  }
+
+  .studio-body {
+    min-height: 360px;
+  }
+
+  .studio-preview-pane {
+    grid-template-rows: auto minmax(300px, 1fr);
   }
 
   .studio-feedback {
