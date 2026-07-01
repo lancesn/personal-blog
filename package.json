@@ -9,5 +9,8 @@
     "worker:deploy": "cd cloudflare-worker && npx wrangler deploy",
     "worker:secret:github": "cd cloudflare-worker && npx wrangler secret put GITHUB_TOKEN",
     "worker:secret:password": "cd cloudflare-worker && npx wrangler secret put ADMIN_PASSWORD"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.3"
   }
 }
