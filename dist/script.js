@@ -175,114 +175,44 @@ if (article) {
   fetch(`/api/views/${encodeURIComponent(slug)}`, { method: "POST" }).catch(() => {});
 }
 
-const shareBar = document.querySelector(".share-bar");
+const shareBar = document.querySelector(".article-share-row");
 if (shareBar) {
   const title = article?.dataset.postTitle || document.title;
   const description = article?.dataset.postDescription || "";
   const url = article?.dataset.postUrl || window.location.href;
-  const toggleButton = shareBar.querySelector("[data-share-toggle]");
-  const shareMenu = shareBar.querySelector("[data-share-menu]");
   const copyButton = shareBar.querySelector("[data-share-copy]");
-  const wechatButton = shareBar.querySelector("[data-share-wechat]");
   const xLink = shareBar.querySelector("[data-share-x]");
-  const facebookLink = shareBar.querySelector("[data-share-facebook]");
-  const whatsappLink = shareBar.querySelector("[data-share-whatsapp]");
   const weiboLink = shareBar.querySelector("[data-share-weibo]");
-  const mailLink = shareBar.querySelector("[data-share-mail]");
   const hint = shareBar.querySelector("[data-share-hint]");
-  const previewDescription = shareBar.querySelector("[data-share-preview-description]");
-  const previewUrl = shareBar.querySelector("[data-share-preview-url]");
 
   const shareSummary = description ? `${title}\n\n${description}` : title;
   const shareUrl = new URL(url, window.location.href).href;
   const shareText = `${shareSummary}\n\n阅读全文：${shareUrl}`;
   const copyText = shareUrl;
 
-  if (previewDescription) previewDescription.textContent = description;
-  if (previewUrl) previewUrl.textContent = "";
-  xLink.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
-  facebookLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-  whatsappLink.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-  weiboLink.href = `https://service.weibo.com/share/share.php?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareSummary)}&searchPic=false`;
-  mailLink.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(shareText)}`;
+  if (xLink) xLink.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+  if (weiboLink) {
+    weiboLink.href = `https://service.weibo.com/share/share.php?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareSummary)}&searchPic=false`;
+  }
 
-  [xLink, facebookLink, whatsappLink, weiboLink].forEach((link) => {
+  [xLink, weiboLink].filter(Boolean).forEach((link) => {
     link.target = "_blank";
     link.rel = "noopener noreferrer";
   });
 
-  function setMenu(open) {
-    shareMenu.hidden = !open;
-    toggleButton.setAttribute("aria-expanded", String(open));
-  }
-
-  const canUseNativeShare = () => {
-    if (!navigator.share) return false;
-    if (!navigator.canShare) return true;
-    return navigator.canShare({ title, text: description || title, url: shareUrl });
-  };
-
-  async function nativeShare() {
-    await navigator.share({ title, text: description || title, url: shareUrl });
-  }
-
   async function copyUrl(successText = "已复制文章链接") {
     try {
       await navigator.clipboard.writeText(copyText);
-      hint.textContent = successText;
+      if (hint) hint.textContent = successText;
       window.setTimeout(() => {
-        hint.textContent = "";
+        if (hint) hint.textContent = "";
       }, 1600);
     } catch {
-      hint.textContent = "复制失败，请手动复制文章名和地址栏链接。";
+      if (hint) hint.textContent = "复制失败，请手动复制地址栏链接。";
     }
   }
 
-  toggleButton.addEventListener("click", () => {
-    setMenu(shareMenu.hidden);
-  });
-
-  copyButton.addEventListener("click", () => {
+  copyButton?.addEventListener("click", () => {
     copyUrl();
-  });
-
-  wechatButton.addEventListener("click", async () => {
-    if (canUseNativeShare()) {
-      try {
-        await nativeShare();
-        hint.textContent = "";
-        return;
-      } catch (error) {
-        if (error?.name === "AbortError") return;
-      }
-    }
-
-    copyUrl("文章链接已复制，请打开微信粘贴分享。");
-  });
-
-  facebookLink.addEventListener("click", async (event) => {
-    if (!canUseNativeShare()) return;
-    event.preventDefault();
-
-    try {
-      await nativeShare();
-      hint.textContent = "";
-    } catch (error) {
-      if (error?.name === "AbortError") return;
-      window.location.href = facebookLink.href;
-    }
-  });
-
-  mailLink.addEventListener("click", (event) => {
-    event.preventDefault();
-    window.location.href = mailLink.href;
-  });
-
-  document.addEventListener("click", (event) => {
-    if (!shareBar.contains(event.target)) setMenu(false);
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") setMenu(false);
   });
 }

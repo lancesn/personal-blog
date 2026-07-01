@@ -6,7 +6,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260701-native-share";
+const assetVersion = "20260701-layout-polish";
 const blogPageSize = 30;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.png");
 
@@ -678,24 +678,23 @@ function renderAbout() {
     body: `${siteNav("about")}
 
     <main class="site-shell">
-      <section class="hero section">
+      <section class="hero section about-hero">
         ${pageAvatar()}
         <h1>关于我</h1>
+        <p>这里是一处慢一点的写作空间，记录日常、修行、读书和搭建个人站时留下的细节。</p>
       </section>
 
-      <section class="split section">
-        <div>
-          <h2>关于我</h2>
-          <p>
-            月在空庭，不为谁明。人来人去，光自如如。
-          </p>
+      <section class="about-section section">
+        <div class="about-copy">
+          <p>我喜欢把复杂的事放慢一点看。写禅宗公案、古文散文，也写技术折腾，并不是为了把它们分成两类：一类向内，一类向外。更多时候，它们都在处理同一件事：人在当下如何安顿，工具如何不反过来牵着人走。</p>
+          <p>这个博客不追热点，也不急着给结论。文章常从一则公案、一段日常、一次部署错误开始，慢慢展开到可被反复咀嚼的地方。若有一点取向，大概是清淡、克制、可回看。</p>
         </div>
-        <div>
-          <h2>在做的事</h2>
+        <div class="about-side">
+          <h2>近况</h2>
           <ol class="timeline">
-            <li><span>2026 - 至今</span><strong>写作 · 分享</strong></li>
-            <li><span>2025 - 2026</span><strong>个人站</strong></li>
-            <li><span>过往</span><strong>人生如过客</strong></li>
+            <li><span>2026</span><strong>写作、修订个人博客、整理文章系统</strong></li>
+            <li><span>日常</span><strong>读书、静坐、记录一些不必太快发表的念头</strong></li>
+            <li><span>技术</span><strong>维护静态站、在线后台和自动发布流程</strong></li>
           </ol>
         </div>
       </section>
@@ -801,27 +800,15 @@ function renderPost(post) {
 
     <main class="article" data-post-slug="${escapeHtml(post.slug)}" data-post-title="${escapeHtml(post.title)}" data-post-description="${escapeHtml(postShareExcerpt)}" data-post-url="${escapeHtml(absoluteUrl(`posts/${post.slug}.html`))}">
       <nav class="article-nav"><a href="../blog.html">← 返回博客</a></nav>
-      <aside class="share-bar" aria-label="分享文章">
-        <button class="share-trigger" type="button" data-share-toggle aria-expanded="false">分享</button>
-        <div class="share-menu" data-share-menu hidden>
-          <div class="share-preview">
-            <strong data-share-preview-title>${escapeHtml(post.title)}</strong>
-            <span data-share-preview-description>${escapeHtml(postShareExcerpt)}</span>
-            <small data-share-preview-url></small>
-          </div>
-          <a data-share-x href="#">X</a>
-          <a data-share-mail href="#">Email</a>
-          <a data-share-weibo href="#">Weibo</a>
-          <button type="button" data-share-wechat>WeChat</button>
-          <a data-share-whatsapp href="#">WhatsApp</a>
-          <a data-share-facebook href="#">Facebook</a>
-          <button type="button" data-share-copy>复制链接</button>
-          <p data-share-hint></p>
-        </div>
-      </aside>
       <h1>${escapeHtml(post.title)}</h1>
       <p class="article-meta">${post.date} · ${escapeHtml(post.readingTime || "1 分钟阅读")}</p>
       ${renderTagLinks(post.tags, "..")}
+      <div class="article-share-row" aria-label="分享文章">
+        <button class="share-icon-button" type="button" data-share-copy aria-label="复制链接" title="复制链接">⎘</button>
+        <a class="share-icon-button" data-share-weibo href="#" aria-label="分享到微博" title="分享到微博">微</a>
+        <a class="share-icon-button" data-share-x href="#" aria-label="分享到 X" title="分享到 X">X</a>
+        <p data-share-hint></p>
+      </div>
       ${tableOfContents}
       <article class="article-content">
 ${content}
