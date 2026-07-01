@@ -179,6 +179,10 @@ a {
   height: 148px;
 }
 
+.home-hero h1 {
+  color: #ffffff;
+}
+
 .home-hero p,
 .home-hero .social-row a {
   color: rgba(255, 255, 255, 0.86);
@@ -508,6 +512,13 @@ h3 {
 
 .post-card .post-excerpt-link:hover {
   color: var(--text);
+}
+
+.post-card .post-excerpt-link::first-letter {
+  margin-right: 1px;
+  color: var(--primary-strong);
+  font-size: 1.5em;
+  font-weight: 800;
 }
 
 .post-card a {

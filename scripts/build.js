@@ -210,8 +210,11 @@ function renderTagLinks(tags, prefix = ".") {
     .join("")}</div>`;
 }
 
-function renderPostCard(post) {
-  return `<article class="post-card" data-search-card data-title="${escapeHtml(post.title)}" data-tags="${escapeHtml(post.tags.join(" "))}" data-body="${escapeHtml(post.plainText)}">
+function renderPostCard(post, { forSearch = false } = {}) {
+  const searchAttrs = forSearch
+    ? ` data-search-card data-title="${escapeHtml(post.title)}" data-tags="${escapeHtml(post.tags.join(" "))}" data-body="${escapeHtml(post.plainText)}"`
+    : "";
+  return `<article class="post-card"${searchAttrs}>
             <time datetime="${post.date}">${formatDate(post.date)}</time>
             <h3><a class="post-title-link" href="./posts/${post.slug}.html">${escapeHtml(post.title)}</a></h3>
             <a class="post-excerpt-link" href="./posts/${post.slug}.html">${escapeHtml(post.description)}</a>
@@ -390,52 +393,30 @@ function pageAvatar(src = "./uploads/lance-profile.jpg", alt = "Lance Shen") {
 
 const homeHeroImages = [
   "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1526481280693-3bfa7568e0f3?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1470770903676-69b98201ea1c?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1f?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1600&q=80",
-  "https://images.unsplash.com/photo-1517760444937-f6397edcbbcd?auto=format&fit=crop&w=1600&q=80"
+  "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1600&q=80"
 ];
 
 function renderHomeHeroImages() {
   return homeHeroImages
-    .map((src, index) => `          <img${index === 0 ? ' class="is-active"' : ""} src="${src}" alt="" />`)
+    .map((src, index) => {
+      const attrs =
+        index === 0
+          ? ' class="is-active" loading="eager" fetchpriority="high"'
+          : ' loading="lazy"';
+      return `          <img${attrs} src="${src}" alt="" decoding="async" />`;
+    })
     .join("\n");
 }
 
@@ -447,7 +428,7 @@ function randomHomeShareImage() {
 function renderHome(posts) {
   const latestPosts = posts
     .slice(0, 10)
-    .map(renderPostCard)
+    .map((post) => renderPostCard(post))
     .join("\n          ");
 
   return pageShell({
@@ -465,6 +446,8 @@ ${renderHomeHeroImages()}
         </div>
         <div class="hero-content">
           ${profileAvatar()}
+          <h1>蓬窗灯影录</h1>
+          <p>静处观世，灯下记心。</p>
         </div>
       </section>
 
@@ -514,7 +497,7 @@ function renderBlog(posts, currentPage = 1) {
   const totalPages = Math.max(1, Math.ceil(posts.length / blogPageSize));
   const pagePosts = posts.slice((currentPage - 1) * blogPageSize, currentPage * blogPageSize);
   const postCards = pagePosts
-    .map(renderPostCard)
+    .map((post) => renderPostCard(post))
     .join("\n          ");
   const pageTitle = currentPage === 1 ? "博客" : `博客 - 第 ${currentPage} 页`;
   const prefix = currentPage === 1 ? "." : "../..";
@@ -564,7 +547,7 @@ ${siteFooter()}`
 }
 
 function renderSearch(posts) {
-  const postCards = posts.map(renderPostCard).join("\n          ");
+  const postCards = posts.map((post) => renderPostCard(post, { forSearch: true })).join("\n          ");
   const tags = collectTags(posts);
   const tagItems = tags
     .map(([tag, tagPosts]) => `<a class="tag-index-item search-tag-item" href="./tags/${slugify(tag)}.html">${escapeHtml(tag)}<span>${tagPosts.length}</span></a>`)
@@ -661,7 +644,7 @@ function renderTagPage(tag, posts) {
 
       <section class="section">
         <div class="post-list">
-          ${posts.map(renderPostCard).join("\n          ").replaceAll('href="./posts/', 'href="../posts/').replaceAll('href="./tags/', 'href="../tags/')}
+          ${posts.map((post) => renderPostCard(post)).join("\n          ").replaceAll('href="./posts/', 'href="../posts/').replaceAll('href="./tags/', 'href="../tags/')}
         </div>
       </section>
     </main>
@@ -899,8 +882,39 @@ ${items}
 `;
 }
 
+function renderRobots() {
+  return `User-agent: *
+Allow: /
+
+Sitemap: ${absoluteUrl("sitemap.xml")}
+`;
+}
+
+function renderSitemap(posts) {
+  const staticPages = ["index.html", "blog.html", "about.html", "archive.html", "search.html", "tags.html"];
+  const tagPages = collectTags(posts).map(([tag]) => `tags/${slugify(tag)}.html`);
+
+  const staticEntries = [...staticPages, ...tagPages].map(
+    (url) => `  <url>
+    <loc>${escapeXml(absoluteUrl(url))}</loc>
+  </url>`
+  );
+  const postEntries = posts.map(
+    (post) => `  <url>
+    <loc>${escapeXml(absoluteUrl(`posts/${post.slug}.html`))}</loc>
+    <lastmod>${post.date}</lastmod>
+  </url>`
+  );
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${[...staticEntries, ...postEntries].join("\n")}
+</urlset>
+`;
+}
+
 async function syncDistToRoot() {
-  const topLevelFiles = ["index.html", "blog.html", "about.html", "archive.html", "search.html", "tags.html", "rss.xml", "styles.css", "script.js", ".nojekyll"];
+  const topLevelFiles = ["index.html", "blog.html", "about.html", "archive.html", "search.html", "tags.html", "rss.xml", "sitemap.xml", "robots.txt", "styles.css", "script.js", ".nojekyll"];
   for (const file of topLevelFiles) {
     await copyFile(path.join(distDir, file), path.join(root, file));
   }
@@ -941,6 +955,8 @@ async function build() {
   await writeFile(path.join(distDir, "search.html"), renderSearch(publishedPosts));
   await writeFile(path.join(distDir, "tags.html"), renderTagsIndex(publishedPosts));
   await writeFile(path.join(distDir, "rss.xml"), renderRss(publishedPosts));
+  await writeFile(path.join(distDir, "sitemap.xml"), renderSitemap(publishedPosts));
+  await writeFile(path.join(distDir, "robots.txt"), renderRobots());
   for (const [tag, tagPosts] of collectTags(publishedPosts)) {
     const tagSlug = slugify(tag);
     await writeFile(path.join(distDir, "tags", `${tagSlug}.html`), renderTagPage(tag, tagPosts));
