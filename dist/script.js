@@ -216,6 +216,16 @@ if (shareBar) {
     toggleButton.setAttribute("aria-expanded", String(open));
   }
 
+  const canUseNativeShare = () => {
+    if (!navigator.share) return false;
+    if (!navigator.canShare) return true;
+    return navigator.canShare({ title, text: description || title, url: shareUrl });
+  };
+
+  async function nativeShare() {
+    await navigator.share({ title, text: description || title, url: shareUrl });
+  }
+
   async function copyUrl(successText = "已复制文章链接") {
     try {
       await navigator.clipboard.writeText(copyText);
@@ -237,9 +247,9 @@ if (shareBar) {
   });
 
   wechatButton.addEventListener("click", async () => {
-    if (navigator.share) {
+    if (canUseNativeShare()) {
       try {
-        await navigator.share({ title, text: description || title, url: shareUrl });
+        await nativeShare();
         hint.textContent = "";
         return;
       } catch (error) {
@@ -248,6 +258,19 @@ if (shareBar) {
     }
 
     copyUrl("文章链接已复制，请打开微信粘贴分享。");
+  });
+
+  facebookLink.addEventListener("click", async (event) => {
+    if (!canUseNativeShare()) return;
+    event.preventDefault();
+
+    try {
+      await nativeShare();
+      hint.textContent = "";
+    } catch (error) {
+      if (error?.name === "AbortError") return;
+      window.location.href = facebookLink.href;
+    }
   });
 
   mailLink.addEventListener("click", (event) => {
