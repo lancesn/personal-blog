@@ -6,7 +6,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260701-about-contact-icons";
+const assetVersion = "20260701-contact-icons-large";
 const blogPageSize = 30;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.png");
 
