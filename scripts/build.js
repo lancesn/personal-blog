@@ -8,6 +8,7 @@ const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
 const assetVersion = "20260701-share-meta";
 const blogPageSize = 30;
+const defaultShareImage = absoluteUrl("uploads/blog-avatar.png");
 
 function escapeHtml(value) {
   return value
@@ -294,10 +295,16 @@ function markdownToHtml(markdown) {
 
 function pageShell({ title, description, body, script = "", canonical = "", image = "", ogType = "website" }) {
   const pageUrl = canonical || absoluteUrl("");
-  const imageMeta = image
-    ? `    <meta property="og:image" content="${escapeHtml(image)}" />
+  const shareImage = image || defaultShareImage;
+  const imageMeta = shareImage
+    ? `    <meta property="og:image" content="${escapeHtml(shareImage)}" />
+    <meta property="og:image:secure_url" content="${escapeHtml(shareImage)}" />
+    <meta property="og:image:alt" content="${escapeHtml(title)}" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="${escapeHtml(image)}" />`
+    <meta name="twitter:image" content="${escapeHtml(shareImage)}" />
+    <meta itemprop="name" content="${escapeHtml(title)}" />
+    <meta itemprop="description" content="${escapeHtml(description)}" />
+    <meta itemprop="image" content="${escapeHtml(shareImage)}" />`
     : `    <meta name="twitter:card" content="summary" />`;
 
   return `<!doctype html>
@@ -312,6 +319,7 @@ function pageShell({ title, description, body, script = "", canonical = "", imag
     <link rel="apple-touch-icon" href="/uploads/site-icon.png" />
     <link rel="alternate" type="application/rss+xml" title="我的博客 RSS" href="${escapeHtml(absoluteUrl("rss.xml"))}" />
     <meta property="og:type" content="${escapeHtml(ogType)}" />
+    <meta property="og:site_name" content="蓬窗灯影录" />
     <meta property="og:title" content="${escapeHtml(title)}" />
     <meta property="og:description" content="${escapeHtml(description)}" />
     <meta property="og:url" content="${escapeHtml(pageUrl)}" />
@@ -422,7 +430,7 @@ function renderHome(posts) {
     title: "蓬窗灯影录-博客",
     description: "静处观世，灯下记心。",
     canonical: absoluteUrl("index.html"),
-    image: randomHomeShareImage(),
+    image: defaultShareImage,
     script: scriptTag("."),
     body: `${siteNav("home")}
 
