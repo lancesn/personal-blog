@@ -254,3 +254,18 @@ if (shareBar) {
     }
   });
 }
+
+document.addEventListener("dragstart", (event) => {
+  if (event.target.closest("img")) event.preventDefault();
+});
+
+document.addEventListener("contextmenu", (event) => {
+  if (event.target.closest("img")) event.preventDefault();
+});
+
+const protectedContent = document.querySelector(".article-content:not(.studio-preview)");
+if (protectedContent) {
+  protectedContent.addEventListener("copy", (event) => event.preventDefault());
+  protectedContent.addEventListener("contextmenu", (event) => event.preventDefault());
+  protectedContent.addEventListener("selectstart", (event) => event.preventDefault());
+}
