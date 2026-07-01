@@ -273,15 +273,22 @@ async function getPost(env, slug) {
   return parseMarkdown(decodeBase64(detail.content), `${slug}.md`, detail.sha, { includeBody: true });
 }
 
-function slugify(value) {
-  const slug = String(value)
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+const pinyinInitials = {
+  一: "y", 榻: "t", 松: "s", 声: "s", 从: "c", 本: "b", 地: "d", 博: "b", 客: "k", 到: "d", 在: "z", 线: "x", 后: "h", 台: "t", 完: "w", 全: "q", 手: "s", 搓: "c", 纯: "c", 静: "j", 态: "t", 部: "b", 署: "s", 记: "j", 录: "l",
+  千: "q", 山: "s", 我: "w", 独: "d", 行: "x", 尘: "c", 劳: "l", 既: "j", 是: "s", 解: "j", 脱: "t", 门: "m", 路: "l", 听: "t", 雨: "y", 嵩: "s", 普: "p", 寂: "j", 大: "d", 照: "z", 禅: "c", 师: "s", 生: "s", 平: "p", 略: "l", 考: "k",
+  柱: "z", 杖: "z", 之: "z", 外: "w", 沩: "w", 仰: "y", 炉: "l", 头: "t", 火: "h", 看: "k", 云: "y", 苔: "t", 痕: "h", 入: "r", 梦: "m", 裂: "l", 破: "p", 古: "g", 今: "j", 道: "d", 不: "b", 私: "s", 藏: "c", 席: "x", 久: "j", 居: "j",
+  技: "j", 术: "s", 散: "s", 文: "w", 宗: "z", 随: "s", 笔: "b", 日: "r", 常: "c", 正: "z", 念: "n"
+};
 
-  return slug || `post-${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14)}`;
+function slugify(value) {
+  const slug = [...String(value).normalize("NFKD").toLowerCase()]
+    .map((char) => {
+      if (/[a-z0-9]/.test(char)) return char;
+      return pinyinInitials[char] || "";
+    })
+    .join("");
+
+  return slug || `post${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14)}`;
 }
 
 function serializePost(payload, previous = {}) {

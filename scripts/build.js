@@ -99,6 +99,7 @@ function parseMarkdownFile(source, fileName) {
     description: data.description || excerptFromMarkdown(match[2]),
     publishedAt: data.publishedAt || "",
     tags: parseListField(data.tags),
+    aliases: parseListField(data.aliases),
     status: data.status || "published",
     sourceSlug: fileName.replace(/\.md$/, ""),
     slug: data.slug || fileName.replace(/\.md$/, ""),
@@ -137,12 +138,21 @@ function inlineMarkdown(text) {
 }
 
 const slugOverrides = {
-  技术: "tech",
-  散文: "prose",
-  禅宗: "zen",
-  随笔: "notes",
-  日常: "daily",
-  正念: "mindfulness"
+  技术: "js",
+  散文: "sw",
+  禅宗: "cz",
+  随笔: "sb",
+  日常: "rc",
+  正念: "zn"
+};
+
+const slugAliases = {
+  技术: ["tech"],
+  散文: ["prose"],
+  禅宗: ["zen"],
+  随笔: ["notes"],
+  日常: ["daily"],
+  正念: ["mindfulness"]
 };
 
 function slugify(value) {
@@ -929,9 +939,10 @@ async function build() {
   for (const [tag, tagPosts] of collectTags(publishedPosts)) {
     const tagSlug = slugify(tag);
     await writeFile(path.join(distDir, "tags", `${tagSlug}.html`), renderTagPage(tag, tagPosts));
-    if (tagSlug !== tag) {
+    for (const alias of [tag, ...(slugAliases[tag] || [])]) {
+      if (alias === tagSlug) continue;
       await writeFile(
-        path.join(distDir, "tags", `${tag}.html`),
+        path.join(distDir, "tags", `${alias}.html`),
         renderRedirectPage({
           title: tag,
           target: `${tagSlug}.html`,
@@ -942,8 +953,9 @@ async function build() {
   }
   for (const post of publishedPosts) {
     await writeFile(path.join(distDir, "posts", `${post.slug}.html`), renderPost(post));
-    if (post.sourceSlug !== post.slug) {
-      await writeFile(path.join(distDir, "posts", `${post.sourceSlug}.html`), renderPostRedirect(post));
+    for (const alias of [post.sourceSlug, ...post.aliases]) {
+      if (alias === post.slug) continue;
+      await writeFile(path.join(distDir, "posts", `${alias}.html`), renderPostRedirect(post));
     }
   }
 
