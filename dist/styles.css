@@ -1127,6 +1127,20 @@ h3 {
   margin-top: 4px;
 }
 
+.studio-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.studio-header-actions .theme-toggle {
+  margin-left: 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
 .studio-header p,
 .studio-help p,
 .studio-actions p {
@@ -1171,6 +1185,11 @@ h3 {
 
 .studio-panel-head h2 {
   font-size: 20px;
+}
+
+.studio-panel-head-actions {
+  display: flex;
+  gap: 8px;
 }
 
 .studio-list-filters {
@@ -1271,6 +1290,19 @@ h3 {
 .studio-empty {
   color: var(--muted);
   font-size: 13px;
+}
+
+.studio-empty {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 20px 12px;
+  text-align: center;
+}
+
+.studio-empty::before {
+  content: "📝";
+  font-size: 26px;
 }
 
 .studio-post-item small {
@@ -1632,12 +1664,37 @@ h3 {
   color: white;
 }
 
+.studio-actions p[data-tone] {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-weight: 750;
+}
+
+.studio-actions p[data-tone="neutral"] {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary-strong);
+}
+
 .studio-actions p[data-tone="success"] {
+  background: color-mix(in srgb, #177245 14%, transparent);
   color: #177245;
 }
 
+.studio-actions p[data-tone="success"]::before {
+  content: "✓";
+}
+
 .studio-actions p[data-tone="error"] {
+  background: color-mix(in srgb, #b42318 14%, transparent);
   color: #b42318;
+}
+
+.studio-actions p[data-tone="error"]::before {
+  content: "⚠";
 }
 
 .studio-help {

@@ -14,7 +14,10 @@
           <h1>博客文章发布后台</h1>
           <p>通过 Cloudflare Worker 发布 Markdown，GitHub Pages 会自动构建上线。</p>
         </div>
-        <a class="button dark" href="../index.html">返回网站</a>
+        <div class="studio-header-actions">
+          <button class="theme-toggle" type="button" aria-label="切换深浅色">☼</button>
+          <a class="button dark" href="../index.html">返回网站</a>
+        </div>
       </section>
 
       <section class="studio-help">
@@ -41,8 +44,12 @@
         <aside class="studio-panel">
           <div class="studio-panel-head">
             <h2>文章列表</h2>
-            <button class="button primary" id="new-post" type="button">新建</button>
+            <div class="studio-panel-head-actions">
+              <button class="button" id="import-post" type="button">导入</button>
+              <button class="button primary" id="new-post" type="button">新建</button>
+            </div>
           </div>
+          <input id="import-file" type="file" accept=".md,.markdown,.txt,.docx" hidden />
           <div class="studio-list-filters">
             <label>
               <span>搜索</span>
@@ -162,6 +169,7 @@
         </form>
       </section>
     </main>
+    <script src="../script.js?v=20260701-admin-editor"></script>
     <script src="./online-admin.js?v=20260701-admin-editor"></script>
   </body>
 </html>
