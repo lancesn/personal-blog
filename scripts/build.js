@@ -1,5 +1,6 @@
 import { copyFile, cp, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
+import sharp from "sharp";
 
 const root = process.cwd();
 const contentDir = path.join(root, "content", "posts");
@@ -8,7 +9,9 @@ const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
 const assetVersion = "20260701-clean-favicon";
 const blogPageSize = 30;
-const defaultShareImage = absoluteUrl("uploads/blog-avatar.png");
+const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
+const maxUploadImageWidth = 1600;
+const rasterImageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp"]);
 
 function escapeHtml(value) {
   return value
@@ -319,7 +322,7 @@ function markdownToHtml(markdown) {
   return { html: html.join("\n"), toc };
 }
 
-function pageShell({ title, description, body, script = "", canonical = "", image = "", ogType = "website" }) {
+function pageShell({ title, description, body, script = "", canonical = "", image = "", ogType = "website", robots = "" }) {
   const pageUrl = canonical || absoluteUrl("");
   const shareImage = image || defaultShareImage;
   const imageMeta = shareImage
@@ -332,6 +335,7 @@ function pageShell({ title, description, body, script = "", canonical = "", imag
     <meta itemprop="description" content="${escapeHtml(description)}" />
     <meta itemprop="image" content="${escapeHtml(shareImage)}" />`
     : `    <meta name="twitter:card" content="summary" />`;
+  const robotsMeta = robots ? `    <meta name="robots" content="${escapeHtml(robots)}" />\n` : "";
 
   return `<!doctype html>
 <html lang="zh-CN">
@@ -340,7 +344,7 @@ function pageShell({ title, description, body, script = "", canonical = "", imag
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="${escapeHtml(description)}" />
     <meta name="theme-color" content="#ffffff" />
-    <link rel="canonical" href="${escapeHtml(pageUrl)}" />
+${robotsMeta}    <link rel="canonical" href="${escapeHtml(pageUrl)}" />
     <link rel="icon" type="image/svg+xml" href="/uploads/site-icon.svg?v=${assetVersion}" />
     <link rel="alternate icon" type="image/png" href="/uploads/site-icon.png" />
     <link rel="apple-touch-icon" href="/uploads/site-icon.png" />
@@ -504,8 +508,8 @@ function renderBlog(posts, currentPage = 1) {
   const pageScript = scriptTag(prefix);
   const nav = currentPage === 1 ? siteNav("blog") : siteNav("blog").replaceAll("./", "../../");
   const avatar = currentPage === 1
-    ? pageAvatar("./uploads/blog-avatar.png", "打开的书与怀表")
-    : pageAvatar("../../uploads/blog-avatar.png", "打开的书与怀表");
+    ? pageAvatar("./uploads/blog-avatar.jpg", "打开的书与怀表")
+    : pageAvatar("../../uploads/blog-avatar.jpg", "打开的书与怀表");
   const cards = currentPage === 1
     ? postCards
     : postCards
@@ -562,7 +566,7 @@ function renderSearch(posts) {
 
     <main class="site-shell">
       <section class="hero section">
-        ${pageAvatar("./uploads/search-avatar.png", "彩色眼睛图案")}
+        ${pageAvatar("./uploads/search-avatar.jpg", "彩色眼睛图案")}
         <h1>搜索</h1>
         <p>按标题、正文和标签查找文章。</p>
       </section>
@@ -653,6 +657,30 @@ ${siteFooter()}`
   }).replace(`href="./styles.css?v=${assetVersion}"`, `href="../styles.css?v=${assetVersion}"`);
 }
 
+function renderNotFound() {
+  return pageShell({
+    title: "页面未找到",
+    description: "这个页面不存在，或者已经被移走了。",
+    canonical: absoluteUrl("404.html"),
+    robots: "noindex",
+    script: scriptTag("."),
+    body: `${siteNav(null)}
+
+    <main class="site-shell">
+      <section class="hero section">
+        <h1>404</h1>
+        <p>这个页面不见了，也许它去看云了。</p>
+        <div class="hero-actions">
+          <a class="button primary" href="./index.html">返回首页</a>
+          <a class="button dark" href="./blog.html">浏览博客</a>
+        </div>
+      </section>
+    </main>
+
+${siteFooter()}`
+  });
+}
+
 function renderAbout() {
   return pageShell({
     title: "关于",
@@ -724,7 +752,7 @@ function renderArchive(posts) {
 
     <main class="site-shell">
       <section class="hero section">
-        ${pageAvatar("./uploads/archive-avatar.png", "湖边木船")}
+        ${pageAvatar("./uploads/archive-avatar.jpg", "湖边木船")}
         <h1>存档</h1>
         <p>按时间整理的全部文章。</p>
       </section>
@@ -923,8 +951,57 @@ ${[...staticEntries, ...postEntries].join("\n")}
 `;
 }
 
+async function optimizeImageFile(srcPath, destPath, extension) {
+  const image = sharp(srcPath);
+  const metadata = await image.metadata();
+  const resized =
+    metadata.width && metadata.width > maxUploadImageWidth
+      ? image.resize({ width: maxUploadImageWidth, withoutEnlargement: true })
+      : image;
+
+  let output;
+  if (extension === ".jpg" || extension === ".jpeg") {
+    output = await resized.jpeg({ quality: 82, mozjpeg: true }).toBuffer();
+  } else if (extension === ".png") {
+    output = await resized.png({ palette: true, quality: 88, compressionLevel: 9 }).toBuffer();
+  } else {
+    output = await resized.webp({ quality: 82 }).toBuffer();
+  }
+
+  await writeFile(destPath, output);
+}
+
+async function copyAndOptimizeUploads() {
+  const destDir = path.join(distDir, "uploads");
+  await mkdir(destDir, { recursive: true });
+
+  const entries = await readdir(uploadsDir, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = path.join(uploadsDir, entry.name);
+    const destPath = path.join(destDir, entry.name);
+
+    if (entry.isDirectory()) {
+      await cp(srcPath, destPath, { recursive: true, force: true });
+      continue;
+    }
+
+    const extension = path.extname(entry.name).toLowerCase();
+    if (!rasterImageExtensions.has(extension)) {
+      await copyFile(srcPath, destPath);
+      continue;
+    }
+
+    try {
+      await optimizeImageFile(srcPath, destPath, extension);
+    } catch (error) {
+      console.warn(`图片压缩失败，改为直接复制：${entry.name}`, error.message);
+      await copyFile(srcPath, destPath);
+    }
+  }
+}
+
 async function syncDistToRoot() {
-  const topLevelFiles = ["index.html", "blog.html", "about.html", "archive.html", "search.html", "tags.html", "rss.xml", "sitemap.xml", "robots.txt", "styles.css", "script.js", ".nojekyll"];
+  const topLevelFiles = ["index.html", "blog.html", "about.html", "archive.html", "search.html", "tags.html", "404.html", "rss.xml", "sitemap.xml", "robots.txt", "styles.css", "script.js", ".nojekyll"];
   for (const file of topLevelFiles) {
     await copyFile(path.join(distDir, file), path.join(root, file));
   }
@@ -964,6 +1041,7 @@ async function build() {
   await writeFile(path.join(distDir, "archive.html"), renderArchive(publishedPosts));
   await writeFile(path.join(distDir, "search.html"), renderSearch(publishedPosts));
   await writeFile(path.join(distDir, "tags.html"), renderTagsIndex(publishedPosts));
+  await writeFile(path.join(distDir, "404.html"), renderNotFound());
   await writeFile(path.join(distDir, "rss.xml"), renderRss(publishedPosts));
   await writeFile(path.join(distDir, "sitemap.xml"), renderSitemap(publishedPosts));
   await writeFile(path.join(distDir, "robots.txt"), renderRobots());
@@ -996,7 +1074,7 @@ async function build() {
   await copyFile(path.join(root, "script.js"), path.join(distDir, "script.js"));
   await cp(path.join(root, "admin-online"), path.join(distDir, "admin-online"), { recursive: true, force: true });
   await mkdir(uploadsDir, { recursive: true });
-  await cp(uploadsDir, path.join(distDir, "uploads"), { recursive: true, force: true });
+  await copyAndOptimizeUploads();
   await writeFile(path.join(distDir, ".nojekyll"), "");
   await syncDistToRoot();
 }
