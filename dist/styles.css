@@ -1008,6 +1008,17 @@ h3 {
   border-radius: 8px;
 }
 
+img {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
+
+.article-content:not(.studio-preview) {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .article-content li + li {
   margin-top: 8px;
 }
