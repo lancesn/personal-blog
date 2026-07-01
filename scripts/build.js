@@ -453,7 +453,7 @@ ${renderHomeHeroImages()}
         </div>
         <div class="hero-content">
           ${profileAvatar()}
-          <h1>蓬窗灯影录</h1>
+          <h1 class="site-title">蓬窗灯影录</h1>
           <p>静处观世，灯下记心。</p>
         </div>
       </section>
