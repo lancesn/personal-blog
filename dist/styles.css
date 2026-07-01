@@ -183,6 +183,11 @@ a {
   color: #ffffff;
 }
 
+.site-title {
+  font-family: "华文新魏", "STXinwei", "新魏体", "方正魏碑简体", "FZWeiBeiJW", var(--font-serif);
+  font-weight: 400;
+}
+
 .home-hero p,
 .home-hero .social-row a {
   color: rgba(255, 255, 255, 0.86);
