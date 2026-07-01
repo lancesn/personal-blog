@@ -194,14 +194,14 @@ if (shareBar) {
   const previewUrl = shareBar.querySelector("[data-share-preview-url]");
 
   const shareSummary = description ? `${title}\n\n${description}` : title;
-  const shareUrl = encodeURI(url);
+  const shareUrl = encodeURI(new URL(url, window.location.href).href);
   const shareText = `${shareSummary}\n\n阅读全文：${shareUrl}`;
-  const copyText = `${title}\n${url}`;
+  const copyText = shareUrl;
 
   if (previewDescription) previewDescription.textContent = description;
   if (previewUrl) previewUrl.textContent = "";
   xLink.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
-  facebookLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareSummary)}`;
+  facebookLink.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
   whatsappLink.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
   weiboLink.href = `https://service.weibo.com/share/share.php?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareSummary)}&searchPic=false`;
   mailLink.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(shareText)}`;
@@ -211,18 +211,12 @@ if (shareBar) {
     link.rel = "noopener noreferrer";
   });
 
-  facebookLink.addEventListener("click", (event) => {
-    if (!window.matchMedia("(max-width: 760px)").matches) return;
-    event.preventDefault();
-    window.location.href = facebookLink.href;
-  });
-
   function setMenu(open) {
     shareMenu.hidden = !open;
     toggleButton.setAttribute("aria-expanded", String(open));
   }
 
-  async function copyUrl(successText = "已复制文章名和链接") {
+  async function copyUrl(successText = "已复制文章链接") {
     try {
       await navigator.clipboard.writeText(copyText);
       hint.textContent = successText;
@@ -243,7 +237,7 @@ if (shareBar) {
   });
 
   wechatButton.addEventListener("click", () => {
-    copyUrl("文章名和链接已复制，请打开微信粘贴分享。");
+    copyUrl("文章链接已复制，请打开微信粘贴分享。");
   });
 
   mailLink.addEventListener("click", (event) => {
