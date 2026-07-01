@@ -774,7 +774,7 @@ function shareIcon(name) {
   return icons[name] || "";
 }
 
-function renderPost(post) {
+function renderPost(post, nextPost) {
   const { html: content, toc } = markdownToHtml(post.body);
   const postShareExcerpt = shareExcerpt(post);
   const tableOfContents =
@@ -786,6 +786,15 @@ function renderPost(post) {
           .join("\n        ")}
       </nav>`
       : "";
+  const nextPostFab = nextPost
+    ? `<a class="next-post-fab" href="./${nextPost.slug}.html" aria-label="下一篇：${escapeHtml(nextPost.title)}">
+        <span class="next-post-fab-text">
+          <span class="next-post-fab-label">下一篇</span>
+          <span class="next-post-fab-title">${escapeHtml(nextPost.title)}</span>
+        </span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </a>`
+    : "";
 
   return pageShell({
     title: post.title,
@@ -815,6 +824,7 @@ function renderPost(post) {
 ${content}
       </article>
       <nav class="article-nav article-nav-bottom"><a href="../blog.html">← 返回博客</a></nav>
+      ${nextPostFab}
     </main>`
   }).replace(`href="./styles.css?v=${assetVersion}"`, `href="../styles.css?v=${assetVersion}"`);
 }
@@ -972,8 +982,10 @@ async function build() {
       );
     }
   }
-  for (const post of publishedPosts) {
-    await writeFile(path.join(distDir, "posts", `${post.slug}.html`), renderPost(post));
+  for (let index = 0; index < publishedPosts.length; index += 1) {
+    const post = publishedPosts[index];
+    const nextPost = publishedPosts[index + 1];
+    await writeFile(path.join(distDir, "posts", `${post.slug}.html`), renderPost(post, nextPost));
     for (const alias of [post.sourceSlug, ...post.aliases]) {
       if (alias === post.slug) continue;
       await writeFile(path.join(distDir, "posts", `${alias}.html`), renderPostRedirect(post));
