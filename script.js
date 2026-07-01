@@ -194,7 +194,7 @@ if (shareBar) {
   const previewUrl = shareBar.querySelector("[data-share-preview-url]");
 
   const shareSummary = description ? `${title}\n\n${description}` : title;
-  const shareUrl = encodeURI(new URL(url, window.location.href).href);
+  const shareUrl = new URL(url, window.location.href).href;
   const shareText = `${shareSummary}\n\n阅读全文：${shareUrl}`;
   const copyText = shareUrl;
 
@@ -236,7 +236,17 @@ if (shareBar) {
     copyUrl();
   });
 
-  wechatButton.addEventListener("click", () => {
+  wechatButton.addEventListener("click", async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text: description || title, url: shareUrl });
+        hint.textContent = "";
+        return;
+      } catch (error) {
+        if (error?.name === "AbortError") return;
+      }
+    }
+
     copyUrl("文章链接已复制，请打开微信粘贴分享。");
   });
 
