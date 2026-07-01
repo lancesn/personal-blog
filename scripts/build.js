@@ -717,8 +717,10 @@ function renderAbout() {
       <section class="section contact-section">
         <h2>联系我</h2>
         <div class="contact-grid">
-          <a class="contact-icon-button contact-email" href="#" data-contact-email data-email-user="shenyvu" data-email-domain="gmail.com" aria-label="Email" title="Email">${shareIcon("mail")}</a>
+          <a class="contact-icon-button contact-email" href="#" data-contact-email data-email-user="lance" data-email-domain="silencegate.com" aria-label="Email" title="Email">${shareIcon("mail")}</a>
           <a class="contact-icon-button contact-whatsapp" href="https://wa.me/14025761272" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" title="WhatsApp">${shareIcon("whatsapp")}</a>
+          <span class="contact-icon-button" aria-label="X" title="X">${shareIcon("x")}</span>
+          <span class="contact-icon-button" aria-label="Facebook" title="Facebook">${shareIcon("facebook")}</span>
         </div>
       </section>
     </main>
