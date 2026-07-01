@@ -100,7 +100,8 @@ function parseMarkdownFile(source, fileName) {
     publishedAt: data.publishedAt || "",
     tags: parseListField(data.tags),
     status: data.status || "published",
-    slug: fileName.replace(/\.md$/, ""),
+    sourceSlug: fileName.replace(/\.md$/, ""),
+    slug: data.slug || fileName.replace(/\.md$/, ""),
     body: match[2].trim(),
     plainText: plainTextFromMarkdown(match[2])
   };
@@ -135,12 +136,24 @@ function inlineMarkdown(text) {
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
 }
 
+const slugOverrides = {
+  技术: "tech",
+  散文: "prose",
+  禅宗: "zen",
+  随笔: "notes",
+  日常: "daily",
+  正念: "mindfulness"
+};
+
 function slugify(value) {
-  return value
+  const text = String(value || "").trim();
+  if (slugOverrides[text]) return slugOverrides[text];
+
+  return text
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
-    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
+    .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "") || "tag";
 }
 
@@ -808,6 +821,42 @@ ${content}
   }).replace(`href="./styles.css?v=${assetVersion}"`, `href="../styles.css?v=${assetVersion}"`);
 }
 
+function renderPostRedirect(post) {
+  const target = `${post.slug}.html`;
+
+  return `<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content="0; url=${escapeHtml(target)}" />
+    <link rel="canonical" href="${escapeHtml(absoluteUrl(`posts/${post.slug}.html`))}" />
+    <title>${escapeHtml(post.title)}</title>
+  </head>
+  <body>
+    <p><a href="${escapeHtml(target)}">正在跳转到 ${escapeHtml(post.title)}</a></p>
+  </body>
+</html>
+`;
+}
+
+function renderRedirectPage({ title, target, canonical }) {
+  return `<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content="0; url=${escapeHtml(target)}" />
+    <link rel="canonical" href="${escapeHtml(canonical)}" />
+    <title>${escapeHtml(title)}</title>
+  </head>
+  <body>
+    <p><a href="${escapeHtml(target)}">正在跳转到 ${escapeHtml(title)}</a></p>
+  </body>
+</html>
+`;
+}
+
 function renderRss(posts) {
   const items = posts
     .slice(0, 20)
@@ -878,10 +927,24 @@ async function build() {
   await writeFile(path.join(distDir, "tags.html"), renderTagsIndex(publishedPosts));
   await writeFile(path.join(distDir, "rss.xml"), renderRss(publishedPosts));
   for (const [tag, tagPosts] of collectTags(publishedPosts)) {
-    await writeFile(path.join(distDir, "tags", `${slugify(tag)}.html`), renderTagPage(tag, tagPosts));
+    const tagSlug = slugify(tag);
+    await writeFile(path.join(distDir, "tags", `${tagSlug}.html`), renderTagPage(tag, tagPosts));
+    if (tagSlug !== tag) {
+      await writeFile(
+        path.join(distDir, "tags", `${tag}.html`),
+        renderRedirectPage({
+          title: tag,
+          target: `${tagSlug}.html`,
+          canonical: absoluteUrl(`tags/${tagSlug}.html`)
+        })
+      );
+    }
   }
   for (const post of publishedPosts) {
     await writeFile(path.join(distDir, "posts", `${post.slug}.html`), renderPost(post));
+    if (post.sourceSlug !== post.slug) {
+      await writeFile(path.join(distDir, "posts", `${post.sourceSlug}.html`), renderPostRedirect(post));
+    }
   }
 
   await copyFile(path.join(root, "styles.css"), path.join(distDir, "styles.css"));

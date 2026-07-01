@@ -32,10 +32,10 @@ function slugify(title) {
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
-    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
+    .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
-  return ascii || `post-${new Date().toISOString().slice(0, 10)}`;
+  return ascii || `post-${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14)}`;
 }
 
 function escapeFrontmatter(value) {
