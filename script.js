@@ -202,6 +202,10 @@ if (tagGraphContainer) {
   let panning = false;
   let moved = false;
   let lastPointer = { x: 0, y: 0 };
+  let pinching = false;
+  let pinchStartDistance = 0;
+  let pinchStartScale = 1;
+  let pinchMidpoint = { x: 0, y: 0 };
 
   function resize(recenter) {
     const rect = tagGraphContainer.getBoundingClientRect();
@@ -357,7 +361,30 @@ if (tagGraphContainer) {
     return { x: point.clientX - rect.left, y: point.clientY - rect.top };
   }
 
+  function touchDistance(touches) {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.hypot(dx, dy);
+  }
+
+  function touchMidpoint(touches) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (touches[0].clientX + touches[1].clientX) / 2 - rect.left,
+      y: (touches[0].clientY + touches[1].clientY) / 2 - rect.top
+    };
+  }
+
   function onPointerDown(event) {
+    if (event.touches && event.touches.length === 2) {
+      dragNode = null;
+      panning = false;
+      pinching = true;
+      pinchStartDistance = touchDistance(event.touches);
+      pinchStartScale = view.scale;
+      pinchMidpoint = touchMidpoint(event.touches);
+      return;
+    }
     const point = pointerPosition(event);
     lastPointer = point;
     moved = false;
@@ -372,6 +399,19 @@ if (tagGraphContainer) {
   }
 
   function onPointerMove(event) {
+    if (pinching && event.touches && event.touches.length === 2) {
+      const distance = touchDistance(event.touches);
+      const midpoint = touchMidpoint(event.touches);
+      const nextScale = Math.min(20, Math.max(0.3, pinchStartScale * (distance / pinchStartDistance)));
+      const worldX = (pinchMidpoint.x - view.x) / view.scale;
+      const worldY = (pinchMidpoint.y - view.y) / view.scale;
+      view.scale = nextScale;
+      view.x = midpoint.x - worldX * nextScale;
+      view.y = midpoint.y - worldY * nextScale;
+      if (settled) render();
+      event.preventDefault();
+      return;
+    }
     if (!dragNode && !panning) return;
     const point = pointerPosition(event);
     const dx = point.x - lastPointer.x;
@@ -390,7 +430,11 @@ if (tagGraphContainer) {
     event.preventDefault();
   }
 
-  function onPointerUp() {
+  function onPointerUp(event) {
+    if (pinching) {
+      if (!event.touches || event.touches.length < 2) pinching = false;
+      return;
+    }
     if (dragNode && !moved) {
       window.location.href = dragNode.url;
     }
