@@ -400,7 +400,7 @@ if (tagGraphContainer) {
     event.preventDefault();
     const point = pointerPosition(event);
     const oldScale = view.scale;
-    const nextScale = Math.min(2.4, Math.max(0.35, oldScale * (event.deltaY > 0 ? 0.9 : 1.1)));
+    const nextScale = Math.min(20, Math.max(0.3, oldScale * (event.deltaY > 0 ? 0.9 : 1.1)));
     const worldX = (point.x - view.x) / oldScale;
     const worldY = (point.y - view.y) / oldScale;
     view.scale = nextScale;
