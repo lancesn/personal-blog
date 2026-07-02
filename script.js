@@ -203,7 +203,7 @@ if (tagGraphContainer) {
   let moved = false;
   let lastPointer = { x: 0, y: 0 };
 
-  function resize() {
+  function resize(recenter) {
     const rect = tagGraphContainer.getBoundingClientRect();
     width = rect.width;
     height = rect.height;
@@ -212,7 +212,7 @@ if (tagGraphContainer) {
     canvas.height = height * dpr;
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
-    if (!view.x && !view.y) {
+    if (recenter || (!view.x && !view.y)) {
       view.x = width / 2;
       view.y = height / 2;
     }
@@ -425,6 +425,32 @@ if (tagGraphContainer) {
   new MutationObserver(() => {
     if (settled) render();
   }).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+
+  const fullscreenButton = tagGraphContainer.querySelector("[data-tag-graph-fullscreen]");
+  if (fullscreenButton) {
+    let isFullscreen = false;
+
+    function setFullscreen(next) {
+      isFullscreen = next;
+      tagGraphContainer.classList.toggle("is-fullscreen", isFullscreen);
+      fullscreenButton.innerHTML = isFullscreen
+        ? fullscreenButton.dataset.collapseIcon
+        : fullscreenButton.dataset.expandIcon;
+      fullscreenButton.setAttribute("aria-label", isFullscreen ? "退出全屏" : "全屏查看关系图谱");
+      fullscreenButton.setAttribute("title", isFullscreen ? "退出全屏" : "全屏查看");
+      resize(true);
+      render();
+    }
+
+    fullscreenButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      setFullscreen(!isFullscreen);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && isFullscreen) setFullscreen(false);
+    });
+  }
 
   resize();
   loop();

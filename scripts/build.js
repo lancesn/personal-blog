@@ -596,6 +596,7 @@ function renderSearch(posts) {
           <p>标签与文章的关系图，可拖拽节点、滚轮缩放，点击跳转。</p>
         </div>
         <div class="tag-graph" data-tag-graph data-graph="${graphData}">
+          <button class="tag-graph-fullscreen" type="button" data-tag-graph-fullscreen data-expand-icon="${escapeHtml(shareIcon("expand"))}" data-collapse-icon="${escapeHtml(shareIcon("collapse"))}" aria-label="全屏查看关系图谱" title="全屏查看">${shareIcon("expand")}</button>
           <canvas data-tag-graph-canvas></canvas>
         </div>
       </section>
@@ -836,7 +837,9 @@ function shareIcon(name) {
     weibo: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.7 3.5c1.8.8 2.7 2.6 2.4 4.5l-1.8-.3c.2-1.1-.4-2.1-1.4-2.6l.8-1.6Z"/><path d="M17.2 6.4c.8.4 1.2 1.2 1 2.1l-1.6-.3c.1-.3-.1-.6-.4-.8l1-1Z"/><path d="M11.2 9.2c4.6-.4 8.5 1.6 8.8 4.5.3 2.9-3.1 5.6-7.7 6-4.6.4-8.5-1.6-8.8-4.5-.2-1.9 1.2-3.7 3.5-4.8.3-1.7 1.7-4.3 3.3-4.1 1 .1 1.3 1.4.9 2.9Zm.8 8.5c2.8-.3 5-1.9 4.8-3.7-.2-1.8-2.6-3-5.4-2.8-2.8.3-5 1.9-4.8 3.7.2 1.8 2.6 3 5.4 2.8Z"/><path d="M9.7 13.2c1.6-.5 3.3.1 3.8 1.2.5 1.2-.4 2.5-2 3-1.6.5-3.3-.1-3.8-1.2-.5-1.2.4-2.5 2-3Zm.4 2.3c.4-.1.7-.5.6-.8-.1-.3-.5-.4-.9-.3-.4.1-.7.5-.6.8.1.3.5.4.9.3Z"/></svg>`,
     x: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.8 10.5 21.1 2h-1.8l-6.3 7.3L8 2H2.2l7.7 11.2L2.2 22h1.8l6.7-7.7L16 22h5.8l-8-11.5Zm-2.4 2.8-.8-1.1L4.5 3.4h2.6l4.9 7 .8 1.1 6.4 9.1h-2.6l-5.2-7.3Z"/></svg>`,
     rss: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.18,15.64A2.18,2.18 0 0,1 8.36,17.82C8.36,19 7.36,20 6.18,20C5,20 4,19 4,17.82A2.18,2.18 0 0,1 6.18,15.64M4,4.44A15.56,15.56 0 0,1 19.56,20H16.73A12.73,12.73 0 0,0 4,7.27V4.44M4,10.1A9.9,9.9 0 0,1 13.9,20H11.07A7.07,7.07 0 0,0 4,12.93V10.1Z"/></svg>`,
-    poster: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4h15A2.5 2.5 0 0 1 22 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 17.5v-11A2.5 2.5 0 0 1 4.5 4Zm0 2c-.3 0-.5.2-.5.5v9.4l4.9-4.9a1 1 0 0 1 1.3-.1l2.9 2.2 3.3-3.6a1 1 0 0 1 1.5 0L20 12.8V6.5c0-.3-.2-.5-.5-.5h-15ZM9 8.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"/></svg>`
+    poster: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4h15A2.5 2.5 0 0 1 22 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 17.5v-11A2.5 2.5 0 0 1 4.5 4Zm0 2c-.3 0-.5.2-.5.5v9.4l4.9-4.9a1 1 0 0 1 1.3-.1l2.9 2.2 3.3-3.6a1 1 0 0 1 1.5 0L20 12.8V6.5c0-.3-.2-.5-.5-.5h-15ZM9 8.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"/></svg>`,
+    expand: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14H5v5h5v-2H7v-3Zm-2-4h2V7h3V5H5v5Zm12 7h-3v2h5v-5h-2v3ZM14 5v2h3v3h2V5h-5Z"/></svg>`,
+    collapse: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16h3v3h2v-5H5v2Zm3-8H5v2h5V5H8v3Zm6 11h2v-3h3v-2h-5v5Zm2-11V5h-2v5h5V8h-3Z"/></svg>`
   };
 
   return icons[name] || "";
