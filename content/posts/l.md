@@ -1,13 +1,14 @@
 ---
 title: 走路
 date: 2026-07-02
-description: 
+description: 出门的时候，我换了一双鞋。 门在身后关上，咔嗒一声，很轻。 鞋底踩在地上，软软的，一点点陷下去，又弹回来。 风迎面吹过来，凉的，从脸上擦过，就走了。 我没有要去哪里，就是走。 阳光...
 readingTime: 
 tags: [日常, 正念]
 status: published
 publishedAt: 2026-07-01T22:52:54.355Z
 ---
 
+![Gemini_Generated_Image_n5zm5vn5zm5vn5zm.png](../uploads/image-20260702024128.png)
 出门的时候，我换了一双鞋。
 
 门在身后关上，咔嗒一声，很轻。
