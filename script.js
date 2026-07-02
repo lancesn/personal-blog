@@ -317,9 +317,10 @@ if (tagGraphContainer) {
       }
       ctx.fill();
 
-      ctx.font = node.type === "tag" ? "700 13px var(--font-ui, sans-serif)" : "400 11px var(--font-ui, sans-serif)";
+      const fontSize = (node.type === "tag" ? 13 : 11) * view.scale;
+      ctx.font = `${node.type === "tag" ? 700 : 400} ${fontSize}px var(--font-ui, sans-serif)`;
       ctx.fillStyle = node.type === "tag" ? textColor : mutedColor;
-      ctx.fillText(node.label, pos.x + r + 6, pos.y);
+      ctx.fillText(node.label, pos.x + r + 6 * view.scale, pos.y);
     }
   }
 
