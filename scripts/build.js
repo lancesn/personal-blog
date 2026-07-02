@@ -379,6 +379,7 @@ function siteNav(current) {
 ${items
   .map(([key, href, label]) => `      <a href="${href}"${current === key ? ' aria-current="page"' : ""}>${label}</a>`)
   .join("\n")}
+      <a href="./random.html" title="随机看一篇文章">随缘</a>
       <button class="theme-toggle" type="button" aria-label="切换深浅色">☼</button>
     </nav>`;
 }
@@ -802,7 +803,8 @@ function shareIcon(name) {
     facebook: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.1 8.1V6.5c0-.8.5-1 1.1-1h1.8V2.3c-.3 0-1.5-.2-2.9-.2-2.9 0-4.8 1.7-4.8 4.9v1.1H6.1v3.6h3.2V22h3.9V11.7h3.2l.5-3.6h-3.8Z"/></svg>`,
     weibo: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.7 3.5c1.8.8 2.7 2.6 2.4 4.5l-1.8-.3c.2-1.1-.4-2.1-1.4-2.6l.8-1.6Z"/><path d="M17.2 6.4c.8.4 1.2 1.2 1 2.1l-1.6-.3c.1-.3-.1-.6-.4-.8l1-1Z"/><path d="M11.2 9.2c4.6-.4 8.5 1.6 8.8 4.5.3 2.9-3.1 5.6-7.7 6-4.6.4-8.5-1.6-8.8-4.5-.2-1.9 1.2-3.7 3.5-4.8.3-1.7 1.7-4.3 3.3-4.1 1 .1 1.3 1.4.9 2.9Zm.8 8.5c2.8-.3 5-1.9 4.8-3.7-.2-1.8-2.6-3-5.4-2.8-2.8.3-5 1.9-4.8 3.7.2 1.8 2.6 3 5.4 2.8Z"/><path d="M9.7 13.2c1.6-.5 3.3.1 3.8 1.2.5 1.2-.4 2.5-2 3-1.6.5-3.3-.1-3.8-1.2-.5-1.2.4-2.5 2-3Zm.4 2.3c.4-.1.7-.5.6-.8-.1-.3-.5-.4-.9-.3-.4.1-.7.5-.6.8.1.3.5.4.9.3Z"/></svg>`,
     x: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.8 10.5 21.1 2h-1.8l-6.3 7.3L8 2H2.2l7.7 11.2L2.2 22h1.8l6.7-7.7L16 22h5.8l-8-11.5Zm-2.4 2.8-.8-1.1L4.5 3.4h2.6l4.9 7 .8 1.1 6.4 9.1h-2.6l-5.2-7.3Z"/></svg>`,
-    rss: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.18,15.64A2.18,2.18 0 0,1 8.36,17.82C8.36,19 7.36,20 6.18,20C5,20 4,19 4,17.82A2.18,2.18 0 0,1 6.18,15.64M4,4.44A15.56,15.56 0 0,1 19.56,20H16.73A12.73,12.73 0 0,0 4,7.27V4.44M4,10.1A9.9,9.9 0 0,1 13.9,20H11.07A7.07,7.07 0 0,0 4,12.93V10.1Z"/></svg>`
+    rss: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.18,15.64A2.18,2.18 0 0,1 8.36,17.82C8.36,19 7.36,20 6.18,20C5,20 4,19 4,17.82A2.18,2.18 0 0,1 6.18,15.64M4,4.44A15.56,15.56 0 0,1 19.56,20H16.73A12.73,12.73 0 0,0 4,7.27V4.44M4,10.1A9.9,9.9 0 0,1 13.9,20H11.07A7.07,7.07 0 0,0 4,12.93V10.1Z"/></svg>`,
+    poster: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4h15A2.5 2.5 0 0 1 22 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 17.5v-11A2.5 2.5 0 0 1 4.5 4Zm0 2c-.3 0-.5.2-.5.5v9.4l4.9-4.9a1 1 0 0 1 1.3-.1l2.9 2.2 3.3-3.6a1 1 0 0 1 1.5 0L20 12.8V6.5c0-.3-.2-.5-.5-.5h-15ZM9 8.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"/></svg>`
   };
 
   return icons[name] || "";
@@ -890,7 +892,8 @@ function renderPost(post, nextPost, allPosts) {
     script: scriptTag(".."),
     image: postShareImage(post),
     ogType: "article",
-    body: `${siteNav("blog").replaceAll("./", "../")}
+    body: `<div class="reading-progress" id="reading-progress"></div>
+${siteNav("blog").replaceAll("./", "../")}
 
     <main class="article" data-post-slug="${escapeHtml(post.slug)}" data-post-title="${escapeHtml(post.title)}" data-post-description="${escapeHtml(postShareExcerpt)}" data-post-url="${escapeHtml(absoluteUrl(`posts/${post.slug}.html`))}">
       ${postJsonLd(post)}
@@ -905,7 +908,19 @@ function renderPost(post, nextPost, allPosts) {
         <a class="share-icon-button" data-share-facebook href="#" aria-label="分享到 Facebook" title="分享到 Facebook">${shareIcon("facebook")}</a>
         <a class="share-icon-button" data-share-weibo href="#" aria-label="分享到微博" title="分享到微博">${shareIcon("weibo")}</a>
         <a class="share-icon-button" data-share-x href="#" aria-label="分享到 X" title="分享到 X">${shareIcon("x")}</a>
+        <button class="share-icon-button" type="button" data-share-poster aria-label="生成分享图" title="生成分享图">${shareIcon("poster")}</button>
         <p data-share-hint></p>
+      </div>
+      <div class="poster-modal" id="poster-modal" hidden>
+        <div class="poster-modal-backdrop" data-poster-close></div>
+        <div class="poster-modal-panel">
+          <button class="poster-modal-close" type="button" data-poster-close aria-label="关闭">✕</button>
+          <canvas class="poster-canvas" id="poster-canvas" width="750" height="1000"></canvas>
+          <div class="poster-modal-actions">
+            <a class="button primary" id="poster-download" download="${escapeHtml(post.slug)}-share.png">保存图片</a>
+            <p class="poster-modal-hint">生成中可能需要几秒</p>
+          </div>
+        </div>
       </div>
       ${tableOfContents}
       <article class="article-content">
@@ -949,6 +964,30 @@ function renderRedirectPage({ title, target, canonical }) {
   </head>
   <body>
     <p><a href="${escapeHtml(target)}">正在跳转到 ${escapeHtml(title)}</a></p>
+  </body>
+</html>
+`;
+}
+
+function renderRandomRedirect(posts) {
+  const urls = posts.map((post) => absoluteUrl(`posts/${post.slug}.html`));
+
+  return `<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>随缘一篇</title>
+  </head>
+  <body>
+    <p>正在随缘挑一篇文章…</p>
+    <script>
+      var posts = ${JSON.stringify(urls)};
+      var fallback = ${JSON.stringify(absoluteUrl("blog.html"))};
+      var candidates = posts.filter(function (url) { return url !== document.referrer; });
+      var pool = candidates.length ? candidates : posts;
+      window.location.replace(pool.length ? pool[Math.floor(Math.random() * pool.length)] : fallback);
+    </script>
   </body>
 </html>
 `;
@@ -1071,7 +1110,7 @@ async function copyAndOptimizeUploads() {
 }
 
 async function syncDistToRoot() {
-  const topLevelFiles = ["index.html", "blog.html", "about.html", "archive.html", "search.html", "tags.html", "404.html", "rss.xml", "sitemap.xml", "robots.txt", "styles.css", "script.js", ".nojekyll"];
+  const topLevelFiles = ["index.html", "blog.html", "about.html", "archive.html", "search.html", "tags.html", "404.html", "random.html", "rss.xml", "sitemap.xml", "robots.txt", "styles.css", "script.js", ".nojekyll"];
   for (const file of topLevelFiles) {
     await copyFile(path.join(distDir, file), path.join(root, file));
   }
@@ -1112,6 +1151,7 @@ async function build() {
   await writeFile(path.join(distDir, "search.html"), renderSearch(publishedPosts));
   await writeFile(path.join(distDir, "tags.html"), renderTagsIndex(publishedPosts));
   await writeFile(path.join(distDir, "404.html"), renderNotFound());
+  await writeFile(path.join(distDir, "random.html"), renderRandomRedirect(publishedPosts));
   await writeFile(path.join(distDir, "rss.xml"), renderRss(publishedPosts));
   await writeFile(path.join(distDir, "sitemap.xml"), renderSitemap(publishedPosts));
   await writeFile(path.join(distDir, "robots.txt"), renderRobots());
@@ -1143,6 +1183,7 @@ async function build() {
   await copyFile(path.join(root, "styles.css"), path.join(distDir, "styles.css"));
   await copyFile(path.join(root, "script.js"), path.join(distDir, "script.js"));
   await cp(path.join(root, "admin-online"), path.join(distDir, "admin-online"), { recursive: true, force: true });
+  await cp(path.join(root, "vendor"), path.join(distDir, "vendor"), { recursive: true, force: true });
   await mkdir(uploadsDir, { recursive: true });
   await copyAndOptimizeUploads();
   await writeFile(path.join(distDir, ".nojekyll"), "");
