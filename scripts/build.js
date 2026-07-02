@@ -273,7 +273,13 @@ ${rows.map((row) => `    <tr>${row.map((cell) => `<td>${inlineMarkdown(cell)}</t
 }
 
 function headingId(text) {
-  return slugify(text.replace(/[*_`]/g, ""));
+  return text
+    .replace(/[*_`]/g, "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "section";
 }
 
 function markdownToHtml(markdown) {
