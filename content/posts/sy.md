@@ -1,9 +1,9 @@
 ---
 title: 山窗夜雨
 date: 2026-07-02
-description: 
+description: 山中入夜早，暮色从松梢落下来，先暗了溪石，再暗了竹篱，最后才贴到小窗上。窗纸被湿气润得微明，灯火在案头瘦瘦地亮着，一卷经书摊开，字迹像刚从雨声里浮出，又像随时会被雨声带回去。 雨从...
 readingTime: 
-tags: []
+tags: [独处, 清言, 日常]
 status: published
 publishedAt: 2026-07-02T05:52:17.899Z
 ---
