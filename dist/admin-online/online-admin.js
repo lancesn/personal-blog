@@ -108,7 +108,7 @@ function currentWorkerUrl() {
 }
 
 function currentPassword() {
-  return passwordInput.value || sessionStorage.getItem("adminPassword") || "";
+  return passwordInput.value || localStorage.getItem("adminPassword") || "";
 }
 
 async function apiRequest(path, options = {}) {
@@ -379,8 +379,8 @@ function postListQueryString(page = postPage) {
 
 async function loadPosts(page = postPage) {
   setStatus("正在读取文章...");
-  sessionStorage.setItem("workerUrl", currentWorkerUrl());
-  sessionStorage.setItem("adminPassword", currentPassword());
+  localStorage.setItem("workerUrl", currentWorkerUrl());
+  localStorage.setItem("adminPassword", currentPassword());
   const result = await apiRequest(`/posts?${postListQueryString(page)}`);
   posts = result.posts || [];
   postPage = result.page || page;
@@ -687,8 +687,8 @@ connectButton.addEventListener("click", () => {
 
 forgetPasswordButton.addEventListener("click", () => {
   passwordInput.value = "";
-  sessionStorage.removeItem("adminPassword");
-  setStatus("已清除当前浏览器会话里的后台密码。", "success");
+  localStorage.removeItem("adminPassword");
+  setStatus("已清除保存在此浏览器里的后台密码。", "success");
 });
 
 newPostButton.addEventListener("click", resetForm);
@@ -741,8 +741,8 @@ importFileInput.addEventListener("change", () => {
   if (file) importFile(file);
 });
 
-workerUrlInput.value = sessionStorage.getItem("workerUrl") || workerUrlInput.value;
-passwordInput.value = sessionStorage.getItem("adminPassword") || "";
+workerUrlInput.value = localStorage.getItem("workerUrl") || workerUrlInput.value;
+passwordInput.value = localStorage.getItem("adminPassword") || "";
 renderTagPicker();
 resetForm();
 setEditorMode("edit");
