@@ -259,8 +259,19 @@ if (shareBar) {
   if (posterButton && posterModal) {
     const canvas = posterModal.querySelector("#poster-canvas");
     const downloadLink = posterModal.querySelector("#poster-download");
+    const posterHint = posterModal.querySelector(".poster-modal-hint");
+    const posterFileName = `${(article?.dataset.postSlug || "share").trim()}-share.png`;
+    const supportsFileShare = Boolean(
+      navigator.canShare && navigator.canShare({ files: [new File([], posterFileName, { type: "image/png" })] })
+    );
     let lastObjectUrl = "";
+    let lastBlob = null;
     let posterReady = false;
+
+    if (downloadLink && supportsFileShare) {
+      downloadLink.textContent = "保存 / 分享图片";
+      if (posterHint) posterHint.textContent = "点击后可直接保存到相册，或分享到微信等应用";
+    }
 
     const loadScriptOnce = (src) =>
       new Promise((resolve, reject) => {
@@ -378,6 +389,7 @@ if (shareBar) {
       await new Promise((resolve) => {
         canvas.toBlob((blob) => {
           if (blob) {
+            lastBlob = blob;
             if (lastObjectUrl) URL.revokeObjectURL(lastObjectUrl);
             lastObjectUrl = URL.createObjectURL(blob);
             if (downloadLink) downloadLink.href = lastObjectUrl;
@@ -400,6 +412,17 @@ if (shareBar) {
           console.warn(error);
         });
       }
+    });
+
+    downloadLink?.addEventListener("click", (event) => {
+      if (!supportsFileShare || !lastBlob) return;
+      event.preventDefault();
+      const file = new File([lastBlob], posterFileName, { type: "image/png" });
+      navigator.share({ files: [file], title, text: description || title }).catch((error) => {
+        if (error?.name === "AbortError") return;
+        console.warn("分享图片失败", error);
+        window.open(lastObjectUrl, "_blank");
+      });
     });
 
     posterModal.querySelectorAll("[data-poster-close]").forEach((element) => {
