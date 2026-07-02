@@ -237,12 +237,12 @@ a {
   width: 148px;
   height: 148px;
   margin: 0 auto 22px;
-  filter: sepia(0.35) saturate(1.15) brightness(1.02) contrast(1.02);
+  filter: sepia(0.18) saturate(0.82) contrast(0.98);
   transition: filter 0.2s ease;
 }
 
 :root.dark .page-avatar {
-  filter: sepia(0.35) saturate(1) brightness(0.72) contrast(1.08);
+  filter: sepia(0.18) saturate(0.72) brightness(0.7) contrast(1.02);
 }
 
 h1,
