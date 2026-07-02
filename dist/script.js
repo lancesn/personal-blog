@@ -303,7 +303,18 @@ if (shareBar) {
     }
 
     function drawPoster(qrImage) {
+      const width = canvas.dataset.baseWidth ? Number(canvas.dataset.baseWidth) : canvas.width;
+      const height = canvas.dataset.baseHeight ? Number(canvas.dataset.baseHeight) : canvas.height;
+      canvas.dataset.baseWidth = String(width);
+      canvas.dataset.baseHeight = String(height);
+
+      const scale = Math.max(window.devicePixelRatio || 1, 2);
+      canvas.width = width * scale;
+      canvas.height = height * scale;
+
       const ctx = canvas.getContext("2d");
+      ctx.scale(scale, scale);
+
       const styles = getComputedStyle(document.documentElement);
       const readVar = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
       const soft = readVar("--soft", "#f6f6f4");
@@ -312,8 +323,6 @@ if (shareBar) {
       const primary = readVar("--primary-strong", "#3f4c44");
       const lineColor = readVar("--line", "#e7e5e0");
 
-      const width = canvas.width;
-      const height = canvas.height;
       const padding = 64;
 
       ctx.fillStyle = soft;
@@ -372,7 +381,7 @@ if (shareBar) {
     async function generatePoster() {
       await loadScriptOnce("../vendor/qrcode.min.js");
       const qrDataUrl = await new Promise((resolve, reject) => {
-        window.QRCode.toDataURL(shareUrl, { width: 300, margin: 1 }, (error, dataUrl) => {
+        window.QRCode.toDataURL(shareUrl, { width: 600, margin: 1 }, (error, dataUrl) => {
           if (error) reject(error);
           else resolve(dataUrl);
         });
