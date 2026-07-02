@@ -512,8 +512,8 @@ function renderBlog(posts, currentPage = 1) {
   const pageScript = scriptTag(prefix);
   const nav = currentPage === 1 ? siteNav("blog") : siteNav("blog").replaceAll("./", "../../");
   const avatar = currentPage === 1
-    ? pageAvatar("./uploads/blog-avatar.jpg", "打开的书与怀表")
-    : pageAvatar("../../uploads/blog-avatar.jpg", "打开的书与怀表");
+    ? pageAvatar("./uploads/blog-avatar.jpg", "极简风格的浏览器窗口插画")
+    : pageAvatar("../../uploads/blog-avatar.jpg", "极简风格的浏览器窗口插画");
   const cards = currentPage === 1
     ? postCards
     : postCards
