@@ -758,7 +758,7 @@ function renderArchive(posts) {
 
     <main class="site-shell">
       <section class="hero section">
-        ${pageAvatar("./uploads/archive-avatar.jpg", "湖边木船")}
+        ${pageAvatar("./uploads/archive-avatar.jpg", "极简风格的浏览器窗口插画")}
         <h1>存档</h1>
         <p>按时间整理的全部文章。</p>
       </section>
