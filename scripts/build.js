@@ -56,6 +56,16 @@ function shareExcerpt(post, maxLength = 120) {
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 }
 
+function formatReadingTime(raw, plainText) {
+  const trimmed = String(raw || "").trim();
+  if (/^\d+$/.test(trimmed)) return `${trimmed} 分钟阅读`;
+  if (trimmed) return trimmed;
+
+  const chineseCharCount = ((plainText || "").match(/[一-龥]/g) || []).length;
+  const minutes = Math.max(1, Math.round(chineseCharCount / 300));
+  return `${minutes} 分钟阅读`;
+}
+
 function plainTextFromMarkdown(markdown) {
   return markdown
     .replace(/^---\n[\s\S]*?\n---\n?/, "")
@@ -899,7 +909,7 @@ ${siteNav("blog").replaceAll("./", "../")}
       ${postJsonLd(post)}
       <nav class="article-nav"><a href="../blog.html">← 返回博客</a></nav>
       <h1>${escapeHtml(post.title)}</h1>
-      <p class="article-meta">${post.date} · ${escapeHtml(post.readingTime || "1 分钟阅读")}</p>
+      <p class="article-meta">${post.date} · ${escapeHtml(formatReadingTime(post.readingTime, post.plainText))}</p>
       ${renderTagLinks(post.tags, "..")}
       <div class="article-share-row" aria-label="分享文章">
         <button class="share-icon-button" type="button" data-share-copy aria-label="复制链接" title="复制链接">${shareIcon("copy")}</button>
