@@ -286,6 +286,7 @@ if (tagGraphContainer) {
     const postFill = readVar("--card", "#ffffff");
     const textColor = readVar("--text", "#222222");
     const mutedColor = readVar("--muted", "#666666");
+    const fontFamily = readVar("--font-ui", "sans-serif");
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
@@ -318,7 +319,7 @@ if (tagGraphContainer) {
       ctx.fill();
 
       const fontSize = (node.type === "tag" ? 13 : 11) * view.scale;
-      ctx.font = `${node.type === "tag" ? 700 : 400} ${fontSize}px var(--font-ui, sans-serif)`;
+      ctx.font = `${node.type === "tag" ? 700 : 400} ${fontSize}px ${fontFamily}`;
       ctx.fillStyle = node.type === "tag" ? textColor : mutedColor;
       ctx.fillText(node.label, pos.x + r + 6 * view.scale, pos.y);
     }
