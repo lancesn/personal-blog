@@ -1,5 +1,6 @@
 const workerUrlInput = document.querySelector("#worker-url");
 const passwordInput = document.querySelector("#admin-password");
+const rememberPasswordInput = document.querySelector("#remember-password");
 const connectButton = document.querySelector("#connect");
 const forgetPasswordButton = document.querySelector("#forget-password");
 const form = document.querySelector("#post-form");
@@ -108,7 +109,7 @@ function currentWorkerUrl() {
 }
 
 function currentPassword() {
-  return passwordInput.value || localStorage.getItem("adminPassword") || "";
+  return passwordInput.value || localStorage.getItem("adminPassword") || sessionStorage.getItem("adminPassword") || "";
 }
 
 async function apiRequest(path, options = {}) {
@@ -380,7 +381,15 @@ function postListQueryString(page = postPage) {
 async function loadPosts(page = postPage) {
   setStatus("正在读取文章...");
   localStorage.setItem("workerUrl", currentWorkerUrl());
-  localStorage.setItem("adminPassword", currentPassword());
+  if (rememberPasswordInput.checked) {
+    localStorage.setItem("adminPassword", currentPassword());
+    localStorage.setItem("rememberPassword", "true");
+    sessionStorage.removeItem("adminPassword");
+  } else {
+    sessionStorage.setItem("adminPassword", currentPassword());
+    localStorage.removeItem("adminPassword");
+    localStorage.removeItem("rememberPassword");
+  }
   const result = await apiRequest(`/posts?${postListQueryString(page)}`);
   posts = result.posts || [];
   postPage = result.page || page;
@@ -687,8 +696,11 @@ connectButton.addEventListener("click", () => {
 
 forgetPasswordButton.addEventListener("click", () => {
   passwordInput.value = "";
+  rememberPasswordInput.checked = false;
   localStorage.removeItem("adminPassword");
-  setStatus("已清除保存在此浏览器里的后台密码。", "success");
+  localStorage.removeItem("rememberPassword");
+  sessionStorage.removeItem("adminPassword");
+  setStatus("已清除保存的后台密码。", "success");
 });
 
 newPostButton.addEventListener("click", resetForm);
@@ -742,7 +754,8 @@ importFileInput.addEventListener("change", () => {
 });
 
 workerUrlInput.value = localStorage.getItem("workerUrl") || workerUrlInput.value;
-passwordInput.value = localStorage.getItem("adminPassword") || "";
+rememberPasswordInput.checked = localStorage.getItem("rememberPassword") === "true";
+passwordInput.value = localStorage.getItem("adminPassword") || sessionStorage.getItem("adminPassword") || "";
 renderTagPicker();
 resetForm();
 setEditorMode("edit");

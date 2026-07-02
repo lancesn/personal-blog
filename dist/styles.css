@@ -1665,6 +1665,21 @@ img {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
+.studio-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.studio-remember input {
+  width: auto;
+}
+
 .studio-actions {
   display: flex;
   flex-wrap: wrap;
