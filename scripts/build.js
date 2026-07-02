@@ -566,10 +566,7 @@ ${siteFooter()}`
 
 function renderSearch(posts) {
   const postCards = posts.map((post) => renderPostCard(post, { forSearch: true })).join("\n          ");
-  const tags = collectTags(posts);
-  const tagItems = tags
-    .map(([tag, tagPosts]) => `<a class="tag-index-item search-tag-item" href="./tags/${slugify(tag)}.html">${escapeHtml(tag)}<span>${tagPosts.length}</span></a>`)
-    .join("\n          ");
+  const graphData = escapeHtml(JSON.stringify(buildTagGraphData(posts)));
 
   return pageShell({
     title: "搜索",
@@ -595,10 +592,11 @@ function renderSearch(posts) {
           ${postCards}
         </div>
         <div class="section-heading search-tag-heading">
-          <h2>博文标签</h2>
+          <h2>关系图谱</h2>
+          <p>标签与文章的关系图，可拖拽节点、滚轮缩放，点击跳转。</p>
         </div>
-        <div class="tag-index search-tag-grid">
-          ${tagItems || '<p class="muted">还没有标签。</p>'}
+        <div class="tag-graph" data-tag-graph data-graph="${graphData}">
+          <canvas data-tag-graph-canvas></canvas>
         </div>
       </section>
     </main>
@@ -616,6 +614,30 @@ function collectTags(posts) {
     }
   }
   return [...tags.entries()].sort((a, b) => a[0].localeCompare(b[0], "zh-Hans"));
+}
+
+function buildTagGraphData(posts) {
+  const tags = collectTags(posts);
+  const nodes = [];
+  const edges = [];
+  const tagIds = new Map();
+
+  tags.forEach(([tag, tagPosts], index) => {
+    const id = `t${index}`;
+    tagIds.set(tag, id);
+    nodes.push({ id, label: tag, type: "tag", url: `./tags/${slugify(tag)}.html`, count: tagPosts.length });
+  });
+
+  posts.forEach((post, index) => {
+    const id = `p${index}`;
+    nodes.push({ id, label: post.title, type: "post", url: `./posts/${post.slug}.html` });
+    for (const tag of post.tags) {
+      const tagId = tagIds.get(tag);
+      if (tagId) edges.push({ source: id, target: tagId });
+    }
+  });
+
+  return { nodes, edges };
 }
 
 function renderTagsIndex(posts) {
