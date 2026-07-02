@@ -522,8 +522,11 @@ if (shareBar) {
     const downloadLink = posterModal.querySelector("#poster-download");
     const posterHint = posterModal.querySelector(".poster-modal-hint");
     const posterFileName = `${(article?.dataset.postSlug || "share").trim()}-share.png`;
+    const isMobileDevice = window.matchMedia("(pointer: coarse)").matches;
     const supportsFileShare = Boolean(
-      navigator.canShare && navigator.canShare({ files: [new File([], posterFileName, { type: "image/png" })] })
+      isMobileDevice &&
+        navigator.canShare &&
+        navigator.canShare({ files: [new File([], posterFileName, { type: "image/png" })] })
     );
     let lastObjectUrl = "";
     let lastBlob = null;
