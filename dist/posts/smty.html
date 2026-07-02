@@ -27,12 +27,14 @@
     <link rel="stylesheet" href="../styles.css?v=20260701-clean-favicon" />
   </head>
   <body>
+<div class="reading-progress" id="reading-progress"></div>
     <nav class="top-nav" aria-label="主导航">
       <a href="../index.html">首页</a>
       <a href="../blog.html" aria-current="page">博客</a>
       <a href="../archive.html">存档</a>
       <a href="../search.html">搜索</a>
       <a href="../about.html">关于</a>
+      <a href="../random.html" title="随机看一篇文章">随缘</a>
       <button class="theme-toggle" type="button" aria-label="切换深浅色">☼</button>
     </nav>
 
@@ -49,7 +51,19 @@
         <a class="share-icon-button" data-share-facebook href="#" aria-label="分享到 Facebook" title="分享到 Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.1 8.1V6.5c0-.8.5-1 1.1-1h1.8V2.3c-.3 0-1.5-.2-2.9-.2-2.9 0-4.8 1.7-4.8 4.9v1.1H6.1v3.6h3.2V22h3.9V11.7h3.2l.5-3.6h-3.8Z"/></svg></a>
         <a class="share-icon-button" data-share-weibo href="#" aria-label="分享到微博" title="分享到微博"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.7 3.5c1.8.8 2.7 2.6 2.4 4.5l-1.8-.3c.2-1.1-.4-2.1-1.4-2.6l.8-1.6Z"/><path d="M17.2 6.4c.8.4 1.2 1.2 1 2.1l-1.6-.3c.1-.3-.1-.6-.4-.8l1-1Z"/><path d="M11.2 9.2c4.6-.4 8.5 1.6 8.8 4.5.3 2.9-3.1 5.6-7.7 6-4.6.4-8.5-1.6-8.8-4.5-.2-1.9 1.2-3.7 3.5-4.8.3-1.7 1.7-4.3 3.3-4.1 1 .1 1.3 1.4.9 2.9Zm.8 8.5c2.8-.3 5-1.9 4.8-3.7-.2-1.8-2.6-3-5.4-2.8-2.8.3-5 1.9-4.8 3.7.2 1.8 2.6 3 5.4 2.8Z"/><path d="M9.7 13.2c1.6-.5 3.3.1 3.8 1.2.5 1.2-.4 2.5-2 3-1.6.5-3.3-.1-3.8-1.2-.5-1.2.4-2.5 2-3Zm.4 2.3c.4-.1.7-.5.6-.8-.1-.3-.5-.4-.9-.3-.4.1-.7.5-.6.8.1.3.5.4.9.3Z"/></svg></a>
         <a class="share-icon-button" data-share-x href="#" aria-label="分享到 X" title="分享到 X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.8 10.5 21.1 2h-1.8l-6.3 7.3L8 2H2.2l7.7 11.2L2.2 22h1.8l6.7-7.7L16 22h5.8l-8-11.5Zm-2.4 2.8-.8-1.1L4.5 3.4h2.6l4.9 7 .8 1.1 6.4 9.1h-2.6l-5.2-7.3Z"/></svg></a>
+        <button class="share-icon-button" type="button" data-share-poster aria-label="生成分享图" title="生成分享图"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4h15A2.5 2.5 0 0 1 22 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 17.5v-11A2.5 2.5 0 0 1 4.5 4Zm0 2c-.3 0-.5.2-.5.5v9.4l4.9-4.9a1 1 0 0 1 1.3-.1l2.9 2.2 3.3-3.6a1 1 0 0 1 1.5 0L20 12.8V6.5c0-.3-.2-.5-.5-.5h-15ZM9 8.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"/></svg></button>
         <p data-share-hint></p>
+      </div>
+      <div class="poster-modal" id="poster-modal" hidden>
+        <div class="poster-modal-backdrop" data-poster-close></div>
+        <div class="poster-modal-panel">
+          <button class="poster-modal-close" type="button" data-poster-close aria-label="关闭">✕</button>
+          <canvas class="poster-canvas" id="poster-canvas" width="750" height="1000"></canvas>
+          <div class="poster-modal-actions">
+            <a class="button primary" id="poster-download" download="smty-share.png">保存图片</a>
+            <p class="poster-modal-hint">生成中可能需要几秒</p>
+          </div>
+        </div>
       </div>
       
       <article class="article-content">

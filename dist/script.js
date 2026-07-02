@@ -253,6 +253,163 @@ if (shareBar) {
       window.location.href = facebookLink.href;
     }
   });
+
+  const posterButton = shareBar.querySelector("[data-share-poster]");
+  const posterModal = document.querySelector("#poster-modal");
+  if (posterButton && posterModal) {
+    const canvas = posterModal.querySelector("#poster-canvas");
+    const downloadLink = posterModal.querySelector("#poster-download");
+    let lastObjectUrl = "";
+    let posterReady = false;
+
+    const loadScriptOnce = (src) =>
+      new Promise((resolve, reject) => {
+        if (document.querySelector(`script[src="${src}"]`)) {
+          resolve();
+          return;
+        }
+        const script = document.createElement("script");
+        script.src = src;
+        script.addEventListener("load", () => resolve());
+        script.addEventListener("error", () => reject(new Error(`加载失败：${src}`)));
+        document.head.appendChild(script);
+      });
+
+    function wrapCanvasText(ctx, text, maxWidth) {
+      const lines = [];
+      let current = "";
+      for (const char of text) {
+        const attempt = current + char;
+        if (current && ctx.measureText(attempt).width > maxWidth) {
+          lines.push(current);
+          current = char;
+        } else {
+          current = attempt;
+        }
+      }
+      if (current) lines.push(current);
+      return lines;
+    }
+
+    function drawPoster(qrImage) {
+      const ctx = canvas.getContext("2d");
+      const styles = getComputedStyle(document.documentElement);
+      const readVar = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
+      const soft = readVar("--soft", "#f6f6f4");
+      const textColor = readVar("--text", "#222222");
+      const muted = readVar("--muted", "#666666");
+      const primary = readVar("--primary-strong", "#3f4c44");
+      const lineColor = readVar("--line", "#e7e5e0");
+
+      const width = canvas.width;
+      const height = canvas.height;
+      const padding = 64;
+
+      ctx.fillStyle = soft;
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.strokeStyle = lineColor;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(padding / 2, padding / 2, width - padding, height - padding);
+
+      ctx.textBaseline = "top";
+      ctx.fillStyle = primary;
+      ctx.font = "700 26px serif";
+      ctx.fillText("蓬窗灯影录", padding, padding + 16);
+
+      let cursorY = padding + 90;
+      ctx.fillStyle = textColor;
+      ctx.font = "700 46px serif";
+      wrapCanvasText(ctx, title, width - padding * 2)
+        .slice(0, 3)
+        .forEach((lineText) => {
+          ctx.fillText(lineText, padding, cursorY);
+          cursorY += 60;
+        });
+
+      cursorY += 24;
+      ctx.strokeStyle = lineColor;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padding, cursorY);
+      ctx.lineTo(width - padding, cursorY);
+      ctx.stroke();
+      cursorY += 44;
+
+      ctx.fillStyle = muted;
+      ctx.font = "400 27px serif";
+      wrapCanvasText(ctx, description || title, width - padding * 2)
+        .slice(0, 9)
+        .forEach((lineText) => {
+          ctx.fillText(lineText, padding, cursorY);
+          cursorY += 42;
+        });
+
+      const qrSize = 150;
+      const qrX = padding;
+      const qrY = height - padding - qrSize;
+      if (qrImage) ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
+
+      ctx.fillStyle = textColor;
+      ctx.font = "700 24px serif";
+      ctx.fillText("扫码阅读全文", qrX + qrSize + 26, qrY + 30);
+      ctx.fillStyle = muted;
+      ctx.font = "400 20px serif";
+      ctx.fillText("silencegate.com", qrX + qrSize + 26, qrY + 68);
+    }
+
+    async function generatePoster() {
+      await loadScriptOnce("../vendor/qrcode.min.js");
+      const qrDataUrl = await new Promise((resolve, reject) => {
+        window.QRCode.toDataURL(shareUrl, { width: 300, margin: 1 }, (error, dataUrl) => {
+          if (error) reject(error);
+          else resolve(dataUrl);
+        });
+      });
+      const qrImage = new Image();
+      await new Promise((resolve, reject) => {
+        qrImage.addEventListener("load", resolve);
+        qrImage.addEventListener("error", () => reject(new Error("二维码加载失败")));
+        qrImage.src = qrDataUrl;
+      });
+
+      drawPoster(qrImage);
+
+      await new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+          if (blob) {
+            if (lastObjectUrl) URL.revokeObjectURL(lastObjectUrl);
+            lastObjectUrl = URL.createObjectURL(blob);
+            if (downloadLink) downloadLink.href = lastObjectUrl;
+          }
+          resolve();
+        });
+      });
+      posterReady = true;
+    }
+
+    const closePosterModal = () => {
+      posterModal.hidden = true;
+    };
+
+    posterButton.addEventListener("click", () => {
+      posterModal.hidden = false;
+      if (!posterReady) {
+        generatePoster().catch((error) => {
+          if (hint) hint.textContent = "生成分享图失败，请稍后重试。";
+          console.warn(error);
+        });
+      }
+    });
+
+    posterModal.querySelectorAll("[data-poster-close]").forEach((element) => {
+      element.addEventListener("click", closePosterModal);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !posterModal.hidden) closePosterModal();
+    });
+  }
 }
 
 document.addEventListener("dragstart", (event) => {
@@ -268,4 +425,19 @@ if (protectedContent) {
   protectedContent.addEventListener("copy", (event) => event.preventDefault());
   protectedContent.addEventListener("contextmenu", (event) => event.preventDefault());
   protectedContent.addEventListener("selectstart", (event) => event.preventDefault());
+}
+
+const readingProgress = document.querySelector("#reading-progress");
+if (readingProgress && protectedContent) {
+  const updateReadingProgress = () => {
+    const rect = protectedContent.getBoundingClientRect();
+    const total = rect.height - window.innerHeight;
+    const scrolled = -rect.top;
+    const percent = total > 0 ? Math.min(100, Math.max(0, (scrolled / total) * 100)) : 0;
+    readingProgress.style.width = `${percent}%`;
+  };
+
+  window.addEventListener("scroll", updateReadingProgress, { passive: true });
+  window.addEventListener("resize", updateReadingProgress);
+  updateReadingProgress();
 }

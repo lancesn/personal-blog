@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>随缘一篇</title>
+  </head>
+  <body>
+    <p>正在随缘挑一篇文章…</p>
+    <script>
+      var posts = ["https://silencegate.com/posts/l.html","https://silencegate.com/posts/ky.html","https://silencegate.com/posts/zzzw.html","https://silencegate.com/posts/cbdbkdzxhtwqscjcjtbkbsjl.html","https://silencegate.com/posts/dbscxbjj.html","https://silencegate.com/posts/cljsjtml.html","https://silencegate.com/posts/lpgj.html","https://silencegate.com/posts/qswdx.html","https://silencegate.com/posts/ytss.html","https://silencegate.com/posts/smty.html","https://silencegate.com/posts/wylth.html","https://silencegate.com/posts/thrm.html","https://silencegate.com/posts/sspjdzcssplk.html"];
+      var fallback = "https://silencegate.com/blog.html";
+      var candidates = posts.filter(function (url) { return url !== document.referrer; });
+      var pool = candidates.length ? candidates : posts;
+      window.location.replace(pool.length ? pool[Math.floor(Math.random() * pool.length)] : fallback);
+    </script>
+  </body>
+</html>
