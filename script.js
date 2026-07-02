@@ -169,6 +169,267 @@ if (archiveCalendar) {
   renderArchiveCalendar();
 }
 
+const tagGraphContainer = document.querySelector("[data-tag-graph]");
+if (tagGraphContainer) {
+  const canvas = tagGraphContainer.querySelector("[data-tag-graph-canvas]");
+  const ctx = canvas.getContext("2d");
+  const graphData = JSON.parse(tagGraphContainer.dataset.graph || '{"nodes":[],"edges":[]}');
+
+  const nodes = graphData.nodes.map((node, index) => {
+    const angle = (index / Math.max(1, graphData.nodes.length)) * Math.PI * 2;
+    const radius = 60 + Math.random() * 120;
+    return {
+      ...node,
+      x: Math.cos(angle) * radius,
+      y: Math.sin(angle) * radius,
+      vx: 0,
+      vy: 0,
+      r: node.type === "tag" ? 9 + Math.min(node.count || 1, 8) * 1.4 : 5
+    };
+  });
+  const nodeById = new Map(nodes.map((node) => [node.id, node]));
+  const edges = graphData.edges
+    .map((edge) => ({ source: nodeById.get(edge.source), target: nodeById.get(edge.target) }))
+    .filter((edge) => edge.source && edge.target);
+
+  const view = { x: 0, y: 0, scale: 1 };
+  let dpr = Math.max(window.devicePixelRatio || 1, 1);
+  let width = 0;
+  let height = 0;
+  let settled = false;
+  let rafId = 0;
+  let dragNode = null;
+  let panning = false;
+  let moved = false;
+  let lastPointer = { x: 0, y: 0 };
+
+  function resize() {
+    const rect = tagGraphContainer.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+    dpr = Math.max(window.devicePixelRatio || 1, 1);
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    if (!view.x && !view.y) {
+      view.x = width / 2;
+      view.y = height / 2;
+    }
+  }
+
+  function toScreen(node) {
+    return { x: node.x * view.scale + view.x, y: node.y * view.scale + view.y };
+  }
+
+  function step() {
+    const repulsion = 2600;
+    const springLength = 90;
+    const springStrength = 0.02;
+    const centerPull = 0.006;
+    const damping = 0.86;
+    let kinetic = 0;
+
+    for (let i = 0; i < nodes.length; i += 1) {
+      const a = nodes[i];
+      if (a === dragNode) continue;
+      for (let j = i + 1; j < nodes.length; j += 1) {
+        const b = nodes[j];
+        if (b === dragNode) continue;
+        let dx = a.x - b.x;
+        let dy = a.y - b.y;
+        let distSq = dx * dx + dy * dy || 0.01;
+        const force = repulsion / distSq;
+        const dist = Math.sqrt(distSq);
+        dx /= dist;
+        dy /= dist;
+        a.vx += dx * force;
+        a.vy += dy * force;
+        b.vx -= dx * force;
+        b.vy -= dy * force;
+      }
+      a.vx -= a.x * centerPull;
+      a.vy -= a.y * centerPull;
+    }
+
+    for (const edge of edges) {
+      if (edge.source === dragNode || edge.target === dragNode) continue;
+      const dx = edge.target.x - edge.source.x;
+      const dy = edge.target.y - edge.source.y;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 0.01;
+      const force = (dist - springLength) * springStrength;
+      const nx = (dx / dist) * force;
+      const ny = (dy / dist) * force;
+      edge.source.vx += nx;
+      edge.source.vy += ny;
+      edge.target.vx -= nx;
+      edge.target.vy -= ny;
+    }
+
+    for (const node of nodes) {
+      if (node === dragNode) continue;
+      node.vx *= damping;
+      node.vy *= damping;
+      node.x += node.vx;
+      node.y += node.vy;
+      kinetic += node.vx * node.vx + node.vy * node.vy;
+    }
+
+    return kinetic;
+  }
+
+  function render() {
+    const styles = getComputedStyle(document.documentElement);
+    const readVar = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
+    const lineColor = readVar("--line", "#e7e5e0");
+    const tagFill = readVar("--primary-strong", "#3f4c44");
+    const postFill = readVar("--card", "#ffffff");
+    const textColor = readVar("--text", "#222222");
+    const mutedColor = readVar("--muted", "#666666");
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 1;
+    for (const edge of edges) {
+      const from = toScreen(edge.source);
+      const to = toScreen(edge.target);
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.lineTo(to.x, to.y);
+      ctx.stroke();
+    }
+
+    ctx.textBaseline = "middle";
+    for (const node of nodes) {
+      const pos = toScreen(node);
+      const r = node.r * view.scale;
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+      if (node.type === "tag") {
+        ctx.fillStyle = tagFill;
+      } else {
+        ctx.fillStyle = postFill;
+        ctx.strokeStyle = lineColor;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+      ctx.fill();
+
+      ctx.font = node.type === "tag" ? "700 13px var(--font-ui, sans-serif)" : "400 11px var(--font-ui, sans-serif)";
+      ctx.fillStyle = node.type === "tag" ? textColor : mutedColor;
+      ctx.fillText(node.label, pos.x + r + 6, pos.y);
+    }
+  }
+
+  function loop() {
+    const kinetic = step();
+    render();
+    if (kinetic > 0.02) {
+      rafId = requestAnimationFrame(loop);
+    } else {
+      settled = true;
+      rafId = 0;
+    }
+  }
+
+  function wake() {
+    settled = false;
+    if (!rafId) rafId = requestAnimationFrame(loop);
+  }
+
+  function nodeAtScreenPoint(x, y) {
+    for (let i = nodes.length - 1; i >= 0; i -= 1) {
+      const node = nodes[i];
+      const pos = toScreen(node);
+      const r = Math.max(node.r * view.scale, 10);
+      if ((pos.x - x) ** 2 + (pos.y - y) ** 2 <= r * r) return node;
+    }
+    return null;
+  }
+
+  function pointerPosition(event) {
+    const rect = canvas.getBoundingClientRect();
+    const point = event.touches ? event.touches[0] : event;
+    return { x: point.clientX - rect.left, y: point.clientY - rect.top };
+  }
+
+  function onPointerDown(event) {
+    const point = pointerPosition(event);
+    lastPointer = point;
+    moved = false;
+    const node = nodeAtScreenPoint(point.x, point.y);
+    if (node) {
+      dragNode = node;
+      dragNode.vx = 0;
+      dragNode.vy = 0;
+    } else {
+      panning = true;
+    }
+  }
+
+  function onPointerMove(event) {
+    if (!dragNode && !panning) return;
+    const point = pointerPosition(event);
+    const dx = point.x - lastPointer.x;
+    const dy = point.y - lastPointer.y;
+    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) moved = true;
+    if (dragNode) {
+      dragNode.x = (point.x - view.x) / view.scale;
+      dragNode.y = (point.y - view.y) / view.scale;
+      wake();
+    } else if (panning) {
+      view.x += dx;
+      view.y += dy;
+      if (settled) render();
+    }
+    lastPointer = point;
+    event.preventDefault();
+  }
+
+  function onPointerUp() {
+    if (dragNode && !moved) {
+      window.location.href = dragNode.url;
+    }
+    dragNode = null;
+    panning = false;
+  }
+
+  function onWheel(event) {
+    event.preventDefault();
+    const point = pointerPosition(event);
+    const oldScale = view.scale;
+    const nextScale = Math.min(2.4, Math.max(0.35, oldScale * (event.deltaY > 0 ? 0.9 : 1.1)));
+    const worldX = (point.x - view.x) / oldScale;
+    const worldY = (point.y - view.y) / oldScale;
+    view.scale = nextScale;
+    view.x = point.x - worldX * nextScale;
+    view.y = point.y - worldY * nextScale;
+    if (settled) render();
+  }
+
+  canvas.addEventListener("mousedown", onPointerDown);
+  canvas.addEventListener("touchstart", onPointerDown, { passive: true });
+  window.addEventListener("mousemove", onPointerMove);
+  window.addEventListener("touchmove", onPointerMove, { passive: false });
+  window.addEventListener("mouseup", onPointerUp);
+  window.addEventListener("touchend", onPointerUp);
+  canvas.addEventListener("wheel", onWheel, { passive: false });
+
+  window.addEventListener("resize", () => {
+    resize();
+    if (settled) render();
+  });
+
+  new MutationObserver(() => {
+    if (settled) render();
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+
+  resize();
+  loop();
+}
+
 const article = document.querySelector("[data-post-slug]");
 
 const shareBar = document.querySelector(".article-share-row");
