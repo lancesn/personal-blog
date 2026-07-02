@@ -619,6 +619,11 @@ h3 {
   font-weight: 800;
 }
 
+.search-box span {
+  font-size: 26px;
+  line-height: 1.25;
+}
+
 .search-box input {
   min-height: 46px;
   border: 1px solid var(--line);
