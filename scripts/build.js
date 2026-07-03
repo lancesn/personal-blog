@@ -7,7 +7,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260703-prev-post-fab";
+const assetVersion = "20260703-card-footer-layout";
 const blogPageSize = 30;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -231,8 +231,10 @@ function renderPostCard(post, { forSearch = false } = {}) {
             <time datetime="${post.date}">${formatDate(post.date)}</time>
             <h3><a class="post-title-link" href="./posts/${post.slug}.html">${escapeHtml(post.title)}</a></h3>
             <a class="post-excerpt-link" href="./posts/${post.slug}.html">${escapeHtml(post.description)}</a>
-            ${renderTagLinks(post.tags)}
-            <a href="./posts/${post.slug}.html">读全文</a>
+            <div class="post-card-footer">
+              <a class="post-card-readmore" href="./posts/${post.slug}.html">读全文</a>
+              ${renderTagLinks(post.tags)}
+            </div>
           </article>`;
 }
 

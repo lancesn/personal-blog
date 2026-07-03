@@ -542,9 +542,22 @@ h3 {
   font-weight: 800;
 }
 
-.post-card a {
-  display: inline-flex;
+.post-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-top: 16px;
+}
+
+.post-card-footer .tag-list {
+  margin-top: 0;
+}
+
+.post-card-readmore {
+  display: inline-flex;
+  flex: none;
   color: var(--primary-strong);
   font-size: 14px;
   font-weight: 800;
