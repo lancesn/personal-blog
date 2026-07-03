@@ -1127,15 +1127,22 @@ h3 {
 }
 
 .article-content h2 {
-  margin-top: 34px;
+  margin-top: 42px;
 }
 
 .article-content p,
 .article-content ul,
 .article-content figure,
 .article-content .table-wrap {
-  margin-top: 14px;
+  margin-top: 22px;
   color: var(--text);
+}
+
+.article-content p,
+.article-content ul {
+  font-size: clamp(16.5px, 1vw + 15px, 18px);
+  line-height: 1.9;
+  letter-spacing: 0.01em;
 }
 
 .article-content figure {
@@ -1161,7 +1168,7 @@ img {
 }
 
 .article-content li + li {
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .table-wrap {
