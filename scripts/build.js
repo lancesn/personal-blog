@@ -933,6 +933,7 @@ function renderPost(post, nextPost, allPosts) {
     script: scriptTag(".."),
     image: postShareImage(post),
     ogType: "article",
+    robots: post.status === "hidden" ? "noindex" : "",
     body: `<div class="reading-progress" id="reading-progress"></div>
 ${siteNav("blog").replaceAll("./", "../")}
 
@@ -1180,23 +1181,24 @@ async function build() {
     posts.push({ ...parseMarkdownFile(source, file), modifiedTime: fileStat.mtimeMs });
   }
   sortPosts(posts);
-  const publishedPosts = posts.filter((post) => post.status !== "draft");
+  const generatedPosts = posts.filter((post) => post.status !== "draft");
+  const listedPosts = generatedPosts.filter((post) => post.status !== "hidden");
 
-  await writeFile(path.join(distDir, "index.html"), renderHome(publishedPosts));
-  await writeFile(path.join(distDir, "blog.html"), renderBlog(publishedPosts));
-  for (let pageNumber = 2; pageNumber <= Math.ceil(publishedPosts.length / blogPageSize); pageNumber += 1) {
-    await writeFile(path.join(distDir, "blog", "page", `${pageNumber}.html`), renderBlog(publishedPosts, pageNumber));
+  await writeFile(path.join(distDir, "index.html"), renderHome(listedPosts));
+  await writeFile(path.join(distDir, "blog.html"), renderBlog(listedPosts));
+  for (let pageNumber = 2; pageNumber <= Math.ceil(listedPosts.length / blogPageSize); pageNumber += 1) {
+    await writeFile(path.join(distDir, "blog", "page", `${pageNumber}.html`), renderBlog(listedPosts, pageNumber));
   }
   await writeFile(path.join(distDir, "about.html"), renderAbout());
-  await writeFile(path.join(distDir, "archive.html"), renderArchive(publishedPosts));
-  await writeFile(path.join(distDir, "search.html"), renderSearch(publishedPosts));
-  await writeFile(path.join(distDir, "tags.html"), renderTagsIndex(publishedPosts));
+  await writeFile(path.join(distDir, "archive.html"), renderArchive(listedPosts));
+  await writeFile(path.join(distDir, "search.html"), renderSearch(listedPosts));
+  await writeFile(path.join(distDir, "tags.html"), renderTagsIndex(listedPosts));
   await writeFile(path.join(distDir, "404.html"), renderNotFound());
-  await writeFile(path.join(distDir, "random.html"), renderRandomRedirect(publishedPosts));
-  await writeFile(path.join(distDir, "rss.xml"), renderRss(publishedPosts));
-  await writeFile(path.join(distDir, "sitemap.xml"), renderSitemap(publishedPosts));
+  await writeFile(path.join(distDir, "random.html"), renderRandomRedirect(listedPosts));
+  await writeFile(path.join(distDir, "rss.xml"), renderRss(listedPosts));
+  await writeFile(path.join(distDir, "sitemap.xml"), renderSitemap(listedPosts));
   await writeFile(path.join(distDir, "robots.txt"), renderRobots());
-  for (const [tag, tagPosts] of collectTags(publishedPosts)) {
+  for (const [tag, tagPosts] of collectTags(listedPosts)) {
     const tagSlug = slugify(tag);
     await writeFile(path.join(distDir, "tags", `${tagSlug}.html`), renderTagPage(tag, tagPosts));
     for (const alias of [tag, ...(slugAliases[tag] || [])]) {
@@ -1211,10 +1213,13 @@ async function build() {
       );
     }
   }
-  for (let index = 0; index < publishedPosts.length; index += 1) {
-    const post = publishedPosts[index];
-    const nextPost = publishedPosts[index + 1];
-    await writeFile(path.join(distDir, "posts", `${post.slug}.html`), renderPost(post, nextPost, publishedPosts));
+  for (const post of generatedPosts) {
+    const listedIndex = listedPosts.findIndex((candidate) => candidate.slug === post.slug);
+    const nextPost =
+      listedIndex !== -1
+        ? listedPosts[listedIndex + 1]
+        : listedPosts.find((candidate) => postSortTime(candidate) < postSortTime(post));
+    await writeFile(path.join(distDir, "posts", `${post.slug}.html`), renderPost(post, nextPost, listedPosts));
     for (const alias of [post.sourceSlug, ...post.aliases]) {
       if (alias === post.slug) continue;
       await writeFile(path.join(distDir, "posts", `${alias}.html`), renderPostRedirect(post));

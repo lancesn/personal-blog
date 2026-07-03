@@ -157,7 +157,7 @@ function renderPostList(posts) {
     .map(
       (post) => `<button class="studio-post-item" type="button" data-slug="${post.slug}">
         <strong>${post.title}</strong>
-        <span>${post.date} · ${post.readingTime || "1 分钟阅读"} · 阅读 ${post.views || 0}${post.status === "draft" ? " · 草稿" : ""}</span>
+        <span>${post.date} · ${post.readingTime || "1 分钟阅读"} · 阅读 ${post.views || 0}${post.status === "draft" ? " · 草稿" : ""}${post.status === "hidden" ? " · 隐藏" : ""}</span>
       </button>`
     )
     .join("");
