@@ -7,7 +7,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260703-card-footer-layout";
+const assetVersion = "20260703-full-bleed-icon";
 const blogPageSize = 30;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -364,8 +364,8 @@ function pageShell({ title, description, body, script = "", canonical = "", imag
     <meta name="theme-color" content="#ffffff" />
 ${robotsMeta}    <link rel="canonical" href="${escapeHtml(pageUrl)}" />
     <link rel="icon" type="image/svg+xml" href="/uploads/site-icon.svg?v=${assetVersion}" />
-    <link rel="alternate icon" type="image/png" href="/uploads/site-icon.png" />
-    <link rel="apple-touch-icon" href="/uploads/site-icon.png" />
+    <link rel="alternate icon" type="image/png" href="/uploads/site-icon.png?v=${assetVersion}" />
+    <link rel="apple-touch-icon" href="/uploads/site-icon.png?v=${assetVersion}" />
     <link rel="alternate" type="application/rss+xml" title="我的博客 RSS" href="${escapeHtml(absoluteUrl("rss.xml"))}" />
     <meta property="og:type" content="${escapeHtml(ogType)}" />
     <meta property="og:site_name" content="蓬窗灯影录" />
@@ -1149,7 +1149,7 @@ async function copyAndOptimizeUploads() {
     }
 
     const extension = path.extname(entry.name).toLowerCase();
-    if (!rasterImageExtensions.has(extension)) {
+    if (!rasterImageExtensions.has(extension) || entry.name === "site-icon.png") {
       await copyFile(srcPath, destPath);
       continue;
     }
