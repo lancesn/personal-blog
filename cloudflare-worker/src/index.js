@@ -25,7 +25,9 @@ export default {
       }
       if ((request.method === "POST" && path === "/posts") || (request.method === "PUT" && postMatch)) {
         const payload = await request.json();
-        const slug = postMatch ? decodeURIComponent(postMatch[1]) : slugify(payload.title || "");
+        const slug = postMatch
+          ? decodeURIComponent(postMatch[1])
+          : await uniqueSlug(env, slugify(payload.title || ""));
         return json(await savePost(env, slug, payload), corsHeaders);
       }
       if (request.method === "DELETE" && postMatch) {
@@ -271,6 +273,26 @@ async function getPost(env, slug) {
   const filePath = `content/posts/${slug}.md`;
   const detail = await githubRequest(env, `/contents/${encodeContentPath(filePath)}?ref=${encodeURIComponent(branch(env))}`);
   return parseMarkdown(decodeBase64(detail.content), `${slug}.md`, detail.sha, { includeBody: true });
+}
+
+async function postExists(env, slug) {
+  try {
+    await getPost(env, slug);
+    return true;
+  } catch (error) {
+    if (error.status === 404) return false;
+    throw error;
+  }
+}
+
+async function uniqueSlug(env, baseSlug) {
+  let slug = baseSlug;
+  let suffix = 2;
+  while (await postExists(env, slug)) {
+    slug = `${baseSlug}-${suffix}`;
+    suffix += 1;
+  }
+  return slug;
 }
 
 const pinyinInitials = {
