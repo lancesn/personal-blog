@@ -360,7 +360,7 @@ function renderPosts() {
     .map(
       (post) => `<button class="studio-post-item" type="button" data-slug="${escapeHtml(post.slug)}">
         <strong>${escapeHtml(post.title)}</strong>
-        <span>${escapeHtml(post.date)}${post.status === "draft" ? " · 草稿" : ""}${post.tags?.length ? ` · ${escapeHtml(post.tags.join(", "))}` : ""}</span>
+        <span>${escapeHtml(post.date)}${post.status === "draft" ? " · 草稿" : ""}${post.status === "hidden" ? " · 隐藏" : ""}${post.tags?.length ? ` · ${escapeHtml(post.tags.join(", "))}` : ""}</span>
         <small>${escapeHtml(post.description || "")}</small>
       </button>`
     )
