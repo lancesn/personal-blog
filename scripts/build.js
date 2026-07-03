@@ -7,7 +7,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260703-article-typography";
+const assetVersion = "20260703-prev-post-fab";
 const blogPageSize = 30;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -903,7 +903,7 @@ function postJsonLd(post) {
   return `<script type="application/ld+json">${JSON.stringify(data)}</script>`;
 }
 
-function renderPost(post, nextPost, allPosts) {
+function renderPost(post, nextPost, prevPost, allPosts) {
   const { html: content, toc } = markdownToHtml(post.body);
   const postShareExcerpt = shareExcerpt(post);
   const tableOfContents =
@@ -922,6 +922,15 @@ function renderPost(post, nextPost, allPosts) {
           <span class="next-post-fab-title">${escapeHtml(nextPost.title)}</span>
         </span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </a>`
+    : "";
+  const prevPostFab = prevPost
+    ? `<a class="prev-post-fab" href="./${prevPost.slug}.html" aria-label="上一篇：${escapeHtml(prevPost.title)}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <span class="prev-post-fab-text">
+          <span class="prev-post-fab-label">上一篇</span>
+          <span class="prev-post-fab-title">${escapeHtml(prevPost.title)}</span>
+        </span>
       </a>`
     : "";
   const relatedPostsSection = renderRelatedPosts(findRelatedPosts(post, allPosts));
@@ -971,6 +980,7 @@ ${content}
       ${relatedPostsSection}
       <nav class="article-nav article-nav-bottom"><a href="../blog.html">← 返回博客</a></nav>
       ${nextPostFab}
+      ${prevPostFab}
     </main>`
   }).replace(`href="./styles.css?v=${assetVersion}"`, `href="../styles.css?v=${assetVersion}"`);
 }
@@ -1219,7 +1229,11 @@ async function build() {
       listedIndex !== -1
         ? listedPosts[listedIndex + 1]
         : listedPosts.find((candidate) => postSortTime(candidate) < postSortTime(post));
-    await writeFile(path.join(distDir, "posts", `${post.slug}.html`), renderPost(post, nextPost, listedPosts));
+    const prevPost =
+      listedIndex !== -1
+        ? listedPosts[listedIndex - 1]
+        : [...listedPosts].reverse().find((candidate) => postSortTime(candidate) > postSortTime(post));
+    await writeFile(path.join(distDir, "posts", `${post.slug}.html`), renderPost(post, nextPost, prevPost, listedPosts));
     for (const alias of [post.sourceSlug, ...post.aliases]) {
       if (alias === post.slug) continue;
       await writeFile(path.join(distDir, "posts", `${alias}.html`), renderPostRedirect(post));

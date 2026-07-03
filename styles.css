@@ -1026,10 +1026,10 @@ h3 {
   font-weight: 800;
 }
 
-.next-post-fab {
+.next-post-fab,
+.prev-post-fab {
   position: fixed;
   z-index: 15;
-  right: 24px;
   bottom: 24px;
   display: inline-flex;
   align-items: center;
@@ -1045,24 +1045,40 @@ h3 {
   transition: transform 160ms ease, border-color 160ms ease;
 }
 
-.next-post-fab:hover {
+.next-post-fab {
+  right: 24px;
+}
+
+.prev-post-fab {
+  left: 24px;
+}
+
+.next-post-fab:hover,
+.prev-post-fab:hover {
   border-color: color-mix(in srgb, var(--primary) 44%, var(--line));
   transform: translateY(-2px);
 }
 
-.next-post-fab-text {
+.next-post-fab-text,
+.prev-post-fab-text {
   display: grid;
   gap: 2px;
   min-width: 0;
 }
 
-.next-post-fab-label {
+.next-post-fab-label,
+.prev-post-fab-label {
   color: var(--muted);
   font-size: 11px;
   font-weight: 800;
 }
 
-.next-post-fab-title {
+.prev-post-fab-label {
+  text-align: right;
+}
+
+.next-post-fab-title,
+.prev-post-fab-title {
   overflow: hidden;
   font-size: 14px;
   font-weight: 800;
@@ -1070,7 +1086,8 @@ h3 {
   white-space: nowrap;
 }
 
-.next-post-fab svg {
+.next-post-fab svg,
+.prev-post-fab svg {
   flex: none;
   width: 18px;
   height: 18px;
@@ -1078,11 +1095,19 @@ h3 {
 }
 
 @media (max-width: 720px) {
+  .next-post-fab,
+  .prev-post-fab {
+    bottom: 16px;
+    max-width: min(200px, calc(50vw - 24px));
+    padding: 10px 14px;
+  }
+
   .next-post-fab {
     right: 16px;
-    bottom: 16px;
-    max-width: min(220px, calc(100vw - 32px));
-    padding: 10px 14px;
+  }
+
+  .prev-post-fab {
+    left: 16px;
   }
 }
 
