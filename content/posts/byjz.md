@@ -8,7 +8,7 @@ status: published
 publishedAt: 2026-07-04T04:42:38.017Z
 ---
 
-![IMG_5597.jpeg](../uploads/image-20260704071502.jpeg)
+![IMG_5597.jpeg](../uploads/image-20260704072524.jpeg)
 
 暴风雨
 
