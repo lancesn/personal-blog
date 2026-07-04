@@ -1,14 +1,14 @@
 ---
 title: 暴雨将至
 date: 2026-07-04
-description: 
+description: 暴风雨 乌云从远处推来，层层叠叠地压在屋顶上。天空被灰黑色云团占满，光线迅速暗下去，红砖墙、白檐口、蓝灰色瓦片都失去平日的明亮，只剩清冷的轮廓。屋脊沿着云层下方起伏，尖角分明，像被...
 readingTime: 
 tags: [日常, 散文]
 status: published
 publishedAt: 2026-07-04T04:42:38.017Z
 ---
 
-![IMG_5597.jpeg](../uploads/image-20260704044221.jpeg)
+![IMG_5597.jpeg](../uploads/image-20260704071502.jpeg)
 
 暴风雨
 
