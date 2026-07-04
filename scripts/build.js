@@ -168,6 +168,8 @@ const slugAliases = {
   正念: ["mindfulness"]
 };
 
+const namedHeadingSections = new Set(["引言", "前言", "结论", "小结", "结语", "摘要", "关键词"]);
+
 function slugify(value) {
   const text = String(value || "").trim();
   if (slugOverrides[text]) return slugOverrides[text];
@@ -325,6 +327,20 @@ function markdownToHtml(markdown) {
       toc.push({ level: 2, id, text });
       html.push(`<h2 id="${id}">${inlineMarkdown(text)}</h2>`);
       continue;
+    }
+
+    const boldHeading = lines.length === 1 && firstLine.trim().match(/^\*\*(.+)\*\*$/);
+    if (boldHeading) {
+      const text = boldHeading[1].trim();
+      const isSubsection = /^（[一二三四五六七八九十]+）/.test(text);
+      const isSection = /^[一二三四五六七八九十]+、/.test(text) || namedHeadingSections.has(text);
+      if (isSection || isSubsection) {
+        const level = isSubsection ? 3 : 2;
+        const id = headingId(text);
+        toc.push({ level, id, text });
+        html.push(`<h${level} id="${id}">${inlineMarkdown(text)}</h${level}>`);
+        continue;
+      }
     }
 
     if (lines.every((line) => line.startsWith("- "))) {
