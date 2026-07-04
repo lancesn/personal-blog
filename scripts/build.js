@@ -1115,10 +1115,15 @@ ${[...staticEntries, ...postEntries].join("\n")}
 }
 
 async function optimizeImageFile(srcPath, destPath, extension) {
-  const image = sharp(srcPath);
+  // .rotate() with no args auto-orients using the file's EXIF Orientation tag
+  // and bakes the rotation into the pixel data. Without it, sharp keeps the
+  // raw sensor pixel layout but strips the EXIF tag on re-encode, so phone
+  // photos taken in portrait end up displayed sideways on the live site.
+  const image = sharp(srcPath).rotate();
   const metadata = await image.metadata();
+  const orientedWidth = (metadata.orientation || 1) >= 5 ? metadata.height : metadata.width;
   const resized =
-    metadata.width && metadata.width > maxUploadImageWidth
+    orientedWidth && orientedWidth > maxUploadImageWidth
       ? image.resize({ width: maxUploadImageWidth, withoutEnlargement: true })
       : image;
 
