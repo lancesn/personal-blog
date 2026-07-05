@@ -196,9 +196,23 @@ function postSortTime(post) {
   const date = Date.parse(`${post.date || "1970-01-01"}T00:00:00`);
   if (Number.isFinite(date)) return date;
 
+  return postPublishedTime(post);
+}
+
+function postPublishedTime(post) {
   const published = Date.parse(post.publishedAt || "");
   if (Number.isFinite(published)) return published;
   return 0;
+}
+
+function comparePosts(a, b) {
+  const byDate = postSortTime(b) - postSortTime(a);
+  if (byDate) return byDate;
+
+  const byPublished = postPublishedTime(b) - postPublishedTime(a);
+  if (byPublished) return byPublished;
+
+  return a.title.localeCompare(b.title, "zh-Hans");
 }
 
 function parsePositiveInt(value, fallback, max = 100) {
@@ -249,7 +263,7 @@ async function listPosts(env, searchParams) {
   for (const post of posts) {
     summaries.push(await getPostSummary(env, post.slug));
   }
-  summaries.sort((a, b) => postSortTime(b) - postSortTime(a) || a.title.localeCompare(b.title, "zh-Hans"));
+  summaries.sort(comparePosts);
 
   const tags = [...new Set(summaries.flatMap((post) => post.tags))].sort((a, b) => a.localeCompare(b, "zh-Hans"));
   const filteredPosts = summaries.filter((post) => matchesPost(post, q, tag));

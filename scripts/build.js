@@ -7,7 +7,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260705-date-sort";
+const assetVersion = "20260705-date-published-sort";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -119,18 +119,30 @@ function parseMarkdownFile(source, fileName) {
 }
 
 function sortPosts(posts) {
-  posts.sort((a, b) => {
-    const byTime = postSortTime(b) - postSortTime(a);
-    if (byTime) return byTime;
+  posts.sort(comparePosts);
+}
 
-    return a.title.localeCompare(b.title, "zh-Hans");
-  });
+function comparePosts(a, b) {
+  const byDate = postSortTime(b) - postSortTime(a);
+  if (byDate) return byDate;
+
+  const byPublished = postPublishedTime(b) - postPublishedTime(a);
+  if (byPublished) return byPublished;
+
+  const byModified = Number(b.modifiedTime || 0) - Number(a.modifiedTime || 0);
+  if (byModified) return byModified;
+
+  return a.title.localeCompare(b.title, "zh-Hans");
 }
 
 function postSortTime(post) {
   const date = Date.parse(`${post.date || "1970-01-01"}T00:00:00`);
   if (Number.isFinite(date)) return date;
 
+  return postPublishedTime(post);
+}
+
+function postPublishedTime(post) {
   const published = Date.parse(post.publishedAt || "");
   if (Number.isFinite(published)) return published;
 
@@ -919,7 +931,7 @@ function findRelatedPosts(post, allPosts, limit = 3) {
       shared: candidate.tags.filter((tag) => post.tags.includes(tag)).length
     }))
     .filter((entry) => entry.shared > 0)
-    .sort((a, b) => b.shared - a.shared || postSortTime(b.post) - postSortTime(a.post))
+    .sort((a, b) => b.shared - a.shared || comparePosts(a.post, b.post))
     .slice(0, limit)
     .map((entry) => entry.post);
 }
