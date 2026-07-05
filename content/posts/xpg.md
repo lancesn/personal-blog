@@ -1,7 +1,7 @@
 ---
 title: 削苹果
-date: 2026-07-03
-description: 
+date: 2026-06-27
+description: 一个苹果放在案板上。红黄相间，带一点凉气，刚从冰箱里拿出来。 手拿起小刀，刀刃朝外，开始削皮。 先不急，看一眼这个苹果的形状。它不是很圆，一侧微微凹进去，那大概是它长在树上时，被另...
 readingTime: 
 tags: [日常, 正念]
 status: published
