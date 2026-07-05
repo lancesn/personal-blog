@@ -7,7 +7,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260705-not-found";
+const assetVersion = "20260705-not-found-root";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -721,8 +721,8 @@ function renderNotFound() {
     description: "这条路径暂时没有文章。可以回到首页、翻看博客，或随缘读一篇。",
     canonical: absoluteUrl("404.html"),
     robots: "noindex",
-    script: scriptTag("."),
-    body: `${siteNav(null)}
+    script: `    <script src="/script.js?v=${assetVersion}"></script>`,
+    body: `${siteNav(null).replaceAll('href="./', 'href="/')}
 
     <main class="site-shell not-found-shell">
       <section class="not-found-page section" aria-labelledby="not-found-title">
@@ -732,17 +732,17 @@ function renderNotFound() {
           <h1 id="not-found-title">这一页暂时无处可寻</h1>
           <p>可能是链接写错了，也可能是旧页面已经迁走。先回到可抵达的地方，再慢慢翻看。</p>
           <div class="not-found-actions" aria-label="可选去处">
-            <a class="button primary" href="./index.html">返回首页</a>
-            <a class="button dark" href="./blog.html">浏览博客</a>
-            <a class="button ghost" href="./archive.html">查看存档</a>
-            <a class="button ghost" href="./random.html">随缘一篇</a>
+            <a class="button primary" href="/index.html">返回首页</a>
+            <a class="button dark" href="/blog.html">浏览博客</a>
+            <a class="button ghost" href="/archive.html">查看存档</a>
+            <a class="button ghost" href="/random.html">随缘一篇</a>
           </div>
         </div>
       </section>
     </main>
 
 ${siteFooter()}`
-  });
+  }).replace(`href="./styles.css?v=${assetVersion}"`, `href="/styles.css?v=${assetVersion}"`);
 }
 
 function renderAbout() {
