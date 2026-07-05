@@ -125,14 +125,15 @@ function renderMarkdown(data) {
 }
 
 function postSortTime(post) {
+  const date = Date.parse(`${post.date || "1970-01-01"}T00:00:00`);
+  if (Number.isFinite(date)) return date;
+
   const published = Date.parse(post.publishedAt || "");
   if (Number.isFinite(published)) return published;
 
   const modified = Number(post.modifiedTime || 0);
   if (modified) return modified;
-
-  const date = Date.parse(`${post.date || "1970-01-01"}T00:00:00`);
-  return Number.isFinite(date) ? date : 0;
+  return 0;
 }
 
 function postPath(slug) {
