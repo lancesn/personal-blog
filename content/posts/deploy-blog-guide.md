@@ -1,6 +1,6 @@
 ---
-title: 手把手部署我的静态博客：GitHub Pages、Cloudflare Worker 与在线后台
-date: 2026-07-05
+title: 自己手搓静态博客：GitHub Pages、Cloudflare Worker 与在线后台
+date: 2026-06-10
 description: 这是一篇从零到上线的部署记录：如何把一个 Markdown 静态博客放到 GitHub Pages，再用 Cloudflare Worker 做在线后台，让写文章、传图片、发布更新都可以在网页里完成。
 readingTime: 8
 tags: [技术]
@@ -8,9 +8,9 @@ status: published
 publishedAt: 2026-07-05T10:45:00.000Z
 ---
 
-这篇文章记录我现在这套博客的部署方式。它不是最复杂的方案，也不是最省步骤的方案，但有一个好处：所有东西都摊开在明处，文章是 Markdown，页面是静态 HTML，部署靠 GitHub Pages，后台写入靠 Cloudflare Worker，中间没有一台需要长期维护的服务器。
+这篇文章记录我现在这套博客的部署方式，这是一个完全静态博客的方案。文章是 Markdown，页面是静态 HTML，部署靠 GitHub Pages，后台写入靠 Cloudflare Worker，中间没有一台需要长期维护的服务器。
 
-适合的读者是：想自己搭一个个人博客，又希望以后能在浏览器里写文章、改文章、传图片，而不是每次都打开编辑器、敲命令、手动提交。
+适合想自己搭一个个人博客，又希望以后能在浏览器里写文章、改文章、传图片，而不是每次都打开编辑器、敲命令、手动提交。
 
 ## 一、最终效果
 
