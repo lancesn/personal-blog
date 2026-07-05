@@ -544,13 +544,45 @@ if (shareBar) {
     await navigator.share({ title, text: description || title, url: shareUrl });
   }
 
-  async function copyUrl(successText = "已复制文章链接") {
+  function legacyCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.top = "-1000px";
+    textarea.style.left = "-1000px";
+    document.body.appendChild(textarea);
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+    let succeeded = false;
     try {
-      await navigator.clipboard.writeText(copyText);
+      succeeded = document.execCommand("copy");
+    } catch {
+      succeeded = false;
+    }
+    document.body.removeChild(textarea);
+    return succeeded;
+  }
+
+  async function copyUrl(successText = "已复制文章链接") {
+    const showSuccess = () => {
       if (hint) hint.textContent = successText;
       window.setTimeout(() => {
         if (hint) hint.textContent = "";
       }, 1600);
+    };
+
+    // Try the legacy, synchronous copy method first: WeChat's in-app browser
+    // can leave the modern Clipboard API's permission prompt pending forever,
+    // making navigator.clipboard.writeText() hang without ever resolving.
+    if (legacyCopy(copyText)) {
+      showSuccess();
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(copyText);
+      showSuccess();
     } catch {
       if (hint) hint.textContent = "复制失败，请手动复制地址栏链接。";
     }

@@ -2,12 +2,182 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="这几天把自己的个人博客从“本地写作、本地发布”，一步步改成了可以在线管理的版本。中间踩了不少坑，尤其是 GitHub Pages、Cloudflare Worker、GitHub ..." />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="robots" content="noindex" />
-    <meta http-equiv="refresh" content="0; url=cbdbkdzxhtwqscjcjtbkbsjl.html" />
-    <link rel="canonical" href="https://silencegate.com/posts/cbdbkdzxhtwqscjcjtbkbsjl.html" />
+    <link rel="canonical" href="https://silencegate.com/posts/从本地博客到在线后台-完全手搓纯静态博客部署记录.html" />
+    <link rel="icon" type="image/svg+xml" href="/uploads/site-icon.svg?v=20260705-nav-meta-date" />
+    <link rel="alternate icon" type="image/png" href="/uploads/site-icon.png" />
+    <link rel="apple-touch-icon" href="/uploads/site-icon-touch.png?v=20260705-nav-meta-date" />
+    <link rel="alternate" type="application/rss+xml" title="我的博客 RSS" href="https://silencegate.com/rss.xml" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="蓬窗灯影录" />
+    <meta property="og:title" content="从本地博客到在线后台：完全手搓纯静态博客部署记录" />
+    <meta property="og:description" content="这几天把自己的个人博客从“本地写作、本地发布”，一步步改成了可以在线管理的版本。中间踩了不少坑，尤其是 GitHub Pages、Cloudflare Worker、GitHub ..." />
+    <meta property="og:url" content="https://silencegate.com/posts/从本地博客到在线后台-完全手搓纯静态博客部署记录.html" />
+    <meta property="og:image" content="https://silencegate.com/uploads/blog-avatar.jpg" />
+    <meta property="og:image:secure_url" content="https://silencegate.com/uploads/blog-avatar.jpg" />
+    <meta property="og:image:alt" content="从本地博客到在线后台：完全手搓纯静态博客部署记录" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://silencegate.com/uploads/blog-avatar.jpg" />
+    <meta itemprop="name" content="从本地博客到在线后台：完全手搓纯静态博客部署记录" />
+    <meta itemprop="description" content="这几天把自己的个人博客从“本地写作、本地发布”，一步步改成了可以在线管理的版本。中间踩了不少坑，尤其是 GitHub Pages、Cloudflare Worker、GitHub ..." />
+    <meta itemprop="image" content="https://silencegate.com/uploads/blog-avatar.jpg" />
     <title>从本地博客到在线后台：完全手搓纯静态博客部署记录</title>
+    <link rel="stylesheet" href="../styles.css?v=20260705-nav-meta-date" />
   </head>
   <body>
-    <p><a href="cbdbkdzxhtwqscjcjtbkbsjl.html">正在跳转到 从本地博客到在线后台：完全手搓纯静态博客部署记录</a></p>
+<div class="reading-progress" id="reading-progress"></div>
+    <nav class="top-nav" aria-label="主导航">
+      <a href="../index.html">首页</a>
+      <a href="../blog.html" aria-current="page">博客</a>
+      <a href="../archive.html">存档</a>
+      <a href="../search.html">搜索</a>
+      <a href="../about.html">关于</a>
+      <a href="../random.html" title="随机看一篇文章">随缘</a>
+      <button class="theme-toggle" type="button" aria-label="切换深浅色">☼</button>
+    </nav>
+
+    <main class="article" data-post-slug="从本地博客到在线后台-完全手搓纯静态博客部署记录" data-post-title="从本地博客到在线后台：完全手搓纯静态博客部署记录" data-post-description="这几天把自己的个人博客从“本地写作、本地发布”，一步步改成了可以在线管理的版本。中间踩了不少坑，尤其是 GitHub Pages、Cloudflare Worker、GitHub ..." data-post-url="https://silencegate.com/posts/从本地博客到在线后台-完全手搓纯静态博客部署记录.html">
+      <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"从本地博客到在线后台：完全手搓纯静态博客部署记录","description":"这几天把自己的个人博客从“本地写作、本地发布”，一步步改成了可以在线管理的版本。中间踩了不少坑，尤其是 GitHub Pages、Cloudflare Worker、GitHub ...","datePublished":"2026-06-30T17:55:27.543Z","url":"https://silencegate.com/posts/从本地博客到在线后台-完全手搓纯静态博客部署记录.html","inLanguage":"zh-CN","author":{"@type":"Person","name":"Lance Shen"},"publisher":{"@type":"Organization","name":"蓬窗灯影录"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://silencegate.com/posts/从本地博客到在线后台-完全手搓纯静态博客部署记录.html"},"image":"https://silencegate.com/uploads/blog-avatar.jpg"}</script>
+      <nav class="article-nav"><a href="../blog.html">← 返回博客</a></nav>
+      <h1>从本地博客到在线后台：完全手搓纯静态博客部署记录</h1>
+      <div class="article-meta">
+        <time datetime="2026-07-01">2026年7月1日</time>
+        <span>10 分钟阅读</span>
+        <a href="../tags/js.html">技术</a>
+      </div>
+      <div class="article-share-row" aria-label="分享文章">
+        <button class="share-icon-button" type="button" data-share-copy aria-label="复制链接" title="复制链接"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7.5A2.5 2.5 0 0 1 10.5 5H19a2.5 2.5 0 0 1 2.5 2.5V16a2.5 2.5 0 0 1-2.5 2.5h-8.5A2.5 2.5 0 0 1 8 16V7.5Zm2 0V16c0 .3.2.5.5.5H19c.3 0 .5-.2.5-.5V7.5c0-.3-.2-.5-.5-.5h-8.5c-.3 0-.5.2-.5.5Z"/><path d="M2.5 8A2.5 2.5 0 0 1 5 5.5h1V8H5v8.5c0 .3.2.5.5.5H6V19H5.5A2.5 2.5 0 0 1 3 16.5V8h-.5Zm2.5 11h9v1a2.5 2.5 0 0 1-2.5 2.5h-6A2.5 2.5 0 0 1 3 20v-1h2Z"/></svg></button>
+        <button class="share-icon-button" type="button" data-share-wechat aria-label="分享到微信" title="分享到微信"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.1 4C5.2 4 2 6.5 2 9.6c0 1.8 1.1 3.4 2.8 4.4l-.6 2 2.3-1.2c.8.2 1.6.4 2.6.4h.5a5.6 5.6 0 0 1-.2-1.4c0-3 2.9-5.4 6.4-5.4h.3C15.4 5.9 12.5 4 9.1 4Zm-2.4 4.6a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8Zm4.7 0a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8Z"/><path d="M22 13.8c0-2.5-2.6-4.6-5.8-4.6s-5.8 2.1-5.8 4.6 2.6 4.6 5.8 4.6c.7 0 1.4-.1 2.1-.3l2 1-.5-1.7c1.4-.8 2.2-2.1 2.2-3.6Zm-7.7-1.1a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4Zm3.9 0a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4Z"/></svg></button>
+        <a class="share-icon-button" data-share-whatsapp href="#" aria-label="分享到 WhatsApp" title="分享到 WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a9.7 9.7 0 0 0-8.4 14.6L2.5 22l5.5-1.1A9.7 9.7 0 1 0 12 2Zm0 2a7.7 7.7 0 0 1 0 15.4c-1.2 0-2.4-.3-3.4-.8l-.4-.2-3 .6.6-2.9-.2-.4A7.7 7.7 0 0 1 12 4Zm-3.1 3.9c-.2 0-.5.1-.7.4-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.9 4.5 3.9 2.2.9 2.7.7 3.2.6.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.1-1.3-.1-.1-.2-.2-.5-.4l-1.8-.9c-.3-.1-.5-.2-.7.2l-.7.9c-.1.2-.3.2-.6.1-.3-.1-1.1-.4-2-1.2-.8-.7-1.3-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.8-1.9c-.2-.4-.4-.4-.6-.4h-.6Z"/></svg></a>
+        <a class="share-icon-button" data-share-facebook href="#" aria-label="分享到 Facebook" title="分享到 Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.1 8.1V6.5c0-.8.5-1 1.1-1h1.8V2.3c-.3 0-1.5-.2-2.9-.2-2.9 0-4.8 1.7-4.8 4.9v1.1H6.1v3.6h3.2V22h3.9V11.7h3.2l.5-3.6h-3.8Z"/></svg></a>
+        <a class="share-icon-button" data-share-weibo href="#" aria-label="分享到微博" title="分享到微博"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.7 3.5c1.8.8 2.7 2.6 2.4 4.5l-1.8-.3c.2-1.1-.4-2.1-1.4-2.6l.8-1.6Z"/><path d="M17.2 6.4c.8.4 1.2 1.2 1 2.1l-1.6-.3c.1-.3-.1-.6-.4-.8l1-1Z"/><path d="M11.2 9.2c4.6-.4 8.5 1.6 8.8 4.5.3 2.9-3.1 5.6-7.7 6-4.6.4-8.5-1.6-8.8-4.5-.2-1.9 1.2-3.7 3.5-4.8.3-1.7 1.7-4.3 3.3-4.1 1 .1 1.3 1.4.9 2.9Zm.8 8.5c2.8-.3 5-1.9 4.8-3.7-.2-1.8-2.6-3-5.4-2.8-2.8.3-5 1.9-4.8 3.7.2 1.8 2.6 3 5.4 2.8Z"/><path d="M9.7 13.2c1.6-.5 3.3.1 3.8 1.2.5 1.2-.4 2.5-2 3-1.6.5-3.3-.1-3.8-1.2-.5-1.2.4-2.5 2-3Zm.4 2.3c.4-.1.7-.5.6-.8-.1-.3-.5-.4-.9-.3-.4.1-.7.5-.6.8.1.3.5.4.9.3Z"/></svg></a>
+        <a class="share-icon-button" data-share-x href="#" aria-label="分享到 X" title="分享到 X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.8 10.5 21.1 2h-1.8l-6.3 7.3L8 2H2.2l7.7 11.2L2.2 22h1.8l6.7-7.7L16 22h5.8l-8-11.5Zm-2.4 2.8-.8-1.1L4.5 3.4h2.6l4.9 7 .8 1.1 6.4 9.1h-2.6l-5.2-7.3Z"/></svg></a>
+        <button class="share-icon-button" type="button" data-share-poster aria-label="生成分享图" title="生成分享图"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4h15A2.5 2.5 0 0 1 22 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 17.5v-11A2.5 2.5 0 0 1 4.5 4Zm0 2c-.3 0-.5.2-.5.5v9.4l4.9-4.9a1 1 0 0 1 1.3-.1l2.9 2.2 3.3-3.6a1 1 0 0 1 1.5 0L20 12.8V6.5c0-.3-.2-.5-.5-.5h-15ZM9 8.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"/></svg></button>
+        <p data-share-hint></p>
+      </div>
+      <div class="poster-modal" id="poster-modal" hidden>
+        <div class="poster-modal-backdrop" data-poster-close></div>
+        <div class="poster-modal-panel">
+          <button class="poster-modal-close" type="button" data-poster-close aria-label="关闭">✕</button>
+          <canvas class="poster-canvas" id="poster-canvas" width="750" height="1000"></canvas>
+          <div class="poster-modal-actions">
+            <a class="button primary" id="poster-download" download="从本地博客到在线后台-完全手搓纯静态博客部署记录-share.png">保存图片</a>
+            <p class="poster-modal-hint">生成中可能需要几秒</p>
+          </div>
+        </div>
+      </div>
+      <nav class="toc" aria-label="文章目录">
+        <h2>目录</h2>
+        <a class="toc-level-2" href="#一-最初的结构">一、最初的结构</a>
+        <a class="toc-level-2" href="#二-为什么要做在线后台">二、为什么要做在线后台</a>
+        <a class="toc-level-2" href="#三-整体方案">三、整体方案</a>
+        <a class="toc-level-2" href="#四-cloudflare-worker-的作用">四、Cloudflare Worker 的作用</a>
+        <a class="toc-level-2" href="#五-需要配置的-secret">五、需要配置的 Secret</a>
+        <a class="toc-level-2" href="#六-发布流程">六、发布流程</a>
+        <a class="toc-level-2" href="#七-中间踩过的坑">七、中间踩过的坑</a>
+        <a class="toc-level-3" href="#1-github-pages-不是实时更新">1. GitHub Pages 不是实时更新</a>
+        <a class="toc-level-3" href="#2-自定义域名要统一">2. 自定义域名要统一</a>
+        <a class="toc-level-3" href="#3-x-分享中文链接会断">3. X 分享中文链接会断</a>
+        <a class="toc-level-3" href="#4-cloudflare-api-偶尔超时">4. Cloudflare API 偶尔超时</a>
+        <a class="toc-level-2" href="#八-为什么保留本地后台">八、为什么保留本地后台</a>
+        <a class="toc-level-2" href="#九-目前的结果">九、目前的结果</a>
+        <a class="toc-level-2" href="#十-总结">十、总结</a>
+      </nav>
+      <article class="article-content">
+<p>这几天把自己的个人博客从“本地写作、本地发布”，一步步改成了可以在线管理的版本。中间踩了不少坑，尤其是 GitHub Pages、Cloudflare Worker、GitHub Token、分享链接这些细节，记录下来，给以后折腾的人做个参考。</p>
+<h2 id="一-最初的结构">一、最初的结构</h2>
+<p>我的博客最开始是一个静态博客，托管在 GitHub Pages 上。</p>
+<p>基本结构是：</p>
+<ul><li>Markdown 写文章</li><li>构建脚本生成 HTML</li><li>GitHub Pages 负责展示</li><li>本地后台负责新建、编辑、删除文章</li><li>发布时本地执行 Git 提交和推送</li></ul>
+<p>这种方式的好处是简单、稳定、免费，静态页面访问也很快。</p>
+<p>但缺点也很明显：后台只能在本地用。换一台电脑，或者手机上想写文章，就不方便了。</p>
+<h2 id="二-为什么要做在线后台">二、为什么要做在线后台</h2>
+<p>我希望达到的效果很简单：</p>
+<p>打开一个网页，就能写文章、改文章、传图片，然后自动发布到博客。</p>
+<p>但这里有一个关键问题：在线后台如果要写入 GitHub 仓库，就需要 GitHub Token。</p>
+<p>这个 Token 不能直接写在前端代码里。否则任何人打开网页源码，都能拿到 Token，等于把仓库写权限公开给全网。</p>
+<p>所以最后采用的方案是：</p>
+<p><code>`</code>text 在线后台页面     ↓ Cloudflare Worker     ↓ GitHub API     ↓ GitHub Pages 自动构建发布 <code>`</code></p>
+<p>前端只负责编辑内容；真正的 GitHub Token 放在 Cloudflare Worker 的环境变量里。</p>
+<h2 id="三-整体方案">三、整体方案</h2>
+<p>最终架构如下：</p>
+<p>1. GitHub Pages 托管博客前台 2. <code>/admin-online/</code> 作为在线后台页面 3. Cloudflare Worker 作为安全中转层 4. GitHub Token 存在 Worker Secret 中 5. 后台密码也存在 Worker Secret 中 6. 在线后台通过 Worker 创建、修改、删除文章 7. GitHub Actions 自动构建并发布</p>
+<p>这样做的好处是：</p>
+<ul><li>GitHub Token 不暴露</li><li>本地后台仍然保留</li><li>在线后台手机和电脑都能用</li><li>不需要服务器</li><li>成本基本为零</li></ul>
+<h2 id="四-cloudflare-worker-的作用">四、Cloudflare Worker 的作用</h2>
+<p>Cloudflare Worker 在这里主要做三件事：</p>
+<p>1. 验证后台密码 2. 调用 GitHub API 3. 把文章和图片写入仓库</p>
+<p>前端访问 Worker 时，只需要带一个后台密码。Worker 验证通过后，才会用保存在环境变量里的 GitHub Token 去操作仓库。</p>
+<p>这一步很关键。不要把 GitHub Token 写进前端，也不要写进公开仓库。</p>
+<h2 id="五-需要配置的-secret">五、需要配置的 Secret</h2>
+<p>Worker 里需要两个 Secret：</p>
+<p><code>`</code>text GITHUB_TOKEN ADMIN_PASSWORD <code>`</code></p>
+<p>其中：</p>
+<ul><li><code>GITHUB_TOKEN</code> 用来写入 GitHub 仓库</li><li><code>ADMIN_PASSWORD</code> 是自己登录在线后台用的密码</li></ul>
+<p>GitHub Token 只需要给目标仓库的 Contents 读写权限即可，不要给太大权限。</p>
+<p>推荐权限：</p>
+<p><code>`</code>text Repository access: Only select repositories Repository: personal-blog Contents: Read and write Metadata: Read-only <code>`</code></p>
+<h2 id="六-发布流程">六、发布流程</h2>
+<p>配置完成后，写文章的流程变成：</p>
+<p>1. 打开在线后台 2. 输入后台密码 3. 读取文章列表 4. 新建或编辑文章 5. 保存 6. Worker 写入 GitHub 7. GitHub Actions 自动构建 8. GitHub Pages 自动发布</p>
+<p>整个过程不需要本地启动服务，也不需要手动 git push。</p>
+<h2 id="七-中间踩过的坑">七、中间踩过的坑</h2>
+<h3 id="1-github-pages-不是实时更新">1. GitHub Pages 不是实时更新</h3>
+<p>有时候代码已经推送了，但页面还是旧的，甚至会出现 404。</p>
+<p>原因通常是 GitHub Pages 构建和 CDN 缓存还没刷新。</p>
+<p>解决办法：</p>
+<ul><li>等几分钟</li><li>强制刷新浏览器</li><li>用无痕窗口测试</li><li>查看 GitHub Actions 是否完成</li></ul>
+<h3 id="2-自定义域名要统一">2. 自定义域名要统一</h3>
+<p>博客之前还显示 GitHub Pages 地址，后来统一改成了自己的域名：</p>
+<p><code>`</code>text https://silencegate.com <code>`</code></p>
+<p>需要同步修改：</p>
+<ul><li>canonical</li><li>og:url</li><li>RSS 链接</li><li>分享链接</li><li>文章页 data-post-url</li></ul>
+<p>否则分享出去还是 GitHub 地址。</p>
+<h3 id="3-x-分享中文链接会断">3. X 分享中文链接会断</h3>
+<p>中文文章名直接出现在 URL 里，分享到 X 时有可能链接只识别到 <code>/posts/</code>，后面的中文部分不能点击。</p>
+<p>解决方式是分享时使用编码后的 URL：</p>
+<p><code>`</code>text https://silencegate.com/posts/%E9%81%93%E4%B8%8D... <code>`</code></p>
+<p>这样虽然不如中文直观，但整条链接可以正常点击。</p>
+<h3 id="4-cloudflare-api-偶尔超时">4. Cloudflare API 偶尔超时</h3>
+<p>部署 Worker 或写入 Secret 时，Cloudflare API 有时会超时。</p>
+<p>一般不是配置错了，重试一次就行。</p>
+<h2 id="八-为什么保留本地后台">八、为什么保留本地后台</h2>
+<p>虽然已经有在线后台，但我还是保留了本地后台。</p>
+<p>原因很简单：</p>
+<ul><li>本地后台可以作为备用</li><li>大改文章时本地更稳</li><li>出问题时可以直接调试</li><li>在线后台只负责日常发布</li></ul>
+<p>这比完全依赖在线系统更安心。</p>
+<h2 id="九-目前的结果">九、目前的结果</h2>
+<p>现在博客已经具备：</p>
+<ul><li>静态博客前台</li><li>GitHub Pages 自动部署</li><li>在线文章后台</li><li>Cloudflare Worker 安全代理</li><li>图片上传</li><li>文章编辑和删除</li><li>阅读页分享</li><li>自定义域名</li><li>日夜模式</li><li>标签、搜索、存档</li></ul>
+<p>对一个个人博客来说，已经够用了。</p>
+<h2 id="十-总结">十、总结</h2>
+<p>这次改造最大的体会是：</p>
+<p>静态博客并不一定只能本地维护。只要把“写入仓库”这件事交给一个安全的后端代理，静态博客也可以拥有在线后台。</p>
+<p>但有一条底线不能破：</p>
+<p>不要把 GitHub Token 写进前端代码。</p>
+<p>省事不能以公开写权限为代价。真正稳妥的做法，是把 Token 放在 Cloudflare Worker、Vercel Function 或其他服务端环境变量里。</p>
+<p>个人博客不一定要复杂，但一定要可控。能写、能发、能维护，才是最重要的。</p>
+      </article>
+
+      <nav class="article-nav article-nav-bottom"><a href="../blog.html">← 返回博客</a></nav>
+      <a class="next-post-fab" href="./dbscxbjj.html" aria-label="下一篇：道不私藏，席不久居">
+        <span class="next-post-fab-text">
+          <span class="next-post-fab-label">下一篇</span>
+          <span class="next-post-fab-title">道不私藏，席不久居</span>
+        </span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </a>
+      <a class="prev-post-fab" href="./zzzw.html" aria-label="上一篇：柱杖之外">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <span class="prev-post-fab-text">
+          <span class="prev-post-fab-label">上一篇</span>
+          <span class="prev-post-fab-title">柱杖之外</span>
+        </span>
+      </a>
+    </main>
+    <script src="../script.js?v=20260705-nav-meta-date"></script>
   </body>
 </html>

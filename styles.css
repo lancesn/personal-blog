@@ -83,8 +83,8 @@ a {
   background: transparent;
   color: var(--muted);
   font-family: var(--font-ui);
-  font-size: 18px;
-  font-weight: 900;
+  font-size: 16px;
+  font-weight: 720;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -1131,9 +1131,37 @@ h3 {
 }
 
 .article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
   margin-top: 14px;
   color: var(--muted);
-  font-size: 14px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.article-meta time,
+.article-meta span,
+.article-meta a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--soft) 72%, var(--bg));
+  padding: 4px 10px;
+}
+
+.article-meta a {
+  color: var(--primary-strong);
+  font-weight: 760;
+}
+
+.article-meta a:hover {
+  border-color: color-mix(in srgb, var(--primary) 44%, var(--line));
+  color: var(--text);
 }
 
 .toc {

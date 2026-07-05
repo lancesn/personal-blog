@@ -7,7 +7,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260703-wechat-copy-fix";
+const assetVersion = "20260705-nav-meta-date";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -22,11 +22,8 @@ function escapeHtml(value) {
 }
 
 function formatDate(value) {
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric"
-  }).format(new Date(`${value}T00:00:00`));
+  const date = new Date(`${value}T00:00:00`);
+  return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
 }
 
 function excerptFromMarkdown(markdown, maxLength = 90) {
@@ -968,8 +965,11 @@ ${siteNav("blog").replaceAll("./", "../")}
       ${postJsonLd(post)}
       <nav class="article-nav"><a href="../blog.html">← 返回博客</a></nav>
       <h1>${escapeHtml(post.title)}</h1>
-      <p class="article-meta">${post.date} · ${escapeHtml(formatReadingTime(post.readingTime, post.plainText))}</p>
-      ${renderTagLinks(post.tags, "..")}
+      <div class="article-meta">
+        <time datetime="${post.date}">${formatDate(post.date)}</time>
+        <span>${escapeHtml(formatReadingTime(post.readingTime, post.plainText))}</span>
+        ${post.tags.map((tag) => `<a href="../tags/${slugify(tag)}.html">${escapeHtml(tag)}</a>`).join("")}
+      </div>
       <div class="article-share-row" aria-label="分享文章">
         <button class="share-icon-button" type="button" data-share-copy aria-label="复制链接" title="复制链接">${shareIcon("copy")}</button>
         <button class="share-icon-button" type="button" data-share-wechat aria-label="分享到微信" title="分享到微信">${shareIcon("wechat")}</button>

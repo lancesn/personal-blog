@@ -188,6 +188,20 @@ function isTableDivider(line) {
   return /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
 }
 
+const namedHeadingSections = new Set(["引言", "前言", "结论", "小结", "结语", "摘要", "关键词"]);
+
+function matchBoldHeading(line) {
+  const match = line.trim().match(/^\*\*(.+)\*\*$/);
+  if (!match) return null;
+
+  const text = match[1].trim();
+  const isSubsection = /^（[一二三四五六七八九十]+）/.test(text);
+  const isSection = /^[一二三四五六七八九十]+、/.test(text) || namedHeadingSections.has(text);
+  if (!isSection && !isSubsection) return null;
+
+  return { level: isSubsection ? 3 : 2, text };
+}
+
 function isBlockStart(line, nextLine = "") {
   return (
     /^#{1,6}\s+/.test(line) ||
@@ -195,6 +209,7 @@ function isBlockStart(line, nextLine = "") {
     /^>\s?/.test(line) ||
     /^[-*]\s+/.test(line) ||
     /^\d+\.\s+/.test(line) ||
+    Boolean(matchBoldHeading(line)) ||
     (line.includes("|") && isTableDivider(nextLine))
   );
 }
@@ -226,6 +241,12 @@ function renderMarkdown(markdown) {
     if (heading) {
       const level = heading[1].length;
       html.push(`<h${level}>${renderInlineMarkdown(heading[2])}</h${level}>`);
+      continue;
+    }
+
+    const boldHeading = matchBoldHeading(line);
+    if (boldHeading) {
+      html.push(`<h${boldHeading.level}>${renderInlineMarkdown(boldHeading.text)}</h${boldHeading.level}>`);
       continue;
     }
 
@@ -360,7 +381,7 @@ function renderPosts() {
     .map(
       (post) => `<button class="studio-post-item" type="button" data-slug="${escapeHtml(post.slug)}">
         <strong>${escapeHtml(post.title)}</strong>
-        <span>${escapeHtml(post.date)}${post.status === "draft" ? " · 草稿" : ""}${post.tags?.length ? ` · ${escapeHtml(post.tags.join(", "))}` : ""}</span>
+        <span>${escapeHtml(post.date)}${post.status === "draft" ? " · 草稿" : ""}${post.status === "hidden" ? " · 隐藏" : ""}${post.tags?.length ? ` · ${escapeHtml(post.tags.join(", "))}` : ""}</span>
         <small>${escapeHtml(post.description || "")}</small>
       </button>`
     )
