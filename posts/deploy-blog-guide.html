@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="这是一篇从零到上线的部署记录：如何把一个 Markdown 静态博客放到 GitHub Pages，再用 Cloudflare Worker 做在线后台，让写文章、传图片、发布更新都可以在网页里完成。" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href="https://silencegate.com/posts/deploy-blog-guide.html" />
+    <link rel="icon" type="image/svg+xml" href="/uploads/site-icon.svg?v=20260705-date-sort" />
+    <link rel="alternate icon" type="image/png" href="/uploads/site-icon.png" />
+    <link rel="apple-touch-icon" href="/uploads/site-icon-touch.png?v=20260705-date-sort" />
+    <link rel="alternate" type="application/rss+xml" title="我的博客 RSS" href="https://silencegate.com/rss.xml" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="蓬窗灯影录" />
+    <meta property="og:title" content="手把手部署我的静态博客：GitHub Pages、Cloudflare Worker 与在线后台" />
+    <meta property="og:description" content="这是一篇从零到上线的部署记录：如何把一个 Markdown 静态博客放到 GitHub Pages，再用 Cloudflare Worker 做在线后台，让写文章、传图片、发布更新都可以在网页里完成。" />
+    <meta property="og:url" content="https://silencegate.com/posts/deploy-blog-guide.html" />
+    <meta property="og:image" content="https://silencegate.com/uploads/blog-avatar.jpg" />
+    <meta property="og:image:secure_url" content="https://silencegate.com/uploads/blog-avatar.jpg" />
+    <meta property="og:image:alt" content="手把手部署我的静态博客：GitHub Pages、Cloudflare Worker 与在线后台" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://silencegate.com/uploads/blog-avatar.jpg" />
+    <meta itemprop="name" content="手把手部署我的静态博客：GitHub Pages、Cloudflare Worker 与在线后台" />
+    <meta itemprop="description" content="这是一篇从零到上线的部署记录：如何把一个 Markdown 静态博客放到 GitHub Pages，再用 Cloudflare Worker 做在线后台，让写文章、传图片、发布更新都可以在网页里完成。" />
+    <meta itemprop="image" content="https://silencegate.com/uploads/blog-avatar.jpg" />
+    <title>手把手部署我的静态博客：GitHub Pages、Cloudflare Worker 与在线后台</title>
+    <link rel="stylesheet" href="../styles.css?v=20260705-date-sort" />
+  </head>
+  <body>
+<div class="reading-progress" id="reading-progress"></div>
+    <nav class="top-nav" aria-label="主导航">
+      <a href="../index.html">首页</a>
+      <a href="../blog.html" aria-current="page">博客</a>
+      <a href="../archive.html">存档</a>
+      <a href="../search.html">搜索</a>
+      <a href="../about.html">关于</a>
+      <a href="../random.html" title="随机看一篇文章">随缘</a>
+      <button class="theme-toggle" type="button" aria-label="切换深浅色">☼</button>
+    </nav>
+
+    <main class="article" data-post-slug="deploy-blog-guide" data-post-title="手把手部署我的静态博客：GitHub Pages、Cloudflare Worker 与在线后台" data-post-description="这是一篇从零到上线的部署记录：如何把一个 Markdown 静态博客放到 GitHub Pages，再用 Cloudflare Worker 做在线后台，让写文章、传图片、发布更新都可以在网页里完成。" data-post-url="https://silencegate.com/posts/deploy-blog-guide.html">
+      <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"手把手部署我的静态博客：GitHub Pages、Cloudflare Worker 与在线后台","description":"这是一篇从零到上线的部署记录：如何把一个 Markdown 静态博客放到 GitHub Pages，再用 Cloudflare Worker 做在线后台，让写文章、传图片、发布更新都可以在网页里完成。","datePublished":"2026-07-05T10:45:00.000Z","url":"https://silencegate.com/posts/deploy-blog-guide.html","inLanguage":"zh-CN","author":{"@type":"Person","name":"Lance Shen"},"publisher":{"@type":"Organization","name":"蓬窗灯影录"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://silencegate.com/posts/deploy-blog-guide.html"},"image":"https://silencegate.com/uploads/blog-avatar.jpg"}</script>
+      <nav class="article-nav"><a href="../blog.html">← 返回博客</a></nav>
+      <h1>手把手部署我的静态博客：GitHub Pages、Cloudflare Worker 与在线后台</h1>
+      <div class="article-meta">
+        <time datetime="2026-07-05">2026年7月5日</time>
+        <span>8 分钟阅读</span>
+        <a href="../tags/js.html">技术</a>
+      </div>
+      <div class="article-share-row" aria-label="分享文章">
+        <button class="share-icon-button" type="button" data-share-copy aria-label="复制链接" title="复制链接"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7.5A2.5 2.5 0 0 1 10.5 5H19a2.5 2.5 0 0 1 2.5 2.5V16a2.5 2.5 0 0 1-2.5 2.5h-8.5A2.5 2.5 0 0 1 8 16V7.5Zm2 0V16c0 .3.2.5.5.5H19c.3 0 .5-.2.5-.5V7.5c0-.3-.2-.5-.5-.5h-8.5c-.3 0-.5.2-.5.5Z"/><path d="M2.5 8A2.5 2.5 0 0 1 5 5.5h1V8H5v8.5c0 .3.2.5.5.5H6V19H5.5A2.5 2.5 0 0 1 3 16.5V8h-.5Zm2.5 11h9v1a2.5 2.5 0 0 1-2.5 2.5h-6A2.5 2.5 0 0 1 3 20v-1h2Z"/></svg></button>
+        <button class="share-icon-button" type="button" data-share-wechat aria-label="分享到微信" title="分享到微信"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.1 4C5.2 4 2 6.5 2 9.6c0 1.8 1.1 3.4 2.8 4.4l-.6 2 2.3-1.2c.8.2 1.6.4 2.6.4h.5a5.6 5.6 0 0 1-.2-1.4c0-3 2.9-5.4 6.4-5.4h.3C15.4 5.9 12.5 4 9.1 4Zm-2.4 4.6a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8Zm4.7 0a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8Z"/><path d="M22 13.8c0-2.5-2.6-4.6-5.8-4.6s-5.8 2.1-5.8 4.6 2.6 4.6 5.8 4.6c.7 0 1.4-.1 2.1-.3l2 1-.5-1.7c1.4-.8 2.2-2.1 2.2-3.6Zm-7.7-1.1a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4Zm3.9 0a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4Z"/></svg></button>
+        <a class="share-icon-button" data-share-whatsapp href="#" aria-label="分享到 WhatsApp" title="分享到 WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a9.7 9.7 0 0 0-8.4 14.6L2.5 22l5.5-1.1A9.7 9.7 0 1 0 12 2Zm0 2a7.7 7.7 0 0 1 0 15.4c-1.2 0-2.4-.3-3.4-.8l-.4-.2-3 .6.6-2.9-.2-.4A7.7 7.7 0 0 1 12 4Zm-3.1 3.9c-.2 0-.5.1-.7.4-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.9 4.5 3.9 2.2.9 2.7.7 3.2.6.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.1-1.3-.1-.1-.2-.2-.5-.4l-1.8-.9c-.3-.1-.5-.2-.7.2l-.7.9c-.1.2-.3.2-.6.1-.3-.1-1.1-.4-2-1.2-.8-.7-1.3-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.8-1.9c-.2-.4-.4-.4-.6-.4h-.6Z"/></svg></a>
+        <a class="share-icon-button" data-share-facebook href="#" aria-label="分享到 Facebook" title="分享到 Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.1 8.1V6.5c0-.8.5-1 1.1-1h1.8V2.3c-.3 0-1.5-.2-2.9-.2-2.9 0-4.8 1.7-4.8 4.9v1.1H6.1v3.6h3.2V22h3.9V11.7h3.2l.5-3.6h-3.8Z"/></svg></a>
+        <a class="share-icon-button" data-share-weibo href="#" aria-label="分享到微博" title="分享到微博"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.7 3.5c1.8.8 2.7 2.6 2.4 4.5l-1.8-.3c.2-1.1-.4-2.1-1.4-2.6l.8-1.6Z"/><path d="M17.2 6.4c.8.4 1.2 1.2 1 2.1l-1.6-.3c.1-.3-.1-.6-.4-.8l1-1Z"/><path d="M11.2 9.2c4.6-.4 8.5 1.6 8.8 4.5.3 2.9-3.1 5.6-7.7 6-4.6.4-8.5-1.6-8.8-4.5-.2-1.9 1.2-3.7 3.5-4.8.3-1.7 1.7-4.3 3.3-4.1 1 .1 1.3 1.4.9 2.9Zm.8 8.5c2.8-.3 5-1.9 4.8-3.7-.2-1.8-2.6-3-5.4-2.8-2.8.3-5 1.9-4.8 3.7.2 1.8 2.6 3 5.4 2.8Z"/><path d="M9.7 13.2c1.6-.5 3.3.1 3.8 1.2.5 1.2-.4 2.5-2 3-1.6.5-3.3-.1-3.8-1.2-.5-1.2.4-2.5 2-3Zm.4 2.3c.4-.1.7-.5.6-.8-.1-.3-.5-.4-.9-.3-.4.1-.7.5-.6.8.1.3.5.4.9.3Z"/></svg></a>
+        <a class="share-icon-button" data-share-x href="#" aria-label="分享到 X" title="分享到 X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.8 10.5 21.1 2h-1.8l-6.3 7.3L8 2H2.2l7.7 11.2L2.2 22h1.8l6.7-7.7L16 22h5.8l-8-11.5Zm-2.4 2.8-.8-1.1L4.5 3.4h2.6l4.9 7 .8 1.1 6.4 9.1h-2.6l-5.2-7.3Z"/></svg></a>
+        <button class="share-icon-button" type="button" data-share-poster aria-label="生成分享图" title="生成分享图"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4h15A2.5 2.5 0 0 1 22 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 17.5v-11A2.5 2.5 0 0 1 4.5 4Zm0 2c-.3 0-.5.2-.5.5v9.4l4.9-4.9a1 1 0 0 1 1.3-.1l2.9 2.2 3.3-3.6a1 1 0 0 1 1.5 0L20 12.8V6.5c0-.3-.2-.5-.5-.5h-15ZM9 8.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"/></svg></button>
+        <p data-share-hint></p>
+      </div>
+      <div class="poster-modal" id="poster-modal" hidden>
+        <div class="poster-modal-backdrop" data-poster-close></div>
+        <div class="poster-modal-panel">
+          <button class="poster-modal-close" type="button" data-poster-close aria-label="关闭">✕</button>
+          <canvas class="poster-canvas" id="poster-canvas" width="750" height="1000"></canvas>
+          <div class="poster-modal-actions">
+            <a class="button primary" id="poster-download" download="deploy-blog-guide-share.png">保存图片</a>
+            <p class="poster-modal-hint">生成中可能需要几秒</p>
+          </div>
+        </div>
+      </div>
+      <nav class="toc" aria-label="文章目录">
+        <h2>目录</h2>
+        <a class="toc-level-2" href="#一-最终效果">一、最终效果</a>
+        <a class="toc-level-2" href="#二-准备仓库">二、准备仓库</a>
+        <a class="toc-level-2" href="#三-生成静态页面">三、生成静态页面</a>
+        <a class="toc-level-2" href="#四-配置-github-pages">四、配置 GitHub Pages</a>
+        <a class="toc-level-2" href="#五-为什么需要-cloudflare-worker">五、为什么需要 Cloudflare Worker</a>
+        <a class="toc-level-2" href="#六-创建-github-token">六、创建 GitHub Token</a>
+        <a class="toc-level-2" href="#七-部署-cloudflare-worker">七、部署 Cloudflare Worker</a>
+        <a class="toc-level-2" href="#八-worker-负责什么">八、Worker 负责什么</a>
+        <a class="toc-level-2" href="#九-发布一篇文章时发生了什么">九、发布一篇文章时发生了什么</a>
+        <a class="toc-level-2" href="#十-常见坑">十、常见坑</a>
+        <a class="toc-level-2" href="#十一-最后的部署清单">十一、最后的部署清单</a>
+      </nav>
+      <article class="article-content">
+<p>这篇文章记录我现在这套博客的部署方式。它不是最复杂的方案，也不是最省步骤的方案，但有一个好处：所有东西都摊开在明处，文章是 Markdown，页面是静态 HTML，部署靠 GitHub Pages，后台写入靠 Cloudflare Worker，中间没有一台需要长期维护的服务器。</p>
+<p>适合的读者是：想自己搭一个个人博客，又希望以后能在浏览器里写文章、改文章、传图片，而不是每次都打开编辑器、敲命令、手动提交。</p>
+<h2 id="一-最终效果">一、最终效果</h2>
+<p>部署完成后，整套系统大概是这样：</p>
+<pre><code data-language="text">读者访问
+  ↓
+silencegate.com
+  ↓
+GitHub Pages 静态页面
+  ↓
+HTML / CSS / JS / 图片 / RSS</code></pre>
+<p>后台发布文章时，则是另一条路径：</p>
+<pre><code data-language="text">在线后台页面
+  ↓  输入后台密码
+Cloudflare Worker
+  ↓  使用 GitHub Token
+GitHub API 写入仓库
+  ↓
+GitHub Actions / Pages 自动部署
+  ↓
+博客页面更新</code></pre>
+<p>前台和后台分开，是这套方案最重要的地方。前台只负责展示，后台负责写入，GitHub Token 永远不放进前端代码。</p>
+<h2 id="二-准备仓库">二、准备仓库</h2>
+<p>先准备一个 GitHub 仓库，用来放博客源码。我的仓库里大致是这样的结构：</p>
+<pre><code data-language="text">personal-blog/
+  content/
+    posts/              # Markdown 文章源文件
+  uploads/              # 原始图片
+  posts/                # 构建后的文章 HTML
+  tags/                 # 构建后的标签页
+  dist/                 # 完整构建产物
+  scripts/
+    build.js            # 静态站点生成脚本
+  cloudflare-worker/
+    src/index.js        # 在线后台 API
+    wrangler.jsonc      # Worker 配置
+  index.html
+  blog.html
+  rss.xml</code></pre>
+<p>文章源文件放在 <code>content/posts/</code>。每篇文章都是 Markdown，并带一段 frontmatter：</p>
+<pre><code data-language="markdown">---
+title: 示例文章
+date: 2026-07-05
+description: 这里写摘要。
+readingTime: 3
+tags: [技术]
+status: published
+publishedAt: 2026-07-05T10:00:00.000Z
+---
+
+这里开始写正文。</code></pre>
+<p>其中 <code>date</code> 是页面显示和排序用的发布日期。以后想调整文章顺序，改这个日期即可。</p>
+<h2 id="三-生成静态页面">三、生成静态页面</h2>
+<p>静态博客的核心是构建脚本。它做几件事：</p>
+<ul><li>读取 <code>content/posts/*.md</code></li><li>解析标题、日期、标签、正文</li><li>把 Markdown 转成 HTML</li><li>生成首页、博客列表、文章页、标签页、RSS、站点地图</li><li>把 <code>dist/</code> 里的文件同步到仓库根目录</li></ul>
+<p>本地构建只需要一条命令：</p>
+<pre><code data-language="bash">npm run build</code></pre>
+<p>如果要手动提交和推送，可以这样：</p>
+<pre><code data-language="bash">git add .
+git commit -m &quot;Update blog&quot;
+git push origin main</code></pre>
+<p>GitHub Pages 会从 <code>main</code> 分支读取这些静态文件。只要仓库设置正确，推送后页面会自动更新。</p>
+<h2 id="四-配置-github-pages">四、配置 GitHub Pages</h2>
+<p>进入 GitHub 仓库设置：</p>
+<pre><code data-language="text">Settings
+  → Pages
+  → Build and deployment
+  → Source: Deploy from a branch
+  → Branch: main
+  → Folder: /root</code></pre>
+<p>如果使用自定义域名，需要在 Pages 设置里填入域名，例如：</p>
+<pre><code data-language="text">silencegate.com</code></pre>
+<p>同时在 DNS 里把域名指向 GitHub Pages。常见做法是：</p>
+<pre><code data-language="text">A     @      185.199.108.153
+A     @      185.199.109.153
+A     @      185.199.110.153
+A     @      185.199.111.153
+CNAME www    username.github.io</code></pre>
+<p>DNS 生效后，GitHub Pages 会自动签发 HTTPS 证书。这个过程有时需要等几分钟到几十分钟，不用反复改配置。</p>
+<h2 id="五-为什么需要-cloudflare-worker">五、为什么需要 Cloudflare Worker</h2>
+<p>如果只是本地写文章，GitHub Pages 已经够用。但我要的是在线后台：打开网页就能写文章、传图片、发布。</p>
+<p>问题在于，在线后台要写 GitHub 仓库，就必须有 GitHub Token。这个 Token 不能放在浏览器里，否则任何人都能从前端源码里拿到写权限。</p>
+<p>所以中间加一层 Cloudflare Worker：</p>
+<pre><code data-language="text">浏览器后台
+  ↓  只提交文章内容和后台密码
+Cloudflare Worker
+  ↓  校验密码，通过后调用 GitHub API
+GitHub 仓库</code></pre>
+<p>浏览器不知道 GitHub Token，只有 Worker 知道。这样即使别人打开后台页面，也拿不到仓库密钥。</p>
+<h2 id="六-创建-github-token">六、创建 GitHub Token</h2>
+<p>在 GitHub 创建一个细粒度 Token，权限只给这个博客仓库。至少需要允许写入内容：</p>
+<pre><code data-language="text">Repository permissions
+  Contents: Read and write</code></pre>
+<p>Token 创建后只显示一次，先保存好。后面会放进 Cloudflare Worker 的 Secret。</p>
+<h2 id="七-部署-cloudflare-worker">七、部署 Cloudflare Worker</h2>
+<p>进入 Worker 目录：</p>
+<pre><code data-language="bash">cd cloudflare-worker</code></pre>
+<p>先确认 Wrangler 可用：</p>
+<pre><code data-language="bash">npx wrangler --version</code></pre>
+<p>第一次部署前，需要登录 Cloudflare：</p>
+<pre><code data-language="bash">npx wrangler login</code></pre>
+<p>然后设置两个密钥：</p>
+<pre><code data-language="bash">npx wrangler secret put GITHUB_TOKEN
+npx wrangler secret put ADMIN_PASSWORD</code></pre>
+<p><code>GITHUB_TOKEN</code> 是刚才创建的 GitHub Token。<code>ADMIN_PASSWORD</code> 是后台登录密码。</p>
+<p>再部署 Worker：</p>
+<pre><code data-language="bash">npx wrangler deploy</code></pre>
+<p>部署成功后，会得到一个地址，类似：</p>
+<pre><code data-language="text">https://silencegate-blog-admin.example.workers.dev</code></pre>
+<p>在线后台调用的 API 就指向这个 Worker。</p>
+<h2 id="八-worker-负责什么">八、Worker 负责什么</h2>
+<p>Worker 不负责页面展示，它只做后台 API。核心职责有四个：</p>
+<pre><code data-language="text">1. 校验后台密码
+2. 读取 GitHub 仓库里的 Markdown 文章
+3. 新增、修改、删除文章和图片
+4. 调用 GitHub API 提交到 main 分支</code></pre>
+<p>简化后的逻辑大概如下：</p>
+<pre><code data-language="js">async function handleSavePost(request, env) {
+  const payload = await request.json();
+  verifyPassword(payload.password, env.ADMIN_PASSWORD);
+  const markdown = serializePost(payload);
+  await putGitHubFile({
+    token: env.GITHUB_TOKEN,
+    path: `content/posts/${payload.slug}.md`,
+    content: markdown,
+    message: `Update post: ${payload.title}`
+  });
+  return Response.json({ ok: true });
+}</code></pre>
+<p>真实代码会多处理权限、分页、图片上传、已有文件 sha、错误返回等细节，但主线就是这样。</p>
+<h2 id="九-发布一篇文章时发生了什么">九、发布一篇文章时发生了什么</h2>
+<p>从点击“发布”到页面更新，中间流程如下：</p>
+<pre><code data-language="text">点击发布
+  ↓
+后台把标题、日期、标签、正文发给 Worker
+  ↓
+Worker 校验密码
+  ↓
+Worker 把内容写成 Markdown
+  ↓
+Worker 调用 GitHub API 提交
+  ↓
+GitHub Pages 重新部署
+  ↓
+读者看到新文章</code></pre>
+<p>如果文章里有图片，图片会先上传到 <code>uploads/</code>，正文里引用相对路径：</p>
+<pre><code data-language="markdown">![一张图片](../uploads/image-20260705000123.png)</code></pre>
+<p>构建脚本会把图片复制或压缩到输出目录，最终文章页正常显示。</p>
+<h2 id="十-常见坑">十、常见坑</h2>
+<p><strong>1. 不要把 Token 写进前端。</strong></p>
+<p>只要写进前端，就等于公开。Token 只能放在 Worker Secret、GitHub Actions Secret 或服务器环境变量里。</p>
+<p><strong>2. 文章地址最好不要用中文。</strong></p>
+<p>中文标题可以保留，但文件名和最终 URL 建议用英文或拼音首字母。例如：</p>
+<pre><code data-language="text">手把手部署我的博客 → deploy-blog-guide.html
+一片叶子 → ypyz.html</code></pre>
+<p>这样分享到微信、Facebook、WhatsApp 时更稳定，也少一些编码问题。</p>
+<p><strong>3. 404 页面资源要用绝对路径。</strong></p>
+<p>如果用户访问 <code>/posts/missing.html</code>，GitHub Pages 会返回 404 页面。这个页面里的 CSS 不能写成：</p>
+<pre><code data-language="html">&lt;link rel=&quot;stylesheet&quot; href=&quot;./styles.css&quot;&gt;</code></pre>
+<p>因为浏览器会去找 <code>/posts/styles.css</code>。应该写成：</p>
+<pre><code data-language="html">&lt;link rel=&quot;stylesheet&quot; href=&quot;/styles.css&quot;&gt;</code></pre>
+<p><strong>4. 排序要按显示日期。</strong></p>
+<p>博客列表最好按 frontmatter 里的 <code>date</code> 排序，而不是按文件修改时间。这样你在后台改发布日期后，文章顺序会自动变化。</p>
+<p><strong>5. 生成文件不要手改。</strong></p>
+<p>真正该改的是 <code>content/posts/<em>.md</code>、<code>styles.css</code>、<code>scripts/build.js</code>。<code>posts/</em>.html</code>、<code>tags/*.html</code>、<code>rss.xml</code> 这些都应该由构建脚本生成。</p>
+<h2 id="十一-最后的部署清单">十一、最后的部署清单</h2>
+<p>照着做一遍，大概就是：</p>
+<pre><code data-language="text">1. 建 GitHub 仓库
+2. 放入静态博客源码
+3. 写好 build.js
+4. 开启 GitHub Pages
+5. 配好自定义域名
+6. 创建 GitHub Token
+7. 部署 Cloudflare Worker
+8. 把 Token 和后台密码放进 Worker Secret
+9. 后台调用 Worker API
+10. 每次发布后由 GitHub Pages 自动更新</code></pre>
+<p>我的体会是，不要一开始就追求“平台化”。个人博客最重要的是可控、稳定、可迁移。文章用 Markdown 保存，页面生成成静态文件，后台只是辅助写入。哪一天不想用在线后台了，仓库里的文章仍然完整；哪一天不想用 GitHub Pages 了，也可以把整站搬到任何静态托管服务。</p>
+<p>这样，博客就不只是一个网页，而是一套自己能理解、能修、能慢慢生长的写作系统。</p>
+      </article>
+      
+      <nav class="article-nav article-nav-bottom"><a href="../blog.html">← 返回博客</a></nav>
+      <a class="next-post-fab" href="./byjz.html" aria-label="下一篇：暴雨将至">
+        <span class="next-post-fab-text">
+          <span class="next-post-fab-label">下一篇</span>
+          <span class="next-post-fab-title">暴雨将至</span>
+        </span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </a>
+      <a class="prev-post-fab" href="./dlyjljzdxdcdyswdjsyj.html" aria-label="上一篇：遁伦《瑜伽论记》中的修道次第与《声闻地》解释研究">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <span class="prev-post-fab-text">
+          <span class="prev-post-fab-label">上一篇</span>
+          <span class="prev-post-fab-title">遁伦《瑜伽论记》中的修道次第与《声闻地》解释研究</span>
+        </span>
+      </a>
+    </main>
+    <script src="../script.js?v=20260705-date-sort"></script>
+  </body>
+</html>

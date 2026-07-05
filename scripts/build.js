@@ -148,6 +148,29 @@ function inlineMarkdown(text) {
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
 }
 
+function codeBlockToHtml(lines) {
+  const firstLine = lines[0] || "";
+  const lastLine = lines.at(-1) || "";
+  if (!firstLine.startsWith("```") || !lastLine.startsWith("```") || lines.length < 2) return "";
+
+  const language = firstLine.slice(3).trim();
+  const languageAttr = language ? ` data-language="${escapeHtml(language)}"` : "";
+  const code = lines.slice(1, -1).join("\n");
+  return `<pre><code${languageAttr}>${escapeHtml(code)}</code></pre>`;
+}
+
+function extractFencedCodeBlocks(markdown) {
+  const codeBlocks = [];
+  const content = markdown.replace(/```([^\n]*)\n([\s\S]*?)\n```/g, (_match, language, code) => {
+    const languageAttr = language.trim() ? ` data-language="${escapeHtml(language.trim())}"` : "";
+    const token = `@@CODE_BLOCK_${codeBlocks.length}@@`;
+    codeBlocks.push(`<pre><code${languageAttr}>${escapeHtml(code)}</code></pre>`);
+    return `\n\n${token}\n\n`;
+  });
+
+  return { content, codeBlocks };
+}
+
 const slugOverrides = {
   技术: "js",
   散文: "sw",
@@ -194,7 +217,8 @@ async function exists(targetPath) {
 }
 
 function postShareImage(post) {
-  const imageMatch = post.body.match(/!\[[^\]]*]\(([^)]+)\)/);
+  const bodyWithoutCode = post.body.replace(/```[^\n]*\n[\s\S]*?\n```/g, "");
+  const imageMatch = bodyWithoutCode.match(/!\[[^\]]*]\(([^)]+)\)/);
   if (imageMatch) {
     const src = imageMatch[1].trim();
     if (/^https?:\/\//.test(src)) return src;
@@ -285,13 +309,25 @@ function headingId(text) {
 }
 
 function markdownToHtml(markdown) {
-  const blocks = markdown.split(/\n{2,}/);
+  const extracted = extractFencedCodeBlocks(markdown);
+  const blocks = extracted.content.split(/\n{2,}/);
   const html = [];
   const toc = [];
 
   for (const block of blocks) {
+    const codeToken = block.trim().match(/^@@CODE_BLOCK_(\d+)@@$/);
+    if (codeToken) {
+      html.push(extracted.codeBlocks[Number(codeToken[1])]);
+      continue;
+    }
+
     const lines = block.split("\n");
     const firstLine = lines[0] || "";
+    const codeBlock = codeBlockToHtml(lines);
+    if (codeBlock) {
+      html.push(codeBlock);
+      continue;
+    }
 
     if (isTableBlock(lines)) {
       html.push(markdownTableToHtml(lines));

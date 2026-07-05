@@ -104,6 +104,192 @@
 <p>须说明本文结论的边界。以上判断均落在《瑜伽论记》的分科、引文与解释操作上，不外推至唯识思想史的全局；《声闻地》之外诸地的解释、二十四卷本与诸刊本的全面对勘、诸师异说的逐条辨析，皆有待专题处理。就方法而言，本文的个案提示：研究东亚注疏传统，除义理与版本之外，注疏的操作层面，包括分科怎样切割文本、引说怎样安排取舍、会通怎样维持一贯，值得作为独立对象加以考察。《瑜伽论记》这样的讲学型注疏，正是此类考察最适合的材料。若进一步扩展，同类方法亦可施于《略纂》、新罗及日本法相章疏，由多部注疏的操作比较，或能为东亚瑜伽行派的讲学史勾画出更细的轮廓。可证与待证之间的界线，是注疏研究应当守住的纪律，本文愿以此自勉。</p>]]></content:encoded>
     </item>
     <item>
+      <title>手把手部署我的静态博客：GitHub Pages、Cloudflare Worker 与在线后台</title>
+      <link>https://silencegate.com/posts/deploy-blog-guide.html</link>
+      <guid>https://silencegate.com/posts/deploy-blog-guide.html</guid>
+      <pubDate>Sat, 04 Jul 2026 16:00:00 GMT</pubDate>
+      <description>这是一篇从零到上线的部署记录：如何把一个 Markdown 静态博客放到 GitHub Pages，再用 Cloudflare Worker 做在线后台，让写文章、传图片、发布更新都可以在网页里完成。</description>
+      <content:encoded><![CDATA[<p>这篇文章记录我现在这套博客的部署方式。它不是最复杂的方案，也不是最省步骤的方案，但有一个好处：所有东西都摊开在明处，文章是 Markdown，页面是静态 HTML，部署靠 GitHub Pages，后台写入靠 Cloudflare Worker，中间没有一台需要长期维护的服务器。</p>
+<p>适合的读者是：想自己搭一个个人博客，又希望以后能在浏览器里写文章、改文章、传图片，而不是每次都打开编辑器、敲命令、手动提交。</p>
+<h2 id="一-最终效果">一、最终效果</h2>
+<p>部署完成后，整套系统大概是这样：</p>
+<pre><code data-language="text">读者访问
+  ↓
+silencegate.com
+  ↓
+GitHub Pages 静态页面
+  ↓
+HTML / CSS / JS / 图片 / RSS</code></pre>
+<p>后台发布文章时，则是另一条路径：</p>
+<pre><code data-language="text">在线后台页面
+  ↓  输入后台密码
+Cloudflare Worker
+  ↓  使用 GitHub Token
+GitHub API 写入仓库
+  ↓
+GitHub Actions / Pages 自动部署
+  ↓
+博客页面更新</code></pre>
+<p>前台和后台分开，是这套方案最重要的地方。前台只负责展示，后台负责写入，GitHub Token 永远不放进前端代码。</p>
+<h2 id="二-准备仓库">二、准备仓库</h2>
+<p>先准备一个 GitHub 仓库，用来放博客源码。我的仓库里大致是这样的结构：</p>
+<pre><code data-language="text">personal-blog/
+  content/
+    posts/              # Markdown 文章源文件
+  uploads/              # 原始图片
+  posts/                # 构建后的文章 HTML
+  tags/                 # 构建后的标签页
+  dist/                 # 完整构建产物
+  scripts/
+    build.js            # 静态站点生成脚本
+  cloudflare-worker/
+    src/index.js        # 在线后台 API
+    wrangler.jsonc      # Worker 配置
+  index.html
+  blog.html
+  rss.xml</code></pre>
+<p>文章源文件放在 <code>content/posts/</code>。每篇文章都是 Markdown，并带一段 frontmatter：</p>
+<pre><code data-language="markdown">---
+title: 示例文章
+date: 2026-07-05
+description: 这里写摘要。
+readingTime: 3
+tags: [技术]
+status: published
+publishedAt: 2026-07-05T10:00:00.000Z
+---
+
+这里开始写正文。</code></pre>
+<p>其中 <code>date</code> 是页面显示和排序用的发布日期。以后想调整文章顺序，改这个日期即可。</p>
+<h2 id="三-生成静态页面">三、生成静态页面</h2>
+<p>静态博客的核心是构建脚本。它做几件事：</p>
+<ul><li>读取 <code>content/posts/*.md</code></li><li>解析标题、日期、标签、正文</li><li>把 Markdown 转成 HTML</li><li>生成首页、博客列表、文章页、标签页、RSS、站点地图</li><li>把 <code>dist/</code> 里的文件同步到仓库根目录</li></ul>
+<p>本地构建只需要一条命令：</p>
+<pre><code data-language="bash">npm run build</code></pre>
+<p>如果要手动提交和推送，可以这样：</p>
+<pre><code data-language="bash">git add .
+git commit -m &quot;Update blog&quot;
+git push origin main</code></pre>
+<p>GitHub Pages 会从 <code>main</code> 分支读取这些静态文件。只要仓库设置正确，推送后页面会自动更新。</p>
+<h2 id="四-配置-github-pages">四、配置 GitHub Pages</h2>
+<p>进入 GitHub 仓库设置：</p>
+<pre><code data-language="text">Settings
+  → Pages
+  → Build and deployment
+  → Source: Deploy from a branch
+  → Branch: main
+  → Folder: /root</code></pre>
+<p>如果使用自定义域名，需要在 Pages 设置里填入域名，例如：</p>
+<pre><code data-language="text">silencegate.com</code></pre>
+<p>同时在 DNS 里把域名指向 GitHub Pages。常见做法是：</p>
+<pre><code data-language="text">A     @      185.199.108.153
+A     @      185.199.109.153
+A     @      185.199.110.153
+A     @      185.199.111.153
+CNAME www    username.github.io</code></pre>
+<p>DNS 生效后，GitHub Pages 会自动签发 HTTPS 证书。这个过程有时需要等几分钟到几十分钟，不用反复改配置。</p>
+<h2 id="五-为什么需要-cloudflare-worker">五、为什么需要 Cloudflare Worker</h2>
+<p>如果只是本地写文章，GitHub Pages 已经够用。但我要的是在线后台：打开网页就能写文章、传图片、发布。</p>
+<p>问题在于，在线后台要写 GitHub 仓库，就必须有 GitHub Token。这个 Token 不能放在浏览器里，否则任何人都能从前端源码里拿到写权限。</p>
+<p>所以中间加一层 Cloudflare Worker：</p>
+<pre><code data-language="text">浏览器后台
+  ↓  只提交文章内容和后台密码
+Cloudflare Worker
+  ↓  校验密码，通过后调用 GitHub API
+GitHub 仓库</code></pre>
+<p>浏览器不知道 GitHub Token，只有 Worker 知道。这样即使别人打开后台页面，也拿不到仓库密钥。</p>
+<h2 id="六-创建-github-token">六、创建 GitHub Token</h2>
+<p>在 GitHub 创建一个细粒度 Token，权限只给这个博客仓库。至少需要允许写入内容：</p>
+<pre><code data-language="text">Repository permissions
+  Contents: Read and write</code></pre>
+<p>Token 创建后只显示一次，先保存好。后面会放进 Cloudflare Worker 的 Secret。</p>
+<h2 id="七-部署-cloudflare-worker">七、部署 Cloudflare Worker</h2>
+<p>进入 Worker 目录：</p>
+<pre><code data-language="bash">cd cloudflare-worker</code></pre>
+<p>先确认 Wrangler 可用：</p>
+<pre><code data-language="bash">npx wrangler --version</code></pre>
+<p>第一次部署前，需要登录 Cloudflare：</p>
+<pre><code data-language="bash">npx wrangler login</code></pre>
+<p>然后设置两个密钥：</p>
+<pre><code data-language="bash">npx wrangler secret put GITHUB_TOKEN
+npx wrangler secret put ADMIN_PASSWORD</code></pre>
+<p><code>GITHUB_TOKEN</code> 是刚才创建的 GitHub Token。<code>ADMIN_PASSWORD</code> 是后台登录密码。</p>
+<p>再部署 Worker：</p>
+<pre><code data-language="bash">npx wrangler deploy</code></pre>
+<p>部署成功后，会得到一个地址，类似：</p>
+<pre><code data-language="text">https://silencegate-blog-admin.example.workers.dev</code></pre>
+<p>在线后台调用的 API 就指向这个 Worker。</p>
+<h2 id="八-worker-负责什么">八、Worker 负责什么</h2>
+<p>Worker 不负责页面展示，它只做后台 API。核心职责有四个：</p>
+<pre><code data-language="text">1. 校验后台密码
+2. 读取 GitHub 仓库里的 Markdown 文章
+3. 新增、修改、删除文章和图片
+4. 调用 GitHub API 提交到 main 分支</code></pre>
+<p>简化后的逻辑大概如下：</p>
+<pre><code data-language="js">async function handleSavePost(request, env) {
+  const payload = await request.json();
+  verifyPassword(payload.password, env.ADMIN_PASSWORD);
+  const markdown = serializePost(payload);
+  await putGitHubFile({
+    token: env.GITHUB_TOKEN,
+    path: `content/posts/${payload.slug}.md`,
+    content: markdown,
+    message: `Update post: ${payload.title}`
+  });
+  return Response.json({ ok: true });
+}</code></pre>
+<p>真实代码会多处理权限、分页、图片上传、已有文件 sha、错误返回等细节，但主线就是这样。</p>
+<h2 id="九-发布一篇文章时发生了什么">九、发布一篇文章时发生了什么</h2>
+<p>从点击“发布”到页面更新，中间流程如下：</p>
+<pre><code data-language="text">点击发布
+  ↓
+后台把标题、日期、标签、正文发给 Worker
+  ↓
+Worker 校验密码
+  ↓
+Worker 把内容写成 Markdown
+  ↓
+Worker 调用 GitHub API 提交
+  ↓
+GitHub Pages 重新部署
+  ↓
+读者看到新文章</code></pre>
+<p>如果文章里有图片，图片会先上传到 <code>uploads/</code>，正文里引用相对路径：</p>
+<pre><code data-language="markdown">![一张图片](../uploads/image-20260705000123.png)</code></pre>
+<p>构建脚本会把图片复制或压缩到输出目录，最终文章页正常显示。</p>
+<h2 id="十-常见坑">十、常见坑</h2>
+<p><strong>1. 不要把 Token 写进前端。</strong></p>
+<p>只要写进前端，就等于公开。Token 只能放在 Worker Secret、GitHub Actions Secret 或服务器环境变量里。</p>
+<p><strong>2. 文章地址最好不要用中文。</strong></p>
+<p>中文标题可以保留，但文件名和最终 URL 建议用英文或拼音首字母。例如：</p>
+<pre><code data-language="text">手把手部署我的博客 → deploy-blog-guide.html
+一片叶子 → ypyz.html</code></pre>
+<p>这样分享到微信、Facebook、WhatsApp 时更稳定，也少一些编码问题。</p>
+<p><strong>3. 404 页面资源要用绝对路径。</strong></p>
+<p>如果用户访问 <code>/posts/missing.html</code>，GitHub Pages 会返回 404 页面。这个页面里的 CSS 不能写成：</p>
+<pre><code data-language="html">&lt;link rel=&quot;stylesheet&quot; href=&quot;./styles.css&quot;&gt;</code></pre>
+<p>因为浏览器会去找 <code>/posts/styles.css</code>。应该写成：</p>
+<pre><code data-language="html">&lt;link rel=&quot;stylesheet&quot; href=&quot;/styles.css&quot;&gt;</code></pre>
+<p><strong>4. 排序要按显示日期。</strong></p>
+<p>博客列表最好按 frontmatter 里的 <code>date</code> 排序，而不是按文件修改时间。这样你在后台改发布日期后，文章顺序会自动变化。</p>
+<p><strong>5. 生成文件不要手改。</strong></p>
+<p>真正该改的是 <code>content/posts/<em>.md</code>、<code>styles.css</code>、<code>scripts/build.js</code>。<code>posts/</em>.html</code>、<code>tags/*.html</code>、<code>rss.xml</code> 这些都应该由构建脚本生成。</p>
+<h2 id="十一-最后的部署清单">十一、最后的部署清单</h2>
+<p>照着做一遍，大概就是：</p>
+<pre><code data-language="text">1. 建 GitHub 仓库
+2. 放入静态博客源码
+3. 写好 build.js
+4. 开启 GitHub Pages
+5. 配好自定义域名
+6. 创建 GitHub Token
+7. 部署 Cloudflare Worker
+8. 把 Token 和后台密码放进 Worker Secret
+9. 后台调用 Worker API
+10. 每次发布后由 GitHub Pages 自动更新</code></pre>
+<p>我的体会是，不要一开始就追求“平台化”。个人博客最重要的是可控、稳定、可迁移。文章用 Markdown 保存，页面生成成静态文件，后台只是辅助写入。哪一天不想用在线后台了，仓库里的文章仍然完整；哪一天不想用 GitHub Pages 了，也可以把整站搬到任何静态托管服务。</p>
+<p>这样，博客就不只是一个网页，而是一套自己能理解、能修、能慢慢生长的写作系统。</p>]]></content:encoded>
+    </item>
+    <item>
       <title>暴雨将至</title>
       <link>https://silencegate.com/posts/byjz.html</link>
       <guid>https://silencegate.com/posts/byjz.html</guid>
@@ -736,57 +922,6 @@
 <p>僧曰：“我独行。”</p>
 <p>师颔首。</p>
 <p>山外春水初生。僧下阶时，松针落在肩上，他没有拂去。风从旧山门吹过，像一句说完又未说完的话。</p>]]></content:encoded>
-    </item>
-    <item>
-      <title>一榻松声</title>
-      <link>https://silencegate.com/posts/一榻松声.html</link>
-      <guid>https://silencegate.com/posts/一榻松声.html</guid>
-      <pubDate>Sat, 20 Jun 2026 16:00:00 GMT</pubDate>
-      <description>山寺在岭北，岭北多松。风来时，松声先到，钟声随后，僧人脚步最后。寺中有一间旧僧寮，寮中一榻，榻边一窗，窗外三株老松。松根盘石，石下有泉，泉声细，常被松声盖住。 寺里有个小沙弥，名叫...</description>
-      <content:encoded><![CDATA[<p>山寺在岭北，岭北多松。风来时，松声先到，钟声随后，僧人脚步最后。寺中有一间旧僧寮，寮中一榻，榻边一窗，窗外三株老松。松根盘石，石下有泉，泉声细，常被松声盖住。</p>
-<p>寺里有个小沙弥，名叫照微。初入山门时，心不安稳，夜里总睡不熟。他嫌山中太静，静到能听见瓦上霜落，能听见灯花爆裂，能听见自己翻身时骨节微响。后来秋风渐起，满山松涛如海，他又嫌山中太闹。每夜卧在榻上，松声一阵一阵涌来，像有人在窗外诵经，又像无数旧事从黑暗里归来。</p>
-<p>他去问老和尚：“师父，弟子夜不能寐。静时被静扰，响时被响扰。如何安睡？”</p>
-<p>老和尚正坐在廊下补一只破蒲团，头也不抬，说：“把松声赶出去。”</p>
-<p>照微愣住，说：“松在窗外，风在山中，弟子如何赶？”</p>
-<p>老和尚说：“那就把自己赶出去。”</p>
-<p>照微更不解。老和尚把针线放下，指着僧寮说：“今夜你仍睡那一榻。”</p>
-<p>那夜，风更大。松声满屋，像青铜器里滚动着水。照微闭眼，松声便贴近耳边；睁眼，松影又在窗纸上摇动。他起身坐着，心中烦恼如草。忽听门外一声咳嗽，老和尚披衣而来，手中提一盏小灯。</p>
-<p>老和尚问：“松声在何处？”</p>
-<p>照微说：“在窗外。”</p>
-<p>老和尚推开窗。冷风入室，灯火斜斜一晃。老和尚又问：“如今在何处？”</p>
-<p>照微说：“在屋里。”</p>
-<p>老和尚关窗，灯火稍稳，又问：“如今在何处？”</p>
-<p>照微迟疑，说：“在耳中。”</p>
-<p>老和尚伸手轻轻捂住他的耳朵，问：“如今在何处？”</p>
-<p>照微心下一惊。松声似远似近，似有似无，竟说不出在何处。他想了许久，说：“在心里。”</p>
-<p>老和尚放下手，笑道：“既在心里，你为何怪松？”</p>
-<p>说完，老和尚吹灭灯，转身去了。屋中忽然暗下来，窗外松声更清。照微仍不能睡，却不再急着睡。他坐在榻上听，一阵如潮，一阵如雨，一阵如远客叩门，一阵如旧僧低语。听到三更，他觉得自己也成了一株松，立在黑夜里，被风一遍遍吹过。风过枝动，枝动声生，声生即灭，灭后又生。哪里有一个固定的“吵”，哪里有一个被吵醒的“我”。</p>
-<p>天快亮时，山中雪落。松声忽止，天地像被一匹白布盖住。照微恍惚睡去，梦见自己躺在一叶松针上，随风飘过千山万水。醒来时，日光已照在窗纸上，寺里早课钟响。他匆匆赶到佛殿，老和尚已经在殿前扫雪。</p>
-<p>照微合掌说：“师父，昨夜弟子听见松声了。”</p>
-<p>老和尚问：“从前没有听见？”</p>
-<p>照微说：“从前只听见烦恼。”</p>
-<p>老和尚又问：“昨夜松声说了什么？”</p>
-<p>照微想答“无常”，又觉太熟；想答“空”，又觉太满；想答“安心”，又觉太软。他低头看雪地上自己的脚印，深一处，浅一处，忽然笑了，说：“什么也没说。”</p>
-<p>老和尚点头，说：“这才吵得好。”</p>
-<p>数日后，有位行脚僧路过山寺，借宿在照微那间僧寮。夜里风起，松声如旧。行脚僧披衣起坐，叹道：“此寺松声太盛，扰人清梦。”</p>
-<p>照微正在隔壁添香，听见后便过去。行脚僧问：“小师父可有安睡法？”</p>
-<p>照微说：“有。”</p>
-<p>行脚僧大喜，问：“是数息，还是观心？”</p>
-<p>照微说：“都不是。”</p>
-<p>话一出口，照微忽觉此句锋利，便收住舌头，改口道：“请师兄先听一夜。”</p>
-<p>行脚僧皱眉：“若能听一夜，还问你做什么？”</p>
-<p>照微指着榻说：“这一榻，能容一人睡，也能容满山松声睡。师兄若只想一人睡，松声便无处安放。松声无处安放，人也不得安放。”</p>
-<p>行脚僧默然，仍坐到天明。第二日离寺时，他对老和尚说：“贵寺小师父说法颇有机锋。”</p>
-<p>老和尚摇头：“他只是昨夜少睡。”</p>
-<p>又过一年，照微成了寺里管寮房的知客。凡有客僧来住，他都安排在那一榻。有人嫌松声，有人爱松声，有人作诗，有人骂风。照微一概不辩，只在窗下添一盏灯，榻边放一床旧被。每到夜半，他从廊下走过，听见松声满山，客人翻身，灯花微响，泉水在石下细细流着。</p>
-<p>有一夜，老和尚病中醒来，唤照微到榻前，问：“你如今听松声如何？”</p>
-<p>照微说：“听时有松，不听也有松。”</p>
-<p>老和尚闭目良久，说：“再说。”</p>
-<p>照微说：“睡时不碍松，醒时不碍我。”</p>
-<p>老和尚又说：“再说。”</p>
-<p>照微低头，看见窗纸上松影轻摇，像一只无形的手在写字。写了又散，散了又写。他忽然不再寻找一句像样的话，只替老和尚掖了掖被角，说：“师父，风大，睡吧。”</p>
-<p>老和尚微微一笑，呼吸渐稳。窗外三株老松立在雪夜中，风从岭上下来，经过枝头，经过瓦檐，经过那张旧榻。松声不为谁来，也不为谁去。屋里有人睡着，有人醒着，有人正把一生的疑问放轻。</p>
-<p>天明后，雪停。照微推窗，松枝上落着新雪，白得没有一丝旧痕。他忽然听见石下泉声，细细的，清清的，原来一直在那里。</p>]]></content:encoded>
     </item>
   </channel>
 </rss>

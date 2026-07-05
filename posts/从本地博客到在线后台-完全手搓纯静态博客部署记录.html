@@ -100,7 +100,13 @@
 <p>但这里有一个关键问题：在线后台如果要写入 GitHub 仓库，就需要 GitHub Token。</p>
 <p>这个 Token 不能直接写在前端代码里。否则任何人打开网页源码，都能拿到 Token，等于把仓库写权限公开给全网。</p>
 <p>所以最后采用的方案是：</p>
-<p><code>`</code>text 在线后台页面     ↓ Cloudflare Worker     ↓ GitHub API     ↓ GitHub Pages 自动构建发布 <code>`</code></p>
+<pre><code data-language="text">在线后台页面
+    ↓
+Cloudflare Worker
+    ↓
+GitHub API
+    ↓
+GitHub Pages 自动构建发布</code></pre>
 <p>前端只负责编辑内容；真正的 GitHub Token 放在 Cloudflare Worker 的环境变量里。</p>
 <h2 id="三-整体方案">三、整体方案</h2>
 <p>最终架构如下：</p>
@@ -114,12 +120,16 @@
 <p>这一步很关键。不要把 GitHub Token 写进前端，也不要写进公开仓库。</p>
 <h2 id="五-需要配置的-secret">五、需要配置的 Secret</h2>
 <p>Worker 里需要两个 Secret：</p>
-<p><code>`</code>text GITHUB_TOKEN ADMIN_PASSWORD <code>`</code></p>
+<pre><code data-language="text">GITHUB_TOKEN
+ADMIN_PASSWORD</code></pre>
 <p>其中：</p>
 <ul><li><code>GITHUB_TOKEN</code> 用来写入 GitHub 仓库</li><li><code>ADMIN_PASSWORD</code> 是自己登录在线后台用的密码</li></ul>
 <p>GitHub Token 只需要给目标仓库的 Contents 读写权限即可，不要给太大权限。</p>
 <p>推荐权限：</p>
-<p><code>`</code>text Repository access: Only select repositories Repository: personal-blog Contents: Read and write Metadata: Read-only <code>`</code></p>
+<pre><code data-language="text">Repository access: Only select repositories
+Repository: personal-blog
+Contents: Read and write
+Metadata: Read-only</code></pre>
 <h2 id="六-发布流程">六、发布流程</h2>
 <p>配置完成后，写文章的流程变成：</p>
 <p>1. 打开在线后台 2. 输入后台密码 3. 读取文章列表 4. 新建或编辑文章 5. 保存 6. Worker 写入 GitHub 7. GitHub Actions 自动构建 8. GitHub Pages 自动发布</p>
@@ -132,14 +142,14 @@
 <ul><li>等几分钟</li><li>强制刷新浏览器</li><li>用无痕窗口测试</li><li>查看 GitHub Actions 是否完成</li></ul>
 <h3 id="2-自定义域名要统一">2. 自定义域名要统一</h3>
 <p>博客之前还显示 GitHub Pages 地址，后来统一改成了自己的域名：</p>
-<p><code>`</code>text https://silencegate.com <code>`</code></p>
+<pre><code data-language="text">https://silencegate.com</code></pre>
 <p>需要同步修改：</p>
 <ul><li>canonical</li><li>og:url</li><li>RSS 链接</li><li>分享链接</li><li>文章页 data-post-url</li></ul>
 <p>否则分享出去还是 GitHub 地址。</p>
 <h3 id="3-x-分享中文链接会断">3. X 分享中文链接会断</h3>
 <p>中文文章名直接出现在 URL 里，分享到 X 时有可能链接只识别到 <code>/posts/</code>，后面的中文部分不能点击。</p>
 <p>解决方式是分享时使用编码后的 URL：</p>
-<p><code>`</code>text https://silencegate.com/posts/%E9%81%93%E4%B8%8D... <code>`</code></p>
+<pre><code data-language="text">https://silencegate.com/posts/%E9%81%93%E4%B8%8D...</code></pre>
 <p>这样虽然不如中文直观，但整条链接可以正常点击。</p>
 <h3 id="4-cloudflare-api-偶尔超时">4. Cloudflare API 偶尔超时</h3>
 <p>部署 Worker 或写入 Secret 时，Cloudflare API 有时会超时。</p>
@@ -161,7 +171,15 @@
 <p>省事不能以公开写权限为代价。真正稳妥的做法，是把 Token 放在 Cloudflare Worker、Vercel Function 或其他服务端环境变量里。</p>
 <p>个人博客不一定要复杂，但一定要可控。能写、能发、能维护，才是最重要的。</p>
       </article>
-
+      <section class="related-posts" aria-label="相关文章">
+        <h2>相关文章</h2>
+        <div class="related-post-list">
+          <a class="related-post-card" href="./deploy-blog-guide.html">
+            <time datetime="2026-07-05">2026年7月5日</time>
+            <strong>手把手部署我的静态博客：GitHub Pages、Cloudflare Worker 与在线后台</strong>
+          </a>
+        </div>
+      </section>
       <nav class="article-nav article-nav-bottom"><a href="../blog.html">← 返回博客</a></nav>
       <a class="next-post-fab" href="./dbscxbjj.html" aria-label="下一篇：道不私藏，席不久居">
         <span class="next-post-fab-text">
