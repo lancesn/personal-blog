@@ -1,9 +1,9 @@
 ---
 title: 松风不识字
 date: 2026-07-05
-description: 
-readingTime: 
-tags: [禅宗]
+description:
+readingTime:
+tags: [禅]
 status: published
 publishedAt: 2026-07-05T03:31:05.574Z
 ---

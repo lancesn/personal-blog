@@ -7,7 +7,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260705-nav-meta-date";
+const assetVersion = "20260705-chan-tag";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -150,7 +150,7 @@ function inlineMarkdown(text) {
 const slugOverrides = {
   技术: "js",
   散文: "sw",
-  禅宗: "cz",
+  禅: "cz",
   随笔: "sb",
   日常: "rc",
   正念: "zn"
@@ -159,7 +159,7 @@ const slugOverrides = {
 const slugAliases = {
   技术: ["tech"],
   散文: ["prose"],
-  禅宗: ["zen"],
+  禅: ["禅宗", "zen"],
   随笔: ["notes"],
   日常: ["daily"],
   正念: ["mindfulness"]
@@ -1234,7 +1234,8 @@ async function build() {
   for (const [tag, tagPosts] of collectTags(listedPosts)) {
     const tagSlug = slugify(tag);
     await writeFile(path.join(distDir, "tags", `${tagSlug}.html`), renderTagPage(tag, tagPosts));
-    for (const alias of [tag, ...(slugAliases[tag] || [])]) {
+    const aliases = tag === "禅" ? slugAliases[tag] || [] : [tag, ...(slugAliases[tag] || [])];
+    for (const alias of aliases) {
       if (alias === tagSlug) continue;
       await writeFile(
         path.join(distDir, "tags", `${alias}.html`),
