@@ -311,6 +311,78 @@ h1 {
   color: var(--bg);
 }
 
+.button.ghost {
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--soft) 70%, transparent);
+  color: var(--primary-strong);
+}
+
+.button.ghost:hover {
+  border-color: color-mix(in srgb, var(--primary) 38%, var(--line));
+  background: color-mix(in srgb, var(--primary) 12%, var(--bg));
+}
+
+.not-found-shell {
+  min-height: 100vh;
+}
+
+.not-found-page {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.45fr) minmax(0, 1fr);
+  gap: 44px;
+  align-items: center;
+  padding-top: 220px;
+  padding-bottom: 96px;
+}
+
+.not-found-mark {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+  border-block: 1px solid var(--line);
+  color: color-mix(in srgb, var(--primary) 44%, transparent);
+  font-family: var(--font-ui);
+  font-size: clamp(70px, 13vw, 132px);
+  font-weight: 780;
+  line-height: 1;
+}
+
+.not-found-copy {
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+  width: 100%;
+  min-width: 0;
+}
+
+.eyebrow {
+  color: var(--primary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.not-found-copy h1 {
+  max-width: 520px;
+  margin-top: 0;
+  font-size: clamp(34px, 5vw, 52px);
+}
+
+.not-found-copy > p:not(.eyebrow) {
+  max-width: 520px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
 .split {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1279,6 +1351,38 @@ img {
 
   .hero {
     padding-top: 108px;
+  }
+
+  .not-found-shell {
+    min-height: auto;
+  }
+
+  .not-found-page {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding-top: 98px;
+    padding-bottom: 70px;
+  }
+
+  .not-found-mark {
+    min-height: 148px;
+    justify-items: start;
+    padding-left: 2px;
+    font-size: clamp(64px, 22vw, 96px);
+  }
+
+  .not-found-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .not-found-actions .button {
+    min-width: 0;
+    width: 100%;
+    padding-inline: 8px;
+    font-size: 13px;
   }
 
   .home-hero {

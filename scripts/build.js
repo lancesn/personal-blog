@@ -7,7 +7,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260705-chan-tag";
+const assetVersion = "20260705-not-found";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -718,19 +718,25 @@ ${siteFooter()}`
 function renderNotFound() {
   return pageShell({
     title: "页面未找到",
-    description: "这个页面不存在，或者已经被移走了。",
+    description: "这条路径暂时没有文章。可以回到首页、翻看博客，或随缘读一篇。",
     canonical: absoluteUrl("404.html"),
     robots: "noindex",
     script: scriptTag("."),
     body: `${siteNav(null)}
 
-    <main class="site-shell">
-      <section class="hero section">
-        <h1>404</h1>
-        <p>这个页面不见了，也许它去看云了。</p>
-        <div class="hero-actions">
-          <a class="button primary" href="./index.html">返回首页</a>
-          <a class="button dark" href="./blog.html">浏览博客</a>
+    <main class="site-shell not-found-shell">
+      <section class="not-found-page section" aria-labelledby="not-found-title">
+        <div class="not-found-mark" aria-hidden="true">404</div>
+        <div class="not-found-copy">
+          <p class="eyebrow">页面未找到</p>
+          <h1 id="not-found-title">这一页暂时无处可寻</h1>
+          <p>可能是链接写错了，也可能是旧页面已经迁走。先回到可抵达的地方，再慢慢翻看。</p>
+          <div class="not-found-actions" aria-label="可选去处">
+            <a class="button primary" href="./index.html">返回首页</a>
+            <a class="button dark" href="./blog.html">浏览博客</a>
+            <a class="button ghost" href="./archive.html">查看存档</a>
+            <a class="button ghost" href="./random.html">随缘一篇</a>
+          </div>
         </div>
       </section>
     </main>
