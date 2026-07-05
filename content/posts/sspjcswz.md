@@ -1,8 +1,8 @@
 ---
 title: 嵩山普寂禅师五则
-date: 2026-07-04
+date: 2026-06-28
 description: 小引 嵩山普寂禅师，神秀之嗣，住嵩岳二十年，后弘化两京，开元二十七年坐灭兴唐寺，世寿八十九，谥大照。北宗以观心看净、方便渐修为家法，故此五则不取棒喝，但以拂尘看净一路立机，依其生平...
-readingTime:
+readingTime: 
 tags: [禅]
 status: published
 publishedAt: 2026-07-03T23:46:06.800Z
