@@ -1,7 +1,7 @@
 ---
 title: 一碗面
-date: 2026-07-03
-description: 
+date: 2026-06-26
+description: 清汤一钵洗尘襟，蔬笋无多味自深。
 readingTime: 
 tags: [日常]
 status: published
