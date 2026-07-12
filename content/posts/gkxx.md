@@ -1,7 +1,7 @@
 ---
-title: 过客相寻
+title: 人间相见难
 date: 2026-07-12
-description: 
+description: 山门外有一条旧路，路旁种着松树。松树一年四季都没有多少变化，只是树皮渐渐粗糙，枝干渐渐舒展。雨水顺着树身流下，到了秋天，松针落满石阶，风过时发出细微的声音。 多年以后，再从这里经过...
 readingTime: 
 tags: [独处, 日常, 随笔]
 status: published
