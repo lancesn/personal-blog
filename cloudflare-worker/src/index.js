@@ -247,20 +247,47 @@ async function getPostSummary(env, slug) {
   return parseMarkdown(decodeBase64(detail.content), `${slug}.md`, detail.sha, { includeBody: false });
 }
 
+function summariesCacheKey(env) {
+  return new Request(`https://post-summaries.internal/${repo(env)}/${encodeURIComponent(branch(env))}`);
+}
+
+async function readCachedSummaries(env) {
+  const cached = await caches.default.match(summariesCacheKey(env));
+  return cached ? cached.json() : null;
+}
+
+async function writeCachedSummaries(env, summaries) {
+  await caches.default.put(
+    summariesCacheKey(env),
+    new Response(JSON.stringify(summaries), {
+      headers: { "Cache-Control": "max-age=60", "Content-Type": "application/json" }
+    })
+  );
+}
+
+async function invalidateSummariesCache(env) {
+  await caches.default.delete(summariesCacheKey(env));
+}
+
 async function listPosts(env, searchParams) {
   const page = parsePositiveInt(searchParams.get("page"), 1);
   const limit = parsePositiveInt(searchParams.get("limit"), 10, 50);
   const q = searchParams.get("q") || "";
   const tag = searchParams.get("tag") || "";
-  const files = await githubRequest(env, `/contents/content/posts?ref=${encodeURIComponent(branch(env))}`);
-  const posts = files
-    .filter((file) => file.type === "file" && file.name.endsWith(".md"))
-    .map((file) => ({
-      slug: file.name.replace(/\.md$/, "")
-    }));
 
-  const summaries = await Promise.all(posts.map((post) => getPostSummary(env, post.slug)));
-  summaries.sort(comparePosts);
+  let summaries = await readCachedSummaries(env);
+  if (!summaries) {
+    const files = await githubRequest(env, `/contents/content/posts?ref=${encodeURIComponent(branch(env))}`);
+    const posts = files
+      .filter((file) => file.type === "file" && file.name.endsWith(".md"))
+      .map((file) => ({
+        slug: file.name.replace(/\.md$/, "")
+      }));
+
+    summaries = await Promise.all(posts.map((post) => getPostSummary(env, post.slug)));
+    summaries.sort(comparePosts);
+    await writeCachedSummaries(env, summaries);
+  }
 
   const tags = [...new Set(summaries.flatMap((post) => post.tags))].sort((a, b) => a.localeCompare(b, "zh-Hans"));
   const filteredPosts = summaries.filter((post) => matchesPost(post, q, tag));
@@ -395,6 +422,7 @@ async function savePost(env, slug, payload) {
       ...(previous?.sha ? { sha: previous.sha } : {})
     })
   });
+  await invalidateSummariesCache(env);
 
   return {
     slug,
@@ -415,6 +443,7 @@ async function deletePost(env, slug) {
       branch: branch(env)
     })
   });
+  await invalidateSummariesCache(env);
   return {
     ok: true,
     commitUrl: result.commit?.html_url || "",
