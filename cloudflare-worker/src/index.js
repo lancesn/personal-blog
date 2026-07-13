@@ -259,10 +259,7 @@ async function listPosts(env, searchParams) {
       slug: file.name.replace(/\.md$/, "")
     }));
 
-  const summaries = [];
-  for (const post of posts) {
-    summaries.push(await getPostSummary(env, post.slug));
-  }
+  const summaries = await Promise.all(posts.map((post) => getPostSummary(env, post.slug)));
   summaries.sort(comparePosts);
 
   const tags = [...new Set(summaries.flatMap((post) => post.tags))].sort((a, b) => a.localeCompare(b, "zh-Hans"));
