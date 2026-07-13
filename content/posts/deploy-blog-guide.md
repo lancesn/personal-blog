@@ -1,6 +1,6 @@
 ---
 title: 自己手搓静态博客：GitHub Pages、Cloudflare Worker 与在线后台
-date: 2026-06-10
+date: 2026-05-20
 description: 这是一篇从零到上线的部署记录：如何把一个 Markdown 静态博客放到 GitHub Pages，再用 Cloudflare Worker 做在线后台，让写文章、传图片、发布更新都可以在网页里完成。
 readingTime: 8
 tags: [技术]
