@@ -1,12 +1,12 @@
 ---
 title: 桥的两端
 date: 2027-04-08
-description: 
+description: 一座桥看似为了抵达，其实也保存分离。桥这边的人挑担赶集，桥那边的人撑伞归家，他们在拱顶短暂相逢，点头之后，各自下坡。 小时候我以为桥能消灭距离，长大后才明白，它只是使距离可以被丈量...
 readingTime: 
 tags: [清言, 日常, 散文, 随笔]
-status: published
-publishedAt: 2026-07-14T12:56:58.337Z
-scheduledAt: 
+status: scheduled
+publishedAt: 2027-04-07T23:03:00.000Z
+scheduledAt: 2027-04-07T23:03:00.000Z
 ---
 
 一座桥看似为了抵达，其实也保存分离。桥这边的人挑担赶集，桥那边的人撑伞归家，他们在拱顶短暂相逢，点头之后，各自下坡。
