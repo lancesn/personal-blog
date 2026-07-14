@@ -104,11 +104,16 @@
             </div>
             <label>
               <span>状态</span>
-              <select name="status">
+              <select name="status" id="post-status">
                 <option value="published">发布</option>
                 <option value="hidden">隐藏（链接仍可访问，但不出现在列表中）</option>
                 <option value="draft">草稿</option>
+                <option value="scheduled">定时发布</option>
               </select>
+            </label>
+            <label id="scheduled-at-field" hidden>
+              <span>定时发布时间</span>
+              <input name="scheduledAt" id="scheduled-at" type="datetime-local" />
             </label>
           </div>
 

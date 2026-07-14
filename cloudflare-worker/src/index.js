@@ -43,6 +43,14 @@ export default {
       console.error(JSON.stringify({ status, message: error.message }));
       return json({ error: error.message || "服务器错误。" }, corsHeaders, status);
     }
+  },
+
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(
+      publishDuePosts(env).catch((error) => {
+        console.error(JSON.stringify({ scheduled: true, message: error.message }));
+      })
+    );
   }
 };
 
@@ -184,6 +192,7 @@ function parseMarkdown(source, fileName, sha, options = {}) {
     tags: parseListField(data.tags),
     status: data.status || "published",
     publishedAt: data.publishedAt || "",
+    scheduledAt: data.scheduledAt || "",
     slug: fileName.replace(/\.md$/, ""),
     sha
   };
@@ -269,6 +278,11 @@ async function invalidateSummariesCache(env) {
   await caches.default.delete(summariesCacheKey(env));
 }
 
+async function listPostSlugs(env) {
+  const files = await githubRequest(env, `/contents/content/posts?ref=${encodeURIComponent(branch(env))}`);
+  return files.filter((file) => file.type === "file" && file.name.endsWith(".md")).map((file) => file.name.replace(/\.md$/, ""));
+}
+
 async function listPosts(env, searchParams) {
   const page = parsePositiveInt(searchParams.get("page"), 1);
   const limit = parsePositiveInt(searchParams.get("limit"), 10, 50);
@@ -277,14 +291,8 @@ async function listPosts(env, searchParams) {
 
   let summaries = await readCachedSummaries(env);
   if (!summaries) {
-    const files = await githubRequest(env, `/contents/content/posts?ref=${encodeURIComponent(branch(env))}`);
-    const posts = files
-      .filter((file) => file.type === "file" && file.name.endsWith(".md"))
-      .map((file) => ({
-        slug: file.name.replace(/\.md$/, "")
-      }));
-
-    summaries = await Promise.all(posts.map((post) => getPostSummary(env, post.slug)));
+    const slugs = await listPostSlugs(env);
+    summaries = await Promise.all(slugs.map((slug) => getPostSummary(env, slug)));
     summaries.sort(comparePosts);
     await writeCachedSummaries(env, summaries);
   }
@@ -383,7 +391,18 @@ function serializePost(payload, previous = {}) {
     .split(",")
     .map((tag) => tag.trim())
     .filter(Boolean);
-  const publishedAt = previous.publishedAt || new Date().toISOString();
+  const status = payload.status || "published";
+
+  let publishedAt;
+  let scheduledAt = "";
+  if (status === "scheduled") {
+    const parsed = Date.parse(payload.scheduledAt || "");
+    if (!Number.isFinite(parsed)) throw httpError("定时发布需要选择一个有效的时间。", 400);
+    scheduledAt = new Date(parsed).toISOString();
+    publishedAt = scheduledAt;
+  } else {
+    publishedAt = previous.publishedAt || new Date().toISOString();
+  }
 
   return `---
 title: ${String(payload.title || "").trim()}
@@ -391,8 +410,9 @@ date: ${payload.date}
 description: ${String(payload.description || "").trim()}
 readingTime: ${String(payload.readingTime || "").trim()}
 tags: [${tags.join(", ")}]
-status: ${payload.status || "published"}
+status: ${status}
 publishedAt: ${publishedAt}
+scheduledAt: ${scheduledAt}
 ---
 
 ${String(payload.body || "").trim()}
@@ -430,6 +450,30 @@ async function savePost(env, slug, payload) {
     commitUrl: result.commit?.html_url || "",
     actionsUrl: actionsUrl(env)
   };
+}
+
+async function publishDuePosts(env) {
+  const slugs = await listPostSlugs(env);
+  const summaries = await Promise.all(slugs.map((slug) => getPostSummary(env, slug)));
+  const now = Date.now();
+  const dueSlugs = summaries
+    .filter((post) => post.status === "scheduled" && Date.parse(post.scheduledAt || "") <= now)
+    .map((post) => post.slug);
+
+  for (const slug of dueSlugs) {
+    const post = await getPost(env, slug);
+    await savePost(env, slug, {
+      title: post.title,
+      date: post.date,
+      description: post.description,
+      readingTime: post.readingTime,
+      tags: post.tags.join(", "),
+      status: "published",
+      body: post.body
+    });
+  }
+
+  return dueSlugs;
 }
 
 async function deletePost(env, slug) {

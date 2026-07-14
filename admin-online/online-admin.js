@@ -23,6 +23,8 @@ const editorModeButtons = document.querySelectorAll("[data-editor-mode]");
 const studioCompose = document.querySelector(".studio-compose");
 const markdownPreview = document.querySelector("#markdown-preview");
 const statusText = document.querySelector("#status");
+const postStatusSelect = document.querySelector("#post-status");
+const scheduledAtField = document.querySelector("#scheduled-at-field");
 const feedbackPanel = document.querySelector("#publish-feedback");
 const feedbackMessage = document.querySelector("#feedback-message");
 const feedbackLinks = document.querySelector("#feedback-links");
@@ -327,6 +329,19 @@ function localDateValue(date = new Date()) {
   return local.toISOString().slice(0, 10);
 }
 
+function localDateTimeValue(date = new Date()) {
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
+
+function updateScheduledAtVisibility() {
+  const isScheduled = postStatusSelect.value === "scheduled";
+  scheduledAtField.hidden = !isScheduled;
+  form.elements.scheduledAt.required = isScheduled;
+}
+
+postStatusSelect.addEventListener("change", updateScheduledAtVisibility);
+
 function resetForm() {
   form.reset();
   form.elements.slug.value = "";
@@ -334,6 +349,8 @@ function resetForm() {
   form.elements.date.value = localDateValue();
   setSelectedTags([]);
   form.elements.status.value = "published";
+  form.elements.scheduledAt.value = "";
+  updateScheduledAtVisibility();
   deletePostButton.hidden = true;
   feedbackPanel.hidden = true;
   updatePreview();
@@ -381,7 +398,7 @@ function renderPosts() {
     .map(
       (post) => `<button class="studio-post-item" type="button" data-slug="${escapeHtml(post.slug)}">
         <strong>${escapeHtml(post.title)}</strong>
-        <span>${escapeHtml(post.date)}${post.status === "draft" ? " · 草稿" : ""}${post.status === "hidden" ? " · 隐藏" : ""}${post.tags?.length ? ` · ${escapeHtml(post.tags.join(", "))}` : ""}</span>
+        <span>${escapeHtml(post.date)}${post.status === "draft" ? " · 草稿" : ""}${post.status === "hidden" ? " · 隐藏" : ""}${post.status === "scheduled" ? ` · 定时于 ${escapeHtml(localDateTimeValue(new Date(post.scheduledAt)).replace("T", " "))}` : ""}${post.tags?.length ? ` · ${escapeHtml(post.tags.join(", "))}` : ""}</span>
         <small>${escapeHtml(post.description || "")}</small>
       </button>`
     )
@@ -434,6 +451,8 @@ async function loadPost(slug) {
   form.elements.readingTime.value = post.readingTime || "";
   setSelectedTags(post.tags || []);
   form.elements.status.value = post.status || "published";
+  form.elements.scheduledAt.value = post.scheduledAt ? localDateTimeValue(new Date(post.scheduledAt)) : "";
+  updateScheduledAtVisibility();
   form.elements.body.value = post.body || "";
   deletePostButton.hidden = protectedSlugs.has(post.slug);
   updatePreview();
@@ -450,6 +469,9 @@ async function savePost(event) {
   const slug = payload.slug;
   delete payload.slug;
   delete payload.sha;
+  if (payload.status === "scheduled" && payload.scheduledAt) {
+    payload.scheduledAt = new Date(payload.scheduledAt).toISOString();
+  }
 
   try {
     setStatus("正在发布...");
