@@ -1269,7 +1269,7 @@ async function build() {
     posts.push({ ...parseMarkdownFile(source, file), modifiedTime: fileStat.mtimeMs });
   }
   sortPosts(posts);
-  const generatedPosts = posts.filter((post) => post.status !== "draft");
+  const generatedPosts = posts.filter((post) => post.status !== "draft" && post.status !== "scheduled");
   const listedPosts = generatedPosts.filter((post) => post.status !== "hidden");
 
   await writeFile(path.join(distDir, "index.html"), renderHome(listedPosts));
