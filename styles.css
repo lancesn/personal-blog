@@ -1647,6 +1647,10 @@ img {
   font-size: 13px;
 }
 
+.studio-post-title--scheduled {
+  color: #d97706;
+}
+
 .studio-empty {
   display: grid;
   justify-items: center;

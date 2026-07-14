@@ -397,7 +397,7 @@ function renderPosts() {
   postList.innerHTML = posts
     .map(
       (post) => `<button class="studio-post-item" type="button" data-slug="${escapeHtml(post.slug)}">
-        <strong>${escapeHtml(post.title)}</strong>
+        <strong${post.status === "scheduled" ? ' class="studio-post-title--scheduled"' : ""}>${escapeHtml(post.title)}</strong>
         <span>${escapeHtml(post.date)}${post.status === "draft" ? " · 草稿" : ""}${post.status === "hidden" ? " · 隐藏" : ""}${post.status === "scheduled" ? ` · 定时于 ${escapeHtml(localDateTimeValue(new Date(post.scheduledAt)).replace("T", " "))}` : ""}${post.tags?.length ? ` · ${escapeHtml(post.tags.join(", "))}` : ""}</span>
         <small>${escapeHtml(post.description || "")}</small>
       </button>`
