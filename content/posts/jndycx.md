@@ -1,12 +1,12 @@
 ---
 title: 江南的一场雪
 date: 2026-07-14
-description: 
+description: 江南的雪，总像一封写得太轻的信。北风把它送到窗前时，字迹已经洇开，只剩下一片白，覆在瓦上、石阶上，也覆在昨夜没有说完的话上。 清晨开窗，河埠头不见早行人，乌篷船收拢了篷，静静泊在桥...
 readingTime: 
 tags: [日常, 随笔]
-status: published
-publishedAt: 2026-07-14T08:20:49.454Z
-scheduledAt: 
+status: scheduled
+publishedAt: 2027-01-18T08:30:00.000Z
+scheduledAt: 2027-01-18T08:30:00.000Z
 ---
 
 江南的雪，总像一封写得太轻的信。北风把它送到窗前时，字迹已经洇开，只剩下一片白，覆在瓦上、石阶上，也覆在昨夜没有说完的话上。
