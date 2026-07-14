@@ -1,10 +1,10 @@
 ---
 title: 拂晓的雀声
-date: 2026-07-14
-description: 
+date: 2026-07-15
+description: 天还没有完全亮，早雀已经在檐下争论起来。它们的声音细碎、急切，像一把把小剪刀，把夜色从窗纸上剪开。 屋里的人尚未醒透，桌上的书合着，杯底留有昨夜的冷茶。世界看上去什么都没有准备好：...
 readingTime: 
 tags: [日常, 散文, 随笔]
-status: published
+status: hidden
 publishedAt: 2026-07-14T08:28:08.997Z
 scheduledAt: 
 ---
