@@ -148,6 +148,26 @@ async function githubRequest(env, path, options = {}) {
   return result;
 }
 
+async function githubGraphQL(env, query, variables) {
+  if (!env.GITHUB_TOKEN) throw httpError("Worker 缺少 GITHUB_TOKEN 环境变量。", 500);
+
+  const response = await fetch("https://api.github.com/graphql", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.GITHUB_TOKEN}`,
+      "Content-Type": "application/json",
+      "User-Agent": "silencegate-blog-admin"
+    },
+    body: JSON.stringify({ query, variables })
+  });
+
+  const result = await response.json();
+  if (!response.ok || result.errors) {
+    throw httpError(result.errors?.[0]?.message || "GitHub GraphQL 请求失败。", response.status || 500);
+  }
+  return result.data;
+}
+
 function parseListField(value) {
   if (!value) return [];
   return value
@@ -250,12 +270,6 @@ function matchesPost(post, q, tag) {
     .includes(query);
 }
 
-async function getPostSummary(env, slug) {
-  const filePath = `content/posts/${slug}.md`;
-  const detail = await githubRequest(env, `/contents/${encodeContentPath(filePath)}?ref=${encodeURIComponent(branch(env))}`);
-  return parseMarkdown(decodeBase64(detail.content), `${slug}.md`, detail.sha, { includeBody: false });
-}
-
 function summariesCacheKey(env) {
   return new Request(`https://post-summaries.internal/${repo(env)}/${encodeURIComponent(branch(env))}`);
 }
@@ -278,9 +292,34 @@ async function invalidateSummariesCache(env) {
   await caches.default.delete(summariesCacheKey(env));
 }
 
-async function listPostSlugs(env) {
-  const files = await githubRequest(env, `/contents/content/posts?ref=${encodeURIComponent(branch(env))}`);
-  return files.filter((file) => file.type === "file" && file.name.endsWith(".md")).map((file) => file.name.replace(/\.md$/, ""));
+// Fetches every post's frontmatter in a single GitHub GraphQL request instead
+// of one REST call per file. The REST-based directory-listing-then-fetch-each
+// approach used one Worker subrequest per post, which was enough to trip
+// Cloudflare's per-invocation subrequest limit once the blog passed ~45 posts.
+async function fetchAllPostSummaries(env) {
+  const data = await githubGraphQL(
+    env,
+    `query($owner: String!, $repo: String!, $expression: String!) {
+      repository(owner: $owner, name: $repo) {
+        object(expression: $expression) {
+          ... on Tree {
+            entries {
+              name
+              object {
+                ... on Blob { oid text }
+              }
+            }
+          }
+        }
+      }
+    }`,
+    { owner: env.GITHUB_OWNER, repo: env.GITHUB_REPO, expression: `${branch(env)}:content/posts` }
+  );
+
+  const entries = data.repository?.object?.entries || [];
+  return entries
+    .filter((entry) => entry.name.endsWith(".md") && entry.object?.text)
+    .map((entry) => parseMarkdown(entry.object.text, entry.name, entry.object.oid, { includeBody: false }));
 }
 
 async function listPosts(env, searchParams) {
@@ -291,8 +330,7 @@ async function listPosts(env, searchParams) {
 
   let summaries = await readCachedSummaries(env);
   if (!summaries) {
-    const slugs = await listPostSlugs(env);
-    summaries = await Promise.all(slugs.map((slug) => getPostSummary(env, slug)));
+    summaries = await fetchAllPostSummaries(env);
     summaries.sort(comparePosts);
     await writeCachedSummaries(env, summaries);
   }
@@ -466,8 +504,7 @@ async function publishDuePosts(env) {
   // per-invocation subrequest limit.
   let summaries = await readCachedSummaries(env);
   if (!summaries) {
-    const slugs = await listPostSlugs(env);
-    summaries = await Promise.all(slugs.map((slug) => getPostSummary(env, slug)));
+    summaries = await fetchAllPostSummaries(env);
     summaries.sort(comparePosts);
     await writeCachedSummaries(env, summaries);
   }
