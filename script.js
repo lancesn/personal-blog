@@ -346,13 +346,18 @@ if (tagGraphContainer) {
   }
 
   function nodeAtScreenPoint(x, y) {
-    for (let i = nodes.length - 1; i >= 0; i -= 1) {
-      const node = nodes[i];
+    let closest = null;
+    let closestDistSq = Infinity;
+    for (const node of nodes) {
       const pos = toScreen(node);
       const r = Math.max(node.r * view.scale, 10);
-      if ((pos.x - x) ** 2 + (pos.y - y) ** 2 <= r * r) return node;
+      const distSq = (pos.x - x) ** 2 + (pos.y - y) ** 2;
+      if (distSq <= r * r && distSq < closestDistSq) {
+        closest = node;
+        closestDistSq = distSq;
+      }
     }
-    return null;
+    return closest;
   }
 
   function pointerPosition(event) {
