@@ -1,5 +1,6 @@
 import { copyFile, cp, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { createHash } from "node:crypto";
 import sharp from "sharp";
 
 const root = process.cwd();
@@ -189,7 +190,11 @@ const slugOverrides = {
   禅: "cz",
   随笔: "sb",
   日常: "rc",
-  正念: "zn"
+  正念: "zn",
+  别念: "bn",
+  清言: "qy",
+  独处: "dc",
+  研究: "yj"
 };
 
 const slugAliases = {
@@ -198,7 +203,11 @@ const slugAliases = {
   禅: ["禅宗", "zen"],
   随笔: ["notes"],
   日常: ["daily"],
-  正念: ["mindfulness"]
+  正念: ["mindfulness"],
+  别念: ["let-go"],
+  清言: ["pure-words"],
+  独处: ["solitude"],
+  研究: ["research"]
 };
 
 const namedHeadingSections = new Set(["引言", "前言", "结论", "小结", "结语", "摘要", "关键词"]);
@@ -207,12 +216,19 @@ function slugify(value) {
   const text = String(value || "").trim();
   if (slugOverrides[text]) return slugOverrides[text];
 
-  return text
+  const base = text
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "") || "tag";
+    .replace(/^-+|-+$/g, "");
+
+  // Names with no Latin/ASCII characters left (e.g. Chinese-only tags without a
+  // slugOverrides entry) would otherwise all collapse to the same literal fallback
+  // and silently overwrite each other's generated page. Hash the original text
+  // instead so every distinct name still gets a distinct, stable slug.
+  if (base) return base;
+  return `tag-${createHash("md5").update(text).digest("hex").slice(0, 8)}`;
 }
 
 function absoluteUrl(relativePath = "") {
