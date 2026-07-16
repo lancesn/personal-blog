@@ -325,7 +325,14 @@ if (tagGraphContainer) {
       const fontSize = (node.type === "tag" ? 13 : 11) * view.scale;
       ctx.font = `${node.type === "tag" ? 700 : 400} ${fontSize}px ${fontFamily}`;
       ctx.fillStyle = node.type === "tag" ? textColor : mutedColor;
-      ctx.fillText(node.label, pos.x + r + 6 * view.scale, pos.y);
+      const labelX = pos.x + r + 6 * view.scale;
+      ctx.fillText(node.label, labelX, pos.y);
+      node.labelBox = {
+        left: labelX - 2,
+        right: labelX + ctx.measureText(node.label).width + 4,
+        top: pos.y - Math.max(fontSize / 2, 6),
+        bottom: pos.y + Math.max(fontSize / 2, 6)
+      };
     }
   }
 
@@ -346,18 +353,30 @@ if (tagGraphContainer) {
   }
 
   function nodeAtScreenPoint(x, y) {
-    let closest = null;
-    let closestDistSq = Infinity;
+    // A click inside a node's readable text label always wins over an unrelated node's
+    // tiny circle happening to sit nearby — the label is what the user actually sees and
+    // aims for, whereas a small node's clamped click radius is just a tap-friendliness
+    // affordance and shouldn't hijack clicks meant for a different, clearly-labeled node.
+    // Only fall back to circle-distance matching when the click isn't inside any label.
+    let closestCircle = null;
+    let closestCircleDistSq = Infinity;
+    let closestLabel = null;
+    let closestLabelDistSq = Infinity;
     for (const node of nodes) {
       const pos = toScreen(node);
       const r = Math.max(node.r * view.scale, 10);
       const distSq = (pos.x - x) ** 2 + (pos.y - y) ** 2;
-      if (distSq <= r * r && distSq < closestDistSq) {
-        closest = node;
-        closestDistSq = distSq;
+      if (distSq <= r * r && distSq < closestCircleDistSq) {
+        closestCircle = node;
+        closestCircleDistSq = distSq;
+      }
+      const box = node.labelBox;
+      if (box && x >= box.left && x <= box.right && y >= box.top && y <= box.bottom && distSq < closestLabelDistSq) {
+        closestLabel = node;
+        closestLabelDistSq = distSq;
       }
     }
-    return closest;
+    return closestLabel || closestCircle;
   }
 
   function pointerPosition(event) {
