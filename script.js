@@ -227,8 +227,14 @@ if (tagGraphContainer) {
   }
 
   function step() {
-    const repulsion = 2600;
-    const springLength = 90;
+    // Screen-space overlap between nodes/labels doesn't change with zoom on its own —
+    // node radii and inter-node distances are both multiplied by the same view.scale, so
+    // whatever overlap exists at scale=1 persists at any zoom level. To actually spread
+    // nodes apart as the user zooms in, grow the simulation's target spacing (and the
+    // repulsion needed to hold it) with the current zoom level.
+    const spacingFactor = Math.max(1, Math.sqrt(view.scale));
+    const repulsion = 2600 * spacingFactor * spacingFactor;
+    const springLength = 90 * spacingFactor;
     const springStrength = 0.02;
     const centerPull = 0.006;
     const damping = 0.86;
@@ -432,7 +438,8 @@ if (tagGraphContainer) {
       view.scale = nextScale;
       view.x = midpoint.x - worldX * nextScale;
       view.y = midpoint.y - worldY * nextScale;
-      if (settled) render();
+      render();
+      wake();
       event.preventDefault();
       return;
     }
@@ -476,7 +483,8 @@ if (tagGraphContainer) {
     view.scale = nextScale;
     view.x = point.x - worldX * nextScale;
     view.y = point.y - worldY * nextScale;
-    if (settled) render();
+    render();
+    wake();
   }
 
   canvas.addEventListener("mousedown", onPointerDown);
