@@ -1,11 +1,12 @@
 ---
 title: 西湖春色驿
-date: 2026-06-15
-description: 
+date: 2026-05-04
+description: 州人爱春，却又总说天寒。 这话听来矛盾，城中的柳絮已经过了长堤，湖面上的风也渐渐有了水汽，茶肆门前换上薄帘，卖花人每日清早挑着竹篮，从巷口一直走到桥头。可州人仍裹着旧衣，见面第一句...
 readingTime: 
 tags: [日常, 随笔]
 status: published
 publishedAt: 2026-07-13T09:51:24.426Z
+scheduledAt: 
 ---
 
 ![ChatGPT Image 2026年7月13日 17_42_35.png](../uploads/image-20260713094255.png)
