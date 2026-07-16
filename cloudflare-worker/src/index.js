@@ -419,18 +419,7 @@ ${String(payload.body || "").trim()}
 `;
 }
 
-async function savePost(env, slug, payload) {
-  if (!payload.title || !payload.date || !payload.body) {
-    throw httpError("标题、日期、正文不能为空。", 400);
-  }
-
-  let previous = null;
-  try {
-    previous = await getPost(env, slug);
-  } catch (error) {
-    if (error.status !== 404) throw error;
-  }
-
+async function writePost(env, slug, payload, previous) {
   const content = serializePost(payload, previous || {});
   const filePath = `content/posts/${slug}.md`;
   const result = await githubRequest(env, `/contents/${encodeContentPath(filePath)}`, {
@@ -452,9 +441,37 @@ async function savePost(env, slug, payload) {
   };
 }
 
+async function savePost(env, slug, payload) {
+  if (!payload.title || !payload.date || !payload.body) {
+    throw httpError("标题、日期、正文不能为空。", 400);
+  }
+
+  let previous = null;
+  try {
+    previous = await getPost(env, slug);
+  } catch (error) {
+    if (error.status !== 404) throw error;
+  }
+
+  return writePost(env, slug, payload, previous);
+}
+
 async function publishDuePosts(env) {
-  const slugs = await listPostSlugs(env);
-  const summaries = await Promise.all(slugs.map((slug) => getPostSummary(env, slug)));
+  // Reuse the same summaries cache listPosts uses (no body needed to know
+  // which posts are due), so a cron tick that lands while the admin cache
+  // is still warm costs zero GitHub subrequests for the scan. Each due
+  // post is then fetched exactly once (with body) and reused directly as
+  // `previous`, instead of fetching it again inside savePost — with 40+
+  // posts, that redundant fetch was pushing invocations over Cloudflare's
+  // per-invocation subrequest limit.
+  let summaries = await readCachedSummaries(env);
+  if (!summaries) {
+    const slugs = await listPostSlugs(env);
+    summaries = await Promise.all(slugs.map((slug) => getPostSummary(env, slug)));
+    summaries.sort(comparePosts);
+    await writeCachedSummaries(env, summaries);
+  }
+
   const now = Date.now();
   const dueSlugs = summaries
     .filter((post) => post.status === "scheduled" && Date.parse(post.scheduledAt || "") <= now)
@@ -462,15 +479,20 @@ async function publishDuePosts(env) {
 
   for (const slug of dueSlugs) {
     const post = await getPost(env, slug);
-    await savePost(env, slug, {
-      title: post.title,
-      date: post.date,
-      description: post.description,
-      readingTime: post.readingTime,
-      tags: post.tags.join(", "),
-      status: "published",
-      body: post.body
-    });
+    await writePost(
+      env,
+      slug,
+      {
+        title: post.title,
+        date: post.date,
+        description: post.description,
+        readingTime: post.readingTime,
+        tags: post.tags.join(", "),
+        status: "published",
+        body: post.body
+      },
+      post
+    );
   }
 
   return dueSlugs;
