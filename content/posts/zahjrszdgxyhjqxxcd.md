@@ -1,12 +1,12 @@
 ---
 title: 《杂阿含经》“如实知”的观行义涵及其心行次第
 date: 2026-07-14
-description: 
+description: 以五受阴观与味患离为中心 摘要 “如实知”若只被释为对真实情况的正确认识，其在《杂阿含经》观行语境中的实践力量仍未得到说明。围绕第1、2、13、14、296、298、382、470...
 readingTime: 
 tags: [研究]
-status: scheduled
+status: published
 publishedAt: 2026-07-20T10:01:00.000Z
-scheduledAt: 2026-07-20T10:01:00.000Z
+scheduledAt: 
 ---
 
 *以五受阴观与味患离为中心*
