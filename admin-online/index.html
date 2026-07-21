@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>蓬窗灯影录 Online Studio</title>
-    <link rel="stylesheet" href="../styles.css?v=20260721-stats-crash-fix" />
+    <link rel="stylesheet" href="../styles.css?v=20260721-stats-own-page" />
   </head>
   <body class="studio-page">
     <main class="studio-shell">
@@ -19,6 +19,7 @@
           <a class="button dark" href="https://mail.silencegate.com" target="_blank" rel="noopener noreferrer">登陆邮件</a>
           <a class="button dark" href="https://note.moaiko.com" target="_blank" rel="noopener noreferrer">笔记本</a>
           <a class="button dark" href="https://reader.moaiko.com" target="_blank" rel="noopener noreferrer">阅读器</a>
+          <a class="button dark" href="./stats.html">阅读统计</a>
           <a class="button dark" href="../index.html">返回网站</a>
         </div>
       </section>
@@ -44,28 +45,6 @@
           <button class="button primary" id="connect" type="button">连接并读取文章</button>
           <button class="button" id="forget-password" type="button">清除密码</button>
           <p id="status" role="status"></p>
-        </div>
-      </section>
-
-      <section class="studio-help">
-        <h2>阅读统计</h2>
-        <p>统计公开页面的访问次数，按地区和页面分别汇总。</p>
-        <div class="studio-actions">
-          <button class="button" id="load-stats" type="button">查看统计</button>
-          <p id="stats-status" role="status"></p>
-        </div>
-        <div id="stats-results" hidden>
-          <p id="stats-total"></p>
-          <div class="studio-grid">
-            <div>
-              <h3>按地区</h3>
-              <table class="stats-table" id="stats-by-country"></table>
-            </div>
-            <div>
-              <h3>按页面</h3>
-              <table class="stats-table" id="stats-by-path"></table>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -206,7 +185,7 @@
         </form>
       </section>
     </main>
-    <script src="../script.js?v=20260721-stats-crash-fix"></script>
-    <script src="./online-admin.js?v=20260721-stats-crash-fix"></script>
+    <script src="../script.js?v=20260721-stats-own-page"></script>
+    <script src="./online-admin.js?v=20260721-stats-own-page"></script>
   </body>
 </html>

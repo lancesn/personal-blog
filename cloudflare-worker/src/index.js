@@ -609,6 +609,17 @@ async function trackPageview(request, env) {
 async function getStats(env) {
   if (!env.ANALYTICS_DB) throw httpError("Worker 缺少 ANALYTICS_DB 绑定。", 500);
 
+  // Reuse the same summaries cache listPosts() populates, so titles for the
+  // "by page" breakdown are usually free (no extra GitHub subrequest) when
+  // the admin panel's post list was loaded recently.
+  let summaries = await readCachedSummaries(env);
+  if (!summaries) {
+    summaries = await fetchAllPostSummaries(env);
+    summaries.sort(comparePosts);
+    await writeCachedSummaries(env, summaries);
+  }
+  const titleByPath = new Map(summaries.map((post) => [`/posts/${post.slug}.html`, post.title]));
+
   const [totalRow, byCountry, byPath] = await Promise.all([
     env.ANALYTICS_DB.prepare("SELECT COUNT(*) AS total FROM pageviews").first(),
     env.ANALYTICS_DB.prepare("SELECT country, COUNT(*) AS views FROM pageviews GROUP BY country ORDER BY views DESC LIMIT 20").all(),
@@ -618,7 +629,7 @@ async function getStats(env) {
   return {
     totalViews: totalRow?.total || 0,
     byCountry: byCountry.results || [],
-    byPath: byPath.results || []
+    byPath: (byPath.results || []).map((row) => ({ ...row, title: titleByPath.get(row.path) || "" }))
   };
 }
 
