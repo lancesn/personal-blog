@@ -9,11 +9,17 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
-    try {
-      await requireAdminPassword(request, env);
+    const url = new URL(request.url);
+    const path = url.pathname.replace(/\/+$/, "") || "/";
 
-      const url = new URL(request.url);
-      const path = url.pathname.replace(/\/+$/, "") || "/";
+    try {
+      // Public pageview beacon — called from every visitor's page load, so it
+      // must not require the admin password (unlike every other route below).
+      if (request.method === "POST" && path === "/track") {
+        return json(await trackPageview(request, env), corsHeaders);
+      }
+
+      await requireAdminPassword(request, env);
 
       if (request.method === "GET" && path === "/posts") {
         return json(await listPosts(env, url.searchParams), corsHeaders);
@@ -35,6 +41,9 @@ export default {
       }
       if (request.method === "POST" && path === "/uploads") {
         return json(await uploadImage(env, await request.json()), corsHeaders);
+      }
+      if (request.method === "GET" && path === "/stats") {
+        return json(await getStats(env), corsHeaders);
       }
 
       return json({ error: "接口不存在。" }, corsHeaders, 404);
@@ -581,6 +590,35 @@ async function uploadImage(env, payload) {
     markdown: `![${payload.name || file}](../uploads/${file})`,
     commitUrl: result.commit?.html_url || "",
     actionsUrl: actionsUrl(env)
+  };
+}
+
+async function trackPageview(request, env) {
+  if (!env.ANALYTICS_DB) throw httpError("Worker 缺少 ANALYTICS_DB 绑定。", 500);
+
+  const payload = await request.json().catch(() => ({}));
+  const path = String(payload.path || "").trim().slice(0, 300);
+  if (!path) throw httpError("缺少 path。", 400);
+
+  const country = request.cf?.country || "XX";
+  await env.ANALYTICS_DB.prepare("INSERT INTO pageviews (path, country) VALUES (?, ?)").bind(path, country).run();
+
+  return { ok: true };
+}
+
+async function getStats(env) {
+  if (!env.ANALYTICS_DB) throw httpError("Worker 缺少 ANALYTICS_DB 绑定。", 500);
+
+  const [totalRow, byCountry, byPath] = await Promise.all([
+    env.ANALYTICS_DB.prepare("SELECT COUNT(*) AS total FROM pageviews").first(),
+    env.ANALYTICS_DB.prepare("SELECT country, COUNT(*) AS views FROM pageviews GROUP BY country ORDER BY views DESC LIMIT 20").all(),
+    env.ANALYTICS_DB.prepare("SELECT path, COUNT(*) AS views FROM pageviews GROUP BY path ORDER BY views DESC LIMIT 20").all()
+  ]);
+
+  return {
+    totalViews: totalRow?.total || 0,
+    byCountry: byCountry.results || [],
+    byPath: byPath.results || []
   };
 }
 

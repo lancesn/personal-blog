@@ -28,6 +28,12 @@ const scheduledAtField = document.querySelector("#scheduled-at-field");
 const feedbackPanel = document.querySelector("#publish-feedback");
 const feedbackMessage = document.querySelector("#feedback-message");
 const feedbackLinks = document.querySelector("#feedback-links");
+const statsButton = document.querySelector("#load-stats");
+const statsStatus = document.querySelector("#stats-status");
+const statsResults = document.querySelector("#stats-results");
+const statsTotal = document.querySelector("#stats-total");
+const statsByCountry = document.querySelector("#stats-by-country");
+const statsByPath = document.querySelector("#stats-by-path");
 const protectedSlugs = new Set(["嵩山普寂大照禅师生平略考"]);
 const siteUrl = "https://silencegate.com";
 const actionsUrl = "https://github.com/lancesn/personal-blog/actions";
@@ -463,6 +469,41 @@ async function loadPost(slug) {
   setStatus(`正在编辑：${post.slug}.md`);
 }
 
+let regionNames = null;
+try {
+  regionNames = new Intl.DisplayNames(["zh"], { type: "region" });
+} catch {
+  regionNames = null;
+}
+
+function countryLabel(code) {
+  if (!code || code === "XX") return "未知";
+  try {
+    const name = regionNames?.of(code);
+    return name && name !== code ? `${name}（${code}）` : code;
+  } catch {
+    return code;
+  }
+}
+
+function renderStatsTable(table, rows, label) {
+  table.innerHTML = rows.length
+    ? `<tbody>${rows.map((row) => `<tr><td>${escapeHtml(label(row))}</td><td>${escapeHtml(String(row.views))}</td></tr>`).join("")}</tbody>`
+    : `<tbody><tr><td colspan="2">暂无数据。</td></tr></tbody>`;
+}
+
+async function loadStats() {
+  statsStatus.textContent = "正在读取统计...";
+  statsStatus.dataset.tone = "neutral";
+  const result = await apiRequest("/stats");
+  statsTotal.textContent = `总访问次数：${result.totalViews || 0}`;
+  renderStatsTable(statsByCountry, result.byCountry || [], (row) => countryLabel(row.country));
+  renderStatsTable(statsByPath, result.byPath || [], (row) => row.path);
+  statsResults.hidden = false;
+  statsStatus.textContent = "已更新统计。";
+  statsStatus.dataset.tone = "success";
+}
+
 async function savePost(event) {
   event.preventDefault();
   const payload = Object.fromEntries(new FormData(form).entries());
@@ -735,6 +776,13 @@ async function importFile(file) {
 
 connectButton.addEventListener("click", () => {
   loadPosts(1).catch((error) => setStatus(error.message, "error"));
+});
+
+statsButton.addEventListener("click", () => {
+  loadStats().catch((error) => {
+    statsStatus.textContent = error.message;
+    statsStatus.dataset.tone = "error";
+  });
 });
 
 forgetPasswordButton.addEventListener("click", () => {

@@ -11,6 +11,13 @@
   "triggers": {
     "crons": ["*/10 * * * *"]
   },
+  "d1_databases": [
+    {
+      "binding": "ANALYTICS_DB",
+      "database_name": "silencegate-blog-analytics",
+      "database_id": "41792c48-a898-4fee-b6ad-21f3a62a6ddd"
+    }
+  ],
   "vars": {
     "GITHUB_OWNER": "lancesn",
     "GITHUB_REPO": "personal-blog",
