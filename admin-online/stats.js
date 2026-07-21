@@ -6,7 +6,7 @@ const forgetPasswordButton = document.querySelector("#forget-password");
 const statsStatus = document.querySelector("#stats-status");
 const statsResults = document.querySelector("#stats-results");
 const statsTotal = document.querySelector("#stats-total");
-const statsByCountry = document.querySelector("#stats-by-country");
+const statsByLocation = document.querySelector("#stats-by-location");
 const statsByPath = document.querySelector("#stats-by-path");
 
 function currentWorkerUrl() {
@@ -57,6 +57,13 @@ function countryLabel(code) {
   }
 }
 
+function locationLabel(row) {
+  const parts = [countryLabel(row.country)];
+  if (row.region && row.region !== row.city) parts.push(row.region);
+  if (row.city) parts.push(row.city);
+  return parts.join(" · ");
+}
+
 function renderStatsTable(table, rows, label) {
   table.innerHTML = rows.length
     ? `<tbody>${rows.map((row) => `<tr><td>${escapeHtml(label(row))}</td><td>${escapeHtml(String(row.views))}</td></tr>`).join("")}</tbody>`
@@ -78,8 +85,8 @@ async function loadStats() {
   }
 
   const result = await apiRequest("/stats");
-  statsTotal.textContent = `总访问次数：${result.totalViews || 0}`;
-  renderStatsTable(statsByCountry, result.byCountry || [], (row) => countryLabel(row.country));
+  statsTotal.textContent = `总阅读次数：${result.totalViews || 0}`;
+  renderStatsTable(statsByLocation, result.byLocation || [], locationLabel);
   renderStatsTable(statsByPath, result.byPath || [], (row) => row.title || row.path);
   statsResults.hidden = false;
   statsStatus.textContent = "已更新统计。";

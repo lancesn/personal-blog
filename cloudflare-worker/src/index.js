@@ -222,6 +222,14 @@ function parseMarkdown(source, fileName, sha, options = {}) {
     status: data.status || "published",
     publishedAt: data.publishedAt || "",
     scheduledAt: data.scheduledAt || "",
+    // "slug" is the filename (used for all GitHub read/write paths). Some
+    // legacy posts pin their public URL to something other than their
+    // filename via a frontmatter `slug:` override (scripts/build.js honors
+    // this for the actual site build) — urlSlug/aliases mirror that so
+    // stats lookups and the "查看文章" link can point at the real URL, and
+    // so saving a post never silently drops the override.
+    urlSlug: data.slug || fileName.replace(/\.md$/, ""),
+    aliases: parseListField(data.aliases),
     slug: fileName.replace(/\.md$/, ""),
     sha
   };
@@ -433,7 +441,7 @@ function slugify(value) {
   return slug || `post${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14)}`;
 }
 
-function serializePost(payload, previous = {}) {
+function serializePost(payload, previous = {}, slug = "") {
   const tags = String(payload.tags || "")
     .split(",")
     .map((tag) => tag.trim())
@@ -451,8 +459,17 @@ function serializePost(payload, previous = {}) {
     publishedAt = previous.publishedAt || new Date().toISOString();
   }
 
+  // A handful of legacy posts pin their public URL to something other than
+  // their filename via a `slug:` (plus optional `aliases:`) frontmatter
+  // field, which scripts/build.js honors when generating the site. Nothing
+  // in the admin UI can set this, so just preserve it as-is on every save —
+  // otherwise re-saving one of these posts would silently drop the override
+  // and change its live URL.
+  const slugLine = previous.urlSlug && previous.urlSlug !== slug ? `\nslug: ${previous.urlSlug}` : "";
+  const aliasesLine = previous.aliases?.length ? `\naliases: [${previous.aliases.join(", ")}]` : "";
+
   return `---
-title: ${String(payload.title || "").trim()}
+title: ${String(payload.title || "").trim()}${slugLine}${aliasesLine}
 date: ${payload.date}
 description: ${String(payload.description || "").trim()}
 readingTime: ${String(payload.readingTime || "").trim()}
@@ -467,7 +484,7 @@ ${String(payload.body || "").trim()}
 }
 
 async function writePost(env, slug, payload, previous) {
-  const content = serializePost(payload, previous || {});
+  const content = serializePost(payload, previous || {}, slug);
   const filePath = `content/posts/${slug}.md`;
   const result = await githubRequest(env, `/contents/${encodeContentPath(filePath)}`, {
     method: "PUT",
@@ -482,6 +499,7 @@ async function writePost(env, slug, payload, previous) {
 
   return {
     slug,
+    urlSlug: previous?.urlSlug && previous.urlSlug !== slug ? previous.urlSlug : slug,
     file: `${slug}.md`,
     commitUrl: result.commit?.html_url || "",
     actionsUrl: actionsUrl(env)
@@ -601,7 +619,11 @@ async function trackPageview(request, env) {
   if (!path) throw httpError("缺少 path。", 400);
 
   const country = request.cf?.country || "XX";
-  await env.ANALYTICS_DB.prepare("INSERT INTO pageviews (path, country) VALUES (?, ?)").bind(path, country).run();
+  const region = request.cf?.region || "";
+  const city = request.cf?.city || "";
+  await env.ANALYTICS_DB.prepare("INSERT INTO pageviews (path, country, region, city) VALUES (?, ?, ?, ?)")
+    .bind(path, country, region, city)
+    .run();
 
   return { ok: true };
 }
@@ -618,17 +640,19 @@ async function getStats(env) {
     summaries.sort(comparePosts);
     await writeCachedSummaries(env, summaries);
   }
-  const titleByPath = new Map(summaries.map((post) => [`/posts/${post.slug}.html`, post.title]));
+  const titleByPath = new Map(summaries.map((post) => [`/posts/${post.urlSlug}.html`, post.title]));
 
-  const [totalRow, byCountry, byPath] = await Promise.all([
+  const [totalRow, byLocation, byPath] = await Promise.all([
     env.ANALYTICS_DB.prepare("SELECT COUNT(*) AS total FROM pageviews").first(),
-    env.ANALYTICS_DB.prepare("SELECT country, COUNT(*) AS views FROM pageviews GROUP BY country ORDER BY views DESC LIMIT 20").all(),
+    env.ANALYTICS_DB.prepare(
+      "SELECT country, region, city, COUNT(*) AS views FROM pageviews GROUP BY country, region, city ORDER BY views DESC LIMIT 20"
+    ).all(),
     env.ANALYTICS_DB.prepare("SELECT path, COUNT(*) AS views FROM pageviews GROUP BY path ORDER BY views DESC LIMIT 20").all()
   ]);
 
   return {
     totalViews: totalRow?.total || 0,
-    byCountry: byCountry.results || [],
+    byLocation: byLocation.results || [],
     byPath: (byPath.results || []).map((row) => ({ ...row, title: titleByPath.get(row.path) || "" }))
   };
 }

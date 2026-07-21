@@ -484,7 +484,7 @@ async function savePost(event) {
     await loadPosts(1);
     resetForm();
     showFeedback("发布成功：文章已提交到 GitHub。编辑器已清空，可以继续写下一篇。GitHub Pages 通常需要 1-3 分钟完成构建和刷新。", [
-      { label: "查看文章", href: postUrl(result.slug) },
+      { label: "查看文章", href: postUrl(result.urlSlug || result.slug) },
       { label: "查看构建", href: result.actionsUrl || actionsUrl },
       { label: "查看提交", href: result.commitUrl }
     ]);

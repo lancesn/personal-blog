@@ -874,7 +874,7 @@ if (readingProgress && protectedContent) {
   updateReadingProgress();
 }
 
-if (!document.body.classList.contains("studio-page")) {
+if (article && !document.body.classList.contains("studio-page")) {
   const trackUrl = "https://silencegate-blog-admin.lanceshen.workers.dev/track";
   const payload = JSON.stringify({ path: window.location.pathname });
   // "text/plain" keeps this a CORS-simple request (no preflight), which is
