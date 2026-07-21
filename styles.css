@@ -2136,6 +2136,33 @@ img {
   cursor: pointer;
 }
 
+#stats-results {
+  margin-top: 14px;
+}
+
+#stats-total {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.stats-table {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.stats-table td {
+  padding: 6px 10px 6px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--text);
+}
+
+.stats-table td:last-child {
+  text-align: right;
+  color: var(--muted);
+}
+
 @media (max-width: 720px) {
   .studio-header,
   .studio-workspace,

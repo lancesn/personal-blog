@@ -873,3 +873,17 @@ if (readingProgress && protectedContent) {
   window.addEventListener("resize", updateReadingProgress);
   updateReadingProgress();
 }
+
+if (!document.body.classList.contains("studio-page")) {
+  const trackUrl = "https://silencegate-blog-admin.lanceshen.workers.dev/track";
+  const payload = JSON.stringify({ path: window.location.pathname });
+  // "text/plain" keeps this a CORS-simple request (no preflight), which is
+  // what lets sendBeacon fire reliably cross-origin without needing the
+  // Worker's CORS response headers to match — the browser never reads the
+  // response back anyway.
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(trackUrl, new Blob([payload], { type: "text/plain" }));
+  } else {
+    fetch(trackUrl, { method: "POST", body: payload, keepalive: true }).catch(() => {});
+  }
+}
