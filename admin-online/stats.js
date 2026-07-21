@@ -85,7 +85,7 @@ async function loadStats() {
   }
 
   const result = await apiRequest("/stats");
-  statsTotal.textContent = `总访问次数：${result.totalViews || 0}`;
+  statsTotal.textContent = `总阅读次数：${result.totalViews || 0}`;
   renderStatsTable(statsByLocation, result.byLocation || [], locationLabel);
   renderStatsTable(statsByPath, result.byPath || [], (row) => row.title || row.path);
   statsResults.hidden = false;
