@@ -336,6 +336,7 @@ function localDateValue(date = new Date()) {
 }
 
 function localDateTimeValue(date = new Date()) {
+  if (Number.isNaN(date.getTime())) return "";
   const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
   return local.toISOString().slice(0, 16);
 }
