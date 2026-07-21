@@ -4,9 +4,9 @@ date: 2026-07-21
 description: 人像暂住在肉身里的旅客。 起初嫌房间狭窄，嫌鼻梁不够挺，嫌双腿走得不快，仿佛更换一副形骸，人生就会顺利。 住久了才发现，这房子替你挡过寒，抱过所爱的人，也在最伤心的夜里坚持呼吸。伤...
 readingTime: 
 tags: [日常, 随笔]
-status: scheduled
+status: published
 publishedAt: 2026-07-21T04:01:00.000Z
-scheduledAt: 2026-07-21T04:01:00.000Z
+scheduledAt: 
 ---
 
 人像暂住在肉身里的旅客。
