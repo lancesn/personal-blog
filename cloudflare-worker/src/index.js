@@ -601,7 +601,11 @@ async function trackPageview(request, env) {
   if (!path) throw httpError("缺少 path。", 400);
 
   const country = request.cf?.country || "XX";
-  await env.ANALYTICS_DB.prepare("INSERT INTO pageviews (path, country) VALUES (?, ?)").bind(path, country).run();
+  const region = request.cf?.region || "";
+  const city = request.cf?.city || "";
+  await env.ANALYTICS_DB.prepare("INSERT INTO pageviews (path, country, region, city) VALUES (?, ?, ?, ?)")
+    .bind(path, country, region, city)
+    .run();
 
   return { ok: true };
 }
@@ -620,15 +624,17 @@ async function getStats(env) {
   }
   const titleByPath = new Map(summaries.map((post) => [`/posts/${post.slug}.html`, post.title]));
 
-  const [totalRow, byCountry, byPath] = await Promise.all([
+  const [totalRow, byLocation, byPath] = await Promise.all([
     env.ANALYTICS_DB.prepare("SELECT COUNT(*) AS total FROM pageviews").first(),
-    env.ANALYTICS_DB.prepare("SELECT country, COUNT(*) AS views FROM pageviews GROUP BY country ORDER BY views DESC LIMIT 20").all(),
+    env.ANALYTICS_DB.prepare(
+      "SELECT country, region, city, COUNT(*) AS views FROM pageviews GROUP BY country, region, city ORDER BY views DESC LIMIT 20"
+    ).all(),
     env.ANALYTICS_DB.prepare("SELECT path, COUNT(*) AS views FROM pageviews GROUP BY path ORDER BY views DESC LIMIT 20").all()
   ]);
 
   return {
     totalViews: totalRow?.total || 0,
-    byCountry: byCountry.results || [],
+    byLocation: byLocation.results || [],
     byPath: (byPath.results || []).map((row) => ({ ...row, title: titleByPath.get(row.path) || "" }))
   };
 }
