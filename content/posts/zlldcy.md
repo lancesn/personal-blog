@@ -1,7 +1,7 @@
 ---
 title: 竹林里的春雨
-date: 2026-07-14
-description: 
+date: 2027-03-24
+description: 春雨落进竹林，先是疏疏几声，随后密起来。旧叶承雨，新笋破土，一高一低地听着同一支曲子。风从竹梢穿过，整片山坡便有了水的呼吸。 我沿石径往里走，鞋面很快湿透。雨丝挂在眉睫上，远处的村...
 readingTime: 
 tags: [随笔]
 status: scheduled
