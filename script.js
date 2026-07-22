@@ -875,13 +875,12 @@ if (readingProgress && protectedContent) {
 }
 
 if (article && !document.body.classList.contains("studio-page")) {
-  // silencegate.com isn't actually proxied through Cloudflare (it's served
-  // directly by GitHub Pages), so a Worker Route on that domain can't
-  // intercept anything — back to the workers.dev URL. *.workers.dev being
-  // blocked in mainland China (dropping reads from Chinese visitors) is
-  // still real, but fixing it needs a domain that's actually Cloudflare-
-  // proxied, which this one isn't.
-  const trackUrl = "https://silencegate-blog-admin.lanceshen.workers.dev/track";
+  // *.workers.dev is commonly blocked in mainland China, silently dropping
+  // reads from Chinese visitors. track.silencegate.com is a Cloudflare
+  // Custom Domain (see cloudflare-worker/wrangler.jsonc) bound to this same
+  // Worker — unlike the bare silencegate.com apex, this subdomain actually
+  // is proxied through Cloudflare, so it should be reachable in China.
+  const trackUrl = "https://track.silencegate.com/track";
   const payload = JSON.stringify({ path: window.location.pathname });
   // "text/plain" keeps this a CORS-simple request (no preflight), which is
   // what lets sendBeacon fire reliably cross-origin without needing the
