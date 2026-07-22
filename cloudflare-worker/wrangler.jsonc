@@ -17,6 +17,15 @@
   "triggers": {
     "crons": ["*/10 * * * *"]
   },
+  // silencegate.com's zone IS on Cloudflare, but the apex record is DNS-only
+  // (points straight at GitHub Pages' IPs, unproxied) — a plain Route on
+  // that hostname is inert (confirmed: see the #67/#68 history). This is a
+  // fresh, currently-unused subdomain instead: custom_domain: true makes
+  // Wrangler provision its own proxied DNS record automatically, so it
+  // doesn't depend on (or touch) the apex's existing setup at all.
+  "routes": [
+    { "pattern": "track.silencegate.com", "custom_domain": true }
+  ],
   "d1_databases": [
     {
       "binding": "ANALYTICS_DB",
