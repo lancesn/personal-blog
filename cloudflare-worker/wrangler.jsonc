@@ -11,6 +11,9 @@
   "triggers": {
     "crons": ["*/10 * * * *"]
   },
+  "routes": [
+    { "pattern": "silencegate.com/track*", "zone_name": "silencegate.com" }
+  ],
   "d1_databases": [
     {
       "binding": "ANALYTICS_DB",

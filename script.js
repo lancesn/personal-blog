@@ -875,12 +875,13 @@ if (readingProgress && protectedContent) {
 }
 
 if (article && !document.body.classList.contains("studio-page")) {
-  const trackUrl = "https://silencegate-blog-admin.lanceshen.workers.dev/track";
+  // Routed through the same silencegate.com origin (via a Worker Route, see
+  // cloudflare-worker/wrangler.jsonc) rather than *.workers.dev directly —
+  // that subdomain is commonly blocked in mainland China, which was
+  // silently dropping reads from Chinese visitors even though the article
+  // itself loaded fine.
+  const trackUrl = "https://silencegate.com/track";
   const payload = JSON.stringify({ path: window.location.pathname });
-  // "text/plain" keeps this a CORS-simple request (no preflight), which is
-  // what lets sendBeacon fire reliably cross-origin without needing the
-  // Worker's CORS response headers to match — the browser never reads the
-  // response back anyway.
   if (navigator.sendBeacon) {
     navigator.sendBeacon(trackUrl, new Blob([payload], { type: "text/plain" }));
   } else {
