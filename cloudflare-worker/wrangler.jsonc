@@ -2,6 +2,12 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "silencegate-blog-admin",
   "main": "src/index.js",
+  // Wrangler disables the workers.dev subdomain by default whenever a
+  // "routes" entry is present in this config, unless this is explicitly
+  // set. Keep it true even without routes, so this can never silently
+  // break the admin panel (which is hardcoded to the workers.dev URL)
+  // again if routes get added here in the future.
+  "workers_dev": true,
   "compatibility_date": "2026-06-30",
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
@@ -11,9 +17,6 @@
   "triggers": {
     "crons": ["*/10 * * * *"]
   },
-  "routes": [
-    { "pattern": "silencegate.com/track*", "zone_name": "silencegate.com" }
-  ],
   "d1_databases": [
     {
       "binding": "ANALYTICS_DB",
