@@ -808,15 +808,27 @@ if (shareBar) {
 
       ctx.textBaseline = "top";
 
-      ctx.fillStyle = muted;
+      ctx.font = `700 30px ${serifStack}`;
+      const nameWidth = ctx.measureText("蓬窗灯影录").width;
+
+      const brandText = "SILENCEGATE";
       ctx.font = `700 16px ${serifStack}`;
+      ctx.letterSpacing = "0px";
+      const brandWidth0 = ctx.measureText(brandText).width;
+      ctx.letterSpacing = "1px";
+      const brandWidth1 = ctx.measureText(brandText).width;
+      const widthPerLetterSpacingPx = brandWidth1 - brandWidth0;
+      const brandLetterSpacing =
+        widthPerLetterSpacingPx > 0 ? Math.max(0, (nameWidth - brandWidth0) / widthPerLetterSpacingPx) : 0;
+
+      ctx.fillStyle = muted;
       ctx.save();
-      ctx.letterSpacing = "3px";
-      ctx.fillText("SilenceGate", padding, padding);
+      ctx.letterSpacing = `${brandLetterSpacing}px`;
+      ctx.fillText(brandText, padding, padding);
       ctx.restore();
 
       ctx.fillStyle = primary;
-      ctx.font = `700 28px ${serifStack}`;
+      ctx.font = `700 30px ${serifStack}`;
       ctx.fillText("蓬窗灯影录", padding, padding + 32);
 
       ctx.fillStyle = muted;
@@ -845,7 +857,7 @@ if (shareBar) {
       ctx.stroke();
       cursorY += 52;
 
-      ctx.fillStyle = muted;
+      ctx.fillStyle = "#5F615F";
       ctx.font = `400 31px ${serifStack}`;
       const excerptLines = wrapChineseText(description || title, 17);
       const excerptTruncated = excerptLines.length > 4;
@@ -866,7 +878,7 @@ if (shareBar) {
 
       const articleText = document.querySelector(".article-content")?.textContent.replace(/\s+/g, "").trim() || "";
       const quote = curatedQuote || extractQuote(articleText || description || title);
-      ctx.fillStyle = primary;
+      ctx.fillStyle = "#3E5047";
       ctx.font = `italic 700 30px ${serifStack}`;
       wrapChineseText(`"${quote}"`, 17)
         .slice(0, 3)
