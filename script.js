@@ -749,14 +749,20 @@ if (shareBar) {
 
       const logoHeight = 100;
       const headerOffset = logoImage ? logoHeight + 18 : 0;
+      let nameX = padding;
+      let nameAlign = "left";
       if (logoImage) {
         const logoWidth = logoHeight * (logoImage.naturalWidth / logoImage.naturalHeight);
         ctx.drawImage(logoImage, padding, padding, logoWidth, logoHeight);
+        nameX = padding + logoWidth / 2;
+        nameAlign = "center";
       }
 
+      ctx.textAlign = nameAlign;
       ctx.fillStyle = primary;
       ctx.font = "700 34px serif";
-      ctx.fillText("蓬窗灯影录", padding, padding + headerOffset);
+      ctx.fillText("蓬窗灯影录", nameX, padding + headerOffset);
+      ctx.textAlign = "left";
 
       const now = new Date();
       const dateText = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
