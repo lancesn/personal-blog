@@ -702,20 +702,7 @@ if (shareBar) {
       return lines;
     }
 
-    let logoImagePromise = null;
-    function loadLogoImage() {
-      if (!logoImagePromise) {
-        logoImagePromise = new Promise((resolve) => {
-          const image = new Image();
-          image.addEventListener("load", () => resolve(image));
-          image.addEventListener("error", () => resolve(null));
-          image.src = "/uploads/poster-logo.png";
-        });
-      }
-      return logoImagePromise;
-    }
-
-    function drawPoster(qrImage, logoImage) {
+    function drawPoster(qrImage) {
       const width = canvas.dataset.baseWidth ? Number(canvas.dataset.baseWidth) : canvas.width;
       const height = canvas.dataset.baseHeight ? Number(canvas.dataset.baseHeight) : canvas.height;
       canvas.dataset.baseWidth = String(width);
@@ -747,24 +734,17 @@ if (shareBar) {
 
       ctx.textBaseline = "top";
 
-      const logoHeight = 60;
-      const headerOffset = logoImage ? logoHeight + 12 : 0;
-      if (logoImage) {
-        const logoWidth = logoHeight * (logoImage.naturalWidth / logoImage.naturalHeight);
-        ctx.drawImage(logoImage, padding, padding, logoWidth, logoHeight);
-      }
-
       ctx.fillStyle = primary;
       ctx.font = "700 34px serif";
-      ctx.fillText("蓬窗灯影录", padding, padding + headerOffset);
+      ctx.fillText("蓬窗灯影录", padding, padding);
 
       const now = new Date();
       const dateText = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
       ctx.fillStyle = muted;
       ctx.font = "400 20px serif";
-      ctx.fillText(dateText, padding, padding + headerOffset + 46);
+      ctx.fillText(dateText, padding, padding + 46);
 
-      let cursorY = padding + headerOffset + 162;
+      let cursorY = padding + 162;
       ctx.fillStyle = textColor;
       ctx.font = "700 46px serif";
       wrapCanvasText(ctx, title, width - padding * 2)
@@ -819,9 +799,7 @@ if (shareBar) {
         qrImage.addEventListener("error", () => reject(new Error("二维码加载失败")));
         qrImage.src = qrDataUrl;
       });
-      const logoImage = await loadLogoImage();
-
-      drawPoster(qrImage, logoImage);
+      drawPoster(qrImage);
 
       await new Promise((resolve) => {
         canvas.toBlob((blob) => {
