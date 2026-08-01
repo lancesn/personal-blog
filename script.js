@@ -747,7 +747,7 @@ if (shareBar) {
 
       ctx.textBaseline = "top";
 
-      const logoHeight = 56;
+      const logoHeight = 100;
       const headerOffset = logoImage ? logoHeight + 18 : 0;
       if (logoImage) {
         const logoWidth = logoHeight * (logoImage.naturalWidth / logoImage.naturalHeight);
