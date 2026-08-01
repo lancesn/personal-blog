@@ -702,6 +702,28 @@ if (shareBar) {
       return lines;
     }
 
+    function wrapChineseText(text, maxChars) {
+      const breakChars = new Set(["，", "、", "；", "：", "。", "！", "？"]);
+      const lines = [];
+      let start = 0;
+      while (start < text.length) {
+        let end = Math.min(start + maxChars, text.length);
+        if (end < text.length) {
+          let breakAt = -1;
+          for (let i = end; i > Math.max(start, end - 4); i--) {
+            if (breakChars.has(text[i - 1])) {
+              breakAt = i;
+              break;
+            }
+          }
+          if (breakAt > start) end = breakAt;
+        }
+        lines.push(text.slice(start, end));
+        start = end;
+      }
+      return lines;
+    }
+
     function dottedDate(date) {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -801,10 +823,9 @@ if (shareBar) {
       ctx.stroke();
       cursorY += 52;
 
-      const excerptWidth = 540;
       ctx.fillStyle = muted;
       ctx.font = `400 31px ${serifStack}`;
-      wrapCanvasText(ctx, description || title, excerptWidth)
+      wrapChineseText(description || title, 17)
         .slice(0, 9)
         .forEach((lineText) => {
           ctx.fillText(lineText, padding, cursorY);
@@ -823,7 +844,7 @@ if (shareBar) {
       const quote = extractQuote(description || title);
       ctx.fillStyle = primary;
       ctx.font = `italic 700 30px ${serifStack}`;
-      wrapCanvasText(ctx, `"${quote}"`, excerptWidth)
+      wrapChineseText(`"${quote}"`, 17)
         .slice(0, 3)
         .forEach((lineText) => {
           ctx.fillText(lineText, padding, cursorY);
