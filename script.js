@@ -734,10 +734,16 @@ if (shareBar) {
 
       ctx.textBaseline = "top";
       ctx.fillStyle = primary;
-      ctx.font = "700 26px serif";
-      ctx.fillText("蓬窗灯影录", padding, padding + 16);
+      ctx.font = "700 34px serif";
+      ctx.fillText("蓬窗灯影录", padding, padding);
 
-      let cursorY = padding + 90;
+      const now = new Date();
+      const dateText = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+      ctx.fillStyle = muted;
+      ctx.font = "400 20px serif";
+      ctx.fillText(dateText, padding, padding + 46);
+
+      let cursorY = padding + 106;
       ctx.fillStyle = textColor;
       ctx.font = "700 46px serif";
       wrapCanvasText(ctx, title, width - padding * 2)
