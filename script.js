@@ -791,6 +791,7 @@ if (shareBar) {
       const ctx = canvas.getContext("2d");
       ctx.scale(scale, scale);
 
+      const isDarkTheme = document.documentElement.classList.contains("dark");
       const styles = getComputedStyle(document.documentElement);
       const readVar = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
       const soft = readVar("--soft", "#f6f6f4");
@@ -800,6 +801,12 @@ if (shareBar) {
       const lineColor = readVar("--line", "#e7e5e0");
       const cardColor = readVar("--card", "#ffffff");
       const serifStack = readVar("--font-serif", "serif");
+      // The excerpt/quote colors below are fixed hex values tuned for the
+      // light poster background; against the dark theme's near-black
+      // background they'd have poor or inverted contrast, so fall back to
+      // the theme's own (already dark-mode-correct) muted/primary colors.
+      const excerptColor = isDarkTheme ? muted : "#5F615F";
+      const quoteColor = isDarkTheme ? primary : "#3E5047";
 
       const padding = 64;
 
@@ -860,7 +867,7 @@ if (shareBar) {
       ctx.stroke();
       cursorY += 52;
 
-      ctx.fillStyle = "#5F615F";
+      ctx.fillStyle = excerptColor;
       ctx.font = `400 31px ${serifStack}`;
       const excerptLines = wrapChineseText(description || title, 17);
       const excerptTruncated = excerptLines.length > 4;
@@ -884,7 +891,7 @@ if (shareBar) {
         .map((p) => p.textContent.trim())
         .filter(Boolean);
       const quote = curatedQuote || extractQuote(articleParagraphs.length ? articleParagraphs : [description || title]);
-      ctx.fillStyle = "#3E5047";
+      ctx.fillStyle = quoteColor;
       ctx.font = `italic 700 30px ${serifStack}`;
       wrapChineseText(`"${quote}"`, 17)
         .slice(0, 3)
