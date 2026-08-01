@@ -747,25 +747,22 @@ if (shareBar) {
 
       ctx.textBaseline = "top";
 
-      const logoHeight = 100;
-      const headerOffset = logoImage ? logoHeight + 18 : 0;
-      const centerX = width / 2;
+      const logoHeight = 60;
+      const headerOffset = logoImage ? logoHeight + 12 : 0;
       if (logoImage) {
         const logoWidth = logoHeight * (logoImage.naturalWidth / logoImage.naturalHeight);
-        ctx.drawImage(logoImage, centerX - logoWidth / 2, padding, logoWidth, logoHeight);
+        ctx.drawImage(logoImage, padding, padding, logoWidth, logoHeight);
       }
 
-      ctx.textAlign = "center";
       ctx.fillStyle = primary;
       ctx.font = "700 34px serif";
-      ctx.fillText("蓬窗灯影录", centerX, padding + headerOffset);
+      ctx.fillText("蓬窗灯影录", padding, padding + headerOffset);
 
       const now = new Date();
       const dateText = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
       ctx.fillStyle = muted;
       ctx.font = "400 20px serif";
-      ctx.fillText(dateText, centerX, padding + headerOffset + 46);
-      ctx.textAlign = "left";
+      ctx.fillText(dateText, padding, padding + headerOffset + 46);
 
       let cursorY = padding + headerOffset + 162;
       ctx.fillStyle = textColor;
