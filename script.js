@@ -702,23 +702,11 @@ if (shareBar) {
       return lines;
     }
 
-    function chineseNumeral(num) {
-      const digits = ["〇", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
-      if (num < 10) return digits[num];
-      if (num === 10) return "十";
-      if (num < 20) return `十${digits[num % 10]}`;
-      const tens = Math.floor(num / 10);
-      const ones = num % 10;
-      return `${digits[tens]}十${ones ? digits[ones] : ""}`;
-    }
-
-    function chineseDate(date) {
-      const yearDigits = ["〇", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
-      const year = String(date.getFullYear())
-        .split("")
-        .map((d) => yearDigits[Number(d)])
-        .join("");
-      return `${year}年${chineseNumeral(date.getMonth() + 1)}月${chineseNumeral(date.getDate())}日`;
+    function dottedDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year} · ${month} · ${day}`;
     }
 
     function extractQuote(text) {
@@ -789,7 +777,7 @@ if (shareBar) {
 
       ctx.fillStyle = muted;
       ctx.font = `400 20px ${serifStack}`;
-      ctx.fillText(chineseDate(new Date()), padding, padding + 74);
+      ctx.fillText(dottedDate(new Date()), padding, padding + 74);
 
       ctx.fillStyle = primary;
       ctx.fillRect(padding, padding + 112, 48, 4);
