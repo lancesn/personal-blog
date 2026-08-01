@@ -8,7 +8,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260801-poster-qr-shrink";
+const assetVersion = "20260801-poster-fulltext-quote";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -1032,7 +1032,7 @@ function renderPost(post, nextPost, prevPost, allPosts) {
     body: `<div class="reading-progress" id="reading-progress"></div>
 ${siteNav("blog").replaceAll("./", "../")}
 
-    <main class="article" data-post-slug="${escapeHtml(post.slug)}" data-post-title="${escapeHtml(post.title)}" data-post-description="${escapeHtml(postShareExcerpt)}" data-post-url="${escapeHtml(absoluteUrl(`posts/${post.slug}.html`))}">
+    <main class="article" data-post-slug="${escapeHtml(post.slug)}" data-post-title="${escapeHtml(post.title)}" data-post-description="${escapeHtml(postShareExcerpt)}" data-post-quote="${escapeHtml(post.quote || "")}" data-post-url="${escapeHtml(absoluteUrl(`posts/${post.slug}.html`))}">
       ${postJsonLd(post)}
       <nav class="article-nav"><a href="../blog.html">← 返回博客</a></nav>
       <h1>${escapeHtml(post.title)}</h1>

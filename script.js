@@ -540,6 +540,7 @@ const shareBar = document.querySelector(".article-share-row");
 if (shareBar) {
   const title = article?.dataset.postTitle || document.title;
   const description = article?.dataset.postDescription || "";
+  const curatedQuote = article?.dataset.postQuote || "";
   const url = article?.dataset.postUrl || window.location.href;
   const copyButton = shareBar.querySelector("[data-share-copy]");
   const xLink = shareBar.querySelector("[data-share-x]");
@@ -732,22 +733,43 @@ if (shareBar) {
     }
 
     function extractQuote(text) {
-      const match = text.match(/^[^。！？]*[。！？]/);
-      return match ? match[0] : text;
+      const sentences = text
+        .split(/(?<=[。！？])/)
+        .map((sentence) => sentence.trim())
+        .filter(Boolean);
+      // Prefer a punchy, self-contained sentence (12-40 chars) drawn from
+      // later in the article, so the pull-quote doesn't just repeat the
+      // opening line already shown in the title/excerpt above it.
+      const candidates = sentences.filter((sentence) => sentence.length >= 12 && sentence.length <= 40);
+      if (candidates.length > 1) return candidates[Math.floor(candidates.length / 3)];
+      return candidates[0] || sentences[0] || text;
     }
 
     function noisePattern(ctx) {
+      // Grain cells (not single pixels) read as paper fiber instead of TV
+      // static. Alpha averages ~2.5% with a hard ceiling of 5%.
+      const tileSize = 160;
+      const grain = 2;
+      const maxAlpha = 13; // 13 / 255 ≈ 5%
       const tile = document.createElement("canvas");
-      tile.width = 128;
-      tile.height = 128;
+      tile.width = tileSize;
+      tile.height = tileSize;
       const tileCtx = tile.getContext("2d");
-      const imageData = tileCtx.createImageData(128, 128);
-      for (let i = 0; i < imageData.data.length; i += 4) {
-        const shade = Math.random() < 0.5 ? 0 : 255;
-        imageData.data[i] = shade;
-        imageData.data[i + 1] = shade;
-        imageData.data[i + 2] = shade;
-        imageData.data[i + 3] = Math.random() * 12;
+      const imageData = tileCtx.createImageData(tileSize, tileSize);
+      for (let y = 0; y < tileSize; y += grain) {
+        for (let x = 0; x < tileSize; x += grain) {
+          const shade = Math.random() < 0.5 ? 0 : 255;
+          const alpha = Math.random() * maxAlpha;
+          for (let dy = 0; dy < grain; dy++) {
+            for (let dx = 0; dx < grain; dx++) {
+              const idx = ((y + dy) * tileSize + (x + dx)) * 4;
+              imageData.data[idx] = shade;
+              imageData.data[idx + 1] = shade;
+              imageData.data[idx + 2] = shade;
+              imageData.data[idx + 3] = alpha;
+            }
+          }
+        }
       }
       tileCtx.putImageData(imageData, 0, 0);
       return ctx.createPattern(tile, "repeat");
@@ -790,7 +812,7 @@ if (shareBar) {
       ctx.font = `700 16px ${serifStack}`;
       ctx.save();
       ctx.letterSpacing = "3px";
-      ctx.fillText("SILENCEGATE", padding, padding);
+      ctx.fillText("SilenceGate", padding, padding);
       ctx.restore();
 
       ctx.fillStyle = primary;
@@ -806,12 +828,12 @@ if (shareBar) {
 
       let cursorY = padding + 160;
       ctx.fillStyle = textColor;
-      ctx.font = `700 46px ${serifStack}`;
+      ctx.font = `700 40px ${serifStack}`;
       wrapCanvasText(ctx, title, width - padding * 2)
         .slice(0, 3)
         .forEach((lineText) => {
           ctx.fillText(lineText, padding, cursorY);
-          cursorY += 60;
+          cursorY += 54;
         });
 
       cursorY += 32;
@@ -825,12 +847,13 @@ if (shareBar) {
 
       ctx.fillStyle = muted;
       ctx.font = `400 31px ${serifStack}`;
-      wrapChineseText(description || title, 17)
-        .slice(0, 9)
-        .forEach((lineText) => {
-          ctx.fillText(lineText, padding, cursorY);
-          cursorY += 48;
-        });
+      const excerptLines = wrapChineseText(description || title, 17);
+      const excerptTruncated = excerptLines.length > 4;
+      excerptLines.slice(0, 4).forEach((lineText, index) => {
+        const isLastVisible = index === 3;
+        ctx.fillText(excerptTruncated && isLastVisible ? `${lineText.replace(/[.…]+$/, "")}…` : lineText, padding, cursorY);
+        cursorY += 48;
+      });
 
       cursorY += 20;
       ctx.strokeStyle = lineColor;
@@ -841,7 +864,8 @@ if (shareBar) {
       ctx.stroke();
       cursorY += 40;
 
-      const quote = extractQuote(description || title);
+      const articleText = document.querySelector(".article-content")?.textContent.replace(/\s+/g, "").trim() || "";
+      const quote = curatedQuote || extractQuote(articleText || description || title);
       ctx.fillStyle = primary;
       ctx.font = `italic 700 30px ${serifStack}`;
       wrapChineseText(`"${quote}"`, 17)
@@ -851,7 +875,7 @@ if (shareBar) {
           cursorY += 44;
         });
 
-      const qrSize = 118;
+      const qrSize = 106;
       const qrX = padding;
       const qrY = height - padding - qrSize;
 
@@ -877,8 +901,11 @@ if (shareBar) {
       ctx.fillStyle = muted;
       ctx.font = `400 17px ${serifStack}`;
       ctx.fillText("Continue Reading", qrX + qrSize + 26, qrY + 56);
-      ctx.font = `400 20px ${serifStack}`;
+      ctx.font = `400 17px ${serifStack}`;
+      ctx.save();
+      ctx.globalAlpha = 0.6;
       ctx.fillText("silencegate.com", qrX + qrSize + 26, qrY + 86);
+      ctx.restore();
     }
 
     async function generatePoster() {

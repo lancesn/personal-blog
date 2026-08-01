@@ -449,6 +449,7 @@ async function loadPost(slug) {
   form.elements.title.value = post.title;
   form.elements.date.value = post.date;
   form.elements.description.value = post.description || "";
+  form.elements.quote.value = post.quote || "";
   form.elements.readingTime.value = post.readingTime || "";
   setSelectedTags(post.tags || []);
   form.elements.status.value = post.status || "published";

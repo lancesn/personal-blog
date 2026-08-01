@@ -217,6 +217,7 @@ function parseMarkdown(source, fileName, sha, options = {}) {
     title: data.title || fileName.replace(/\.md$/, ""),
     date: data.date || "",
     description: data.description || excerptFromMarkdown(body),
+    quote: data.quote || "",
     readingTime: data.readingTime || "",
     tags: parseListField(data.tags),
     status: data.status || "published",
@@ -468,8 +469,11 @@ function serializePost(payload, previous = {}, slug = "") {
   const slugLine = previous.urlSlug && previous.urlSlug !== slug ? `\nslug: ${previous.urlSlug}` : "";
   const aliasesLine = previous.aliases?.length ? `\naliases: [${previous.aliases.join(", ")}]` : "";
 
+  const quote = String(payload.quote || "").trim().replace(/\s+/g, " ");
+  const quoteLine = quote ? `\nquote: ${quote}` : "";
+
   return `---
-title: ${String(payload.title || "").trim()}${slugLine}${aliasesLine}
+title: ${String(payload.title || "").trim()}${slugLine}${aliasesLine}${quoteLine}
 date: ${payload.date}
 description: ${String(payload.description || "").trim()}
 readingTime: ${String(payload.readingTime || "").trim()}
