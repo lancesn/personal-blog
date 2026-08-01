@@ -743,7 +743,7 @@ if (shareBar) {
       ctx.font = "400 20px serif";
       ctx.fillText(dateText, padding, padding + 46);
 
-      let cursorY = padding + 106;
+      let cursorY = padding + 162;
       ctx.fillStyle = textColor;
       ctx.font = "700 46px serif";
       wrapCanvasText(ctx, title, width - padding * 2)
