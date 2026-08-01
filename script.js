@@ -722,6 +722,8 @@ if (shareBar) {
       const muted = readVar("--muted", "#666666");
       const primary = readVar("--primary-strong", "#3f4c44");
       const lineColor = readVar("--line", "#e7e5e0");
+      const cardColor = readVar("--card", "#ffffff");
+      const serifStack = readVar("--font-serif", "serif");
 
       const padding = 64;
 
@@ -735,18 +737,21 @@ if (shareBar) {
       ctx.textBaseline = "top";
 
       ctx.fillStyle = primary;
-      ctx.font = "700 34px serif";
+      ctx.font = `700 34px ${serifStack}`;
       ctx.fillText("蓬窗灯影录", padding, padding);
 
       const now = new Date();
       const dateText = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
       ctx.fillStyle = muted;
-      ctx.font = "400 20px serif";
-      ctx.fillText(dateText, padding, padding + 46);
+      ctx.font = `400 20px ${serifStack}`;
+      ctx.fillText(dateText, padding, padding + 44);
 
-      let cursorY = padding + 162;
+      ctx.fillStyle = primary;
+      ctx.fillRect(padding, padding + 78, 48, 4);
+
+      let cursorY = padding + 106;
       ctx.fillStyle = textColor;
-      ctx.font = "700 46px serif";
+      ctx.font = `700 46px ${serifStack}`;
       wrapCanvasText(ctx, title, width - padding * 2)
         .slice(0, 3)
         .forEach((lineText) => {
@@ -764,7 +769,7 @@ if (shareBar) {
       cursorY += 44;
 
       ctx.fillStyle = muted;
-      ctx.font = "400 27px serif";
+      ctx.font = `400 27px ${serifStack}`;
       wrapCanvasText(ctx, description || title, width - padding * 2)
         .slice(0, 9)
         .forEach((lineText) => {
@@ -775,13 +780,28 @@ if (shareBar) {
       const qrSize = 150;
       const qrX = padding;
       const qrY = height - padding - qrSize;
+
+      const cardPadding = 22;
+      const cardX = qrX - cardPadding;
+      const cardY = qrY - cardPadding;
+      const cardWidth = width - padding * 2 + cardPadding * 2;
+      const cardHeight = qrSize + cardPadding * 2;
+      const cardRadius = 18;
+      ctx.fillStyle = cardColor;
+      ctx.beginPath();
+      ctx.roundRect(cardX, cardY, cardWidth, cardHeight, cardRadius);
+      ctx.fill();
+      ctx.strokeStyle = lineColor;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
       if (qrImage) ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
 
       ctx.fillStyle = textColor;
-      ctx.font = "700 24px serif";
+      ctx.font = `700 24px ${serifStack}`;
       ctx.fillText("扫码阅读全文", qrX + qrSize + 26, qrY + 30);
       ctx.fillStyle = muted;
-      ctx.font = "400 20px serif";
+      ctx.font = `400 20px ${serifStack}`;
       ctx.fillText("silencegate.com", qrX + qrSize + 26, qrY + 68);
     }
 
