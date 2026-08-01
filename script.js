@@ -732,9 +732,12 @@ if (shareBar) {
       return `${year}.${month}.${day}`;
     }
 
-    function extractQuote(text) {
-      const sentences = text
-        .split(/(?<=[。！？])/)
+    function extractQuote(paragraphs) {
+      // Split sentences within each paragraph separately (not on the
+      // joined text) so a paragraph missing terminal punctuation never
+      // runs on into the next paragraph's opening words.
+      const sentences = paragraphs
+        .flatMap((paragraph) => paragraph.split(/(?<=[。！？])/))
         .map((sentence) => sentence.trim())
         .filter(Boolean);
       // Prefer a punchy, self-contained sentence (12-40 chars) drawn from
@@ -742,7 +745,7 @@ if (shareBar) {
       // opening line already shown in the title/excerpt above it.
       const candidates = sentences.filter((sentence) => sentence.length >= 12 && sentence.length <= 40);
       if (candidates.length > 1) return candidates[Math.floor(candidates.length / 3)];
-      return candidates[0] || sentences[0] || text;
+      return candidates[0] || sentences[0] || paragraphs.join("");
     }
 
     function noisePattern(ctx) {
@@ -876,8 +879,11 @@ if (shareBar) {
       ctx.stroke();
       cursorY += 40;
 
-      const articleText = document.querySelector(".article-content")?.textContent.replace(/\s+/g, "").trim() || "";
-      const quote = curatedQuote || extractQuote(articleText || description || title);
+      const articleParagraphs = Array.from(document.querySelectorAll(".article-content p"))
+        .filter((p) => !p.closest("blockquote"))
+        .map((p) => p.textContent.trim())
+        .filter(Boolean);
+      const quote = curatedQuote || extractQuote(articleParagraphs.length ? articleParagraphs : [description || title]);
       ctx.fillStyle = "#3E5047";
       ctx.font = `italic 700 30px ${serifStack}`;
       wrapChineseText(`"${quote}"`, 17)
