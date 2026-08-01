@@ -733,8 +733,16 @@ if (shareBar) {
     }
 
     function extractQuote(text) {
-      const match = text.match(/^[^。！？]*[。！？]/);
-      return match ? match[0] : text;
+      const sentences = text
+        .split(/(?<=[。！？])/)
+        .map((sentence) => sentence.trim())
+        .filter(Boolean);
+      // Prefer a punchy, self-contained sentence (12-40 chars) drawn from
+      // later in the article, so the pull-quote doesn't just repeat the
+      // opening line already shown in the title/excerpt above it.
+      const candidates = sentences.filter((sentence) => sentence.length >= 12 && sentence.length <= 40);
+      if (candidates.length > 1) return candidates[Math.floor(candidates.length / 3)];
+      return candidates[0] || sentences[0] || text;
     }
 
     function noisePattern(ctx) {
@@ -856,7 +864,8 @@ if (shareBar) {
       ctx.stroke();
       cursorY += 40;
 
-      const quote = curatedQuote || extractQuote(description || title);
+      const articleText = document.querySelector(".article-content")?.textContent.replace(/\s+/g, "").trim() || "";
+      const quote = curatedQuote || extractQuote(articleText || description || title);
       ctx.fillStyle = primary;
       ctx.font = `italic 700 30px ${serifStack}`;
       wrapChineseText(`"${quote}"`, 17)
