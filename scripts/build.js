@@ -1055,7 +1055,7 @@ ${siteNav("blog").replaceAll("./", "../")}
         <div class="poster-modal-backdrop" data-poster-close></div>
         <div class="poster-modal-panel">
           <button class="poster-modal-close" type="button" data-poster-close aria-label="关闭">✕</button>
-          <canvas class="poster-canvas" id="poster-canvas" width="750" height="1000"></canvas>
+          <canvas class="poster-canvas" id="poster-canvas" width="720" height="1280"></canvas>
           <div class="poster-modal-actions">
             <a class="button primary" id="poster-download" download="${escapeHtml(post.slug)}-share.png">保存图片</a>
             <p class="poster-modal-hint">生成中可能需要几秒</p>
