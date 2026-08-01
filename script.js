@@ -702,6 +702,47 @@ if (shareBar) {
       return lines;
     }
 
+    function chineseNumeral(num) {
+      const digits = ["〇", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+      if (num < 10) return digits[num];
+      if (num === 10) return "十";
+      if (num < 20) return `十${digits[num % 10]}`;
+      const tens = Math.floor(num / 10);
+      const ones = num % 10;
+      return `${digits[tens]}十${ones ? digits[ones] : ""}`;
+    }
+
+    function chineseDate(date) {
+      const yearDigits = ["〇", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+      const year = String(date.getFullYear())
+        .split("")
+        .map((d) => yearDigits[Number(d)])
+        .join("");
+      return `${year}年${chineseNumeral(date.getMonth() + 1)}月${chineseNumeral(date.getDate())}日`;
+    }
+
+    function extractQuote(text) {
+      const match = text.match(/^[^。！？]*[。！？]/);
+      return match ? match[0] : text;
+    }
+
+    function noisePattern(ctx) {
+      const tile = document.createElement("canvas");
+      tile.width = 128;
+      tile.height = 128;
+      const tileCtx = tile.getContext("2d");
+      const imageData = tileCtx.createImageData(128, 128);
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        const shade = Math.random() < 0.5 ? 0 : 255;
+        imageData.data[i] = shade;
+        imageData.data[i + 1] = shade;
+        imageData.data[i + 2] = shade;
+        imageData.data[i + 3] = Math.random() * 12;
+      }
+      tileCtx.putImageData(imageData, 0, 0);
+      return ctx.createPattern(tile, "repeat");
+    }
+
     function drawPoster(qrImage) {
       const width = canvas.dataset.baseWidth ? Number(canvas.dataset.baseWidth) : canvas.width;
       const height = canvas.dataset.baseHeight ? Number(canvas.dataset.baseHeight) : canvas.height;
@@ -730,54 +771,78 @@ if (shareBar) {
       ctx.fillStyle = soft;
       ctx.fillRect(0, 0, width, height);
 
-      ctx.strokeStyle = lineColor;
-      ctx.lineWidth = 2;
-      ctx.strokeRect(padding / 2, padding / 2, width - padding, height - padding);
+      ctx.fillStyle = noisePattern(ctx);
+      ctx.fillRect(0, 0, width, height);
 
       ctx.textBaseline = "top";
 
-      ctx.fillStyle = primary;
-      ctx.font = `700 44px ${serifStack}`;
-      ctx.fillText("蓬窗灯影录", padding, padding);
-
-      const now = new Date();
-      const dateText = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
       ctx.fillStyle = muted;
-      ctx.font = `400 36px ${serifStack}`;
-      ctx.fillText(dateText, padding, padding + 58);
+      ctx.font = `700 16px ${serifStack}`;
+      ctx.save();
+      ctx.letterSpacing = "3px";
+      ctx.fillText("SILENCEGATE", padding, padding);
+      ctx.restore();
 
       ctx.fillStyle = primary;
-      ctx.fillRect(padding, padding + 140, 48, 4);
+      ctx.font = `700 28px ${serifStack}`;
+      ctx.fillText("蓬窗灯影录", padding, padding + 32);
 
-      let cursorY = padding + 196;
+      ctx.fillStyle = muted;
+      ctx.font = `400 20px ${serifStack}`;
+      ctx.fillText(chineseDate(new Date()), padding, padding + 74);
+
+      ctx.fillStyle = primary;
+      ctx.fillRect(padding, padding + 112, 48, 4);
+
+      let cursorY = padding + 160;
       ctx.fillStyle = textColor;
-      ctx.font = `700 46px ${serifStack}`;
+      ctx.font = `700 52px ${serifStack}`;
       wrapCanvasText(ctx, title, width - padding * 2)
         .slice(0, 3)
         .forEach((lineText) => {
           ctx.fillText(lineText, padding, cursorY);
-          cursorY += 60;
+          cursorY += 68;
         });
 
-      cursorY += 24;
+      cursorY += 32;
       ctx.strokeStyle = lineColor;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(padding, cursorY);
       ctx.lineTo(width - padding, cursorY);
       ctx.stroke();
-      cursorY += 44;
+      cursorY += 52;
 
+      const excerptWidth = 540;
       ctx.fillStyle = muted;
       ctx.font = `400 31px ${serifStack}`;
-      wrapCanvasText(ctx, description || title, width - padding * 2)
+      wrapCanvasText(ctx, description || title, excerptWidth)
         .slice(0, 9)
         .forEach((lineText) => {
           ctx.fillText(lineText, padding, cursorY);
           cursorY += 48;
         });
 
-      const qrSize = 150;
+      cursorY += 20;
+      ctx.strokeStyle = lineColor;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padding, cursorY);
+      ctx.lineTo(width - padding, cursorY);
+      ctx.stroke();
+      cursorY += 40;
+
+      const quote = extractQuote(description || title);
+      ctx.fillStyle = primary;
+      ctx.font = `italic 700 30px ${serifStack}`;
+      wrapCanvasText(ctx, `"${quote}"`, excerptWidth)
+        .slice(0, 3)
+        .forEach((lineText) => {
+          ctx.fillText(lineText, padding, cursorY);
+          cursorY += 44;
+        });
+
+      const qrSize = 135;
       const qrX = padding;
       const qrY = height - padding - qrSize;
 
@@ -799,10 +864,12 @@ if (shareBar) {
 
       ctx.fillStyle = textColor;
       ctx.font = `700 24px ${serifStack}`;
-      ctx.fillText("扫码阅读全文", qrX + qrSize + 26, qrY + 30);
+      ctx.fillText("扫码阅读全文", qrX + qrSize + 26, qrY + 22);
       ctx.fillStyle = muted;
+      ctx.font = `400 17px ${serifStack}`;
+      ctx.fillText("Continue Reading", qrX + qrSize + 26, qrY + 56);
       ctx.font = `400 20px ${serifStack}`;
-      ctx.fillText("silencegate.com", qrX + qrSize + 26, qrY + 68);
+      ctx.fillText("silencegate.com", qrX + qrSize + 26, qrY + 86);
     }
 
     async function generatePoster() {
