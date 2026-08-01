@@ -737,19 +737,19 @@ if (shareBar) {
       ctx.textBaseline = "top";
 
       ctx.fillStyle = primary;
-      ctx.font = `700 40px ${serifStack}`;
+      ctx.font = `700 44px ${serifStack}`;
       ctx.fillText("蓬窗灯影录", padding, padding);
 
       const now = new Date();
       const dateText = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
       ctx.fillStyle = muted;
-      ctx.font = `400 24px ${serifStack}`;
-      ctx.fillText(dateText, padding, padding + 52);
+      ctx.font = `400 36px ${serifStack}`;
+      ctx.fillText(dateText, padding, padding + 58);
 
       ctx.fillStyle = primary;
-      ctx.fillRect(padding, padding + 90, 48, 4);
+      ctx.fillRect(padding, padding + 140, 48, 4);
 
-      let cursorY = padding + 118;
+      let cursorY = padding + 196;
       ctx.fillStyle = textColor;
       ctx.font = `700 46px ${serifStack}`;
       wrapCanvasText(ctx, title, width - padding * 2)
@@ -779,8 +779,7 @@ if (shareBar) {
 
       const qrSize = 150;
       const qrX = padding;
-      const bottomAnchoredQrY = height - padding - qrSize;
-      const qrY = Math.min(cursorY + 60, bottomAnchoredQrY);
+      const qrY = height - padding - qrSize;
 
       const cardPadding = 22;
       const cardX = qrX - cardPadding;
