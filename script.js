@@ -851,7 +851,7 @@ if (shareBar) {
           cursorY += 44;
         });
 
-      const qrSize = 135;
+      const qrSize = 118;
       const qrX = padding;
       const qrY = height - padding - qrSize;
 
