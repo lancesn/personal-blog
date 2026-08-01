@@ -796,12 +796,12 @@ if (shareBar) {
 
       let cursorY = padding + 160;
       ctx.fillStyle = textColor;
-      ctx.font = `700 52px ${serifStack}`;
+      ctx.font = `700 46px ${serifStack}`;
       wrapCanvasText(ctx, title, width - padding * 2)
         .slice(0, 3)
         .forEach((lineText) => {
           ctx.fillText(lineText, padding, cursorY);
-          cursorY += 68;
+          cursorY += 60;
         });
 
       cursorY += 32;
