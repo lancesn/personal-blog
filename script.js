@@ -686,15 +686,6 @@ if (shareBar) {
         document.head.appendChild(script);
       });
 
-    function randomPosterExcerpt(maxLength) {
-      const content = document.querySelector(".article-content");
-      const text = content ? content.textContent.replace(/\s+/g, "").trim() : "";
-      if (!text) return description;
-      if (text.length <= maxLength) return text;
-      const start = Math.floor(Math.random() * (text.length - maxLength + 1));
-      return `${text.slice(start, start + maxLength)}...`;
-    }
-
     function wrapCanvasText(ctx, text, maxWidth) {
       const lines = [];
       let current = "";
@@ -779,7 +770,7 @@ if (shareBar) {
 
       ctx.fillStyle = muted;
       ctx.font = `400 27px ${serifStack}`;
-      wrapCanvasText(ctx, randomPosterExcerpt(170) || title, width - padding * 2)
+      wrapCanvasText(ctx, description || title, width - padding * 2)
         .slice(0, 9)
         .forEach((lineText) => {
           ctx.fillText(lineText, padding, cursorY);
