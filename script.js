@@ -769,12 +769,12 @@ if (shareBar) {
       cursorY += 44;
 
       ctx.fillStyle = muted;
-      ctx.font = `400 27px ${serifStack}`;
+      ctx.font = `400 31px ${serifStack}`;
       wrapCanvasText(ctx, description || title, width - padding * 2)
         .slice(0, 9)
         .forEach((lineText) => {
           ctx.fillText(lineText, padding, cursorY);
-          cursorY += 42;
+          cursorY += 48;
         });
 
       const qrSize = 150;
