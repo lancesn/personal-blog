@@ -2223,6 +2223,11 @@ img {
   .stats-table-wrap {
     overflow-x: auto;
   }
+
+  .studio-help .studio-grid input {
+    width: 100%;
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 480px) {
