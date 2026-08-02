@@ -2160,7 +2160,13 @@ img {
   color: var(--text);
 }
 
+.stats-table td:first-child {
+  overflow-wrap: anywhere;
+}
+
 .stats-table td:last-child {
+  width: 1%;
+  white-space: nowrap;
   text-align: right;
   color: var(--muted);
 }
