@@ -645,14 +645,21 @@ async function getStats(env) {
     summaries.sort(comparePosts);
     await writeCachedSummaries(env, summaries);
   }
-  const titleByPath = new Map(summaries.map((post) => [`/posts/${post.urlSlug}.html`, post.title]));
+  // encodeURI matters here: browsers always percent-encode non-ASCII
+  // characters in location.pathname before the tracking beacon ever sees
+  // it, so a post whose urlSlug contains Chinese characters would never
+  // match a plain, unencoded key.
+  const titleByPath = new Map(summaries.map((post) => [encodeURI(`/posts/${post.urlSlug}.html`), post.title]));
 
   const [totalRow, byLocation, byPath, byDevice] = await Promise.all([
     env.ANALYTICS_DB.prepare("SELECT COUNT(*) AS total FROM pageviews").first(),
     env.ANALYTICS_DB.prepare(
       "SELECT country, region, city, COUNT(*) AS views FROM pageviews GROUP BY country, region, city ORDER BY views DESC LIMIT 20"
     ).all(),
-    env.ANALYTICS_DB.prepare("SELECT path, COUNT(*) AS views FROM pageviews GROUP BY path ORDER BY views DESC LIMIT 20").all(),
+    // Over-fetch and filter unmatched paths below rather than LIMIT 20 up
+    // front, so a handful of stale/orphaned paths (renamed or deleted
+    // posts) don't crowd out real articles from the top-20 list.
+    env.ANALYTICS_DB.prepare("SELECT path, COUNT(*) AS views FROM pageviews GROUP BY path ORDER BY views DESC LIMIT 40").all(),
     env.ANALYTICS_DB.prepare(
       "SELECT COALESCE(NULLIF(device, ''), '其他') AS device, COUNT(*) AS views FROM pageviews GROUP BY device ORDER BY views DESC"
     ).all()
@@ -661,7 +668,10 @@ async function getStats(env) {
   return {
     totalViews: totalRow?.total || 0,
     byLocation: byLocation.results || [],
-    byPath: (byPath.results || []).map((row) => ({ ...row, title: titleByPath.get(row.path) || "" })),
+    byPath: (byPath.results || [])
+      .map((row) => ({ ...row, title: titleByPath.get(row.path) || "" }))
+      .filter((row) => row.title)
+      .slice(0, 20),
     byDevice: byDevice.results || []
   };
 }

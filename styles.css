@@ -2160,9 +2160,29 @@ img {
   color: var(--text);
 }
 
+.stats-table td:first-child {
+  overflow-wrap: anywhere;
+}
+
 .stats-table td:last-child {
+  width: 1%;
+  white-space: nowrap;
   text-align: right;
   color: var(--muted);
+}
+
+#stats-by-path {
+  table-layout: fixed;
+}
+
+#stats-by-path td:first-child {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#stats-by-path td:last-child {
+  width: 44px;
 }
 
 @media (max-width: 720px) {
