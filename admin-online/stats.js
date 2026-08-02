@@ -8,6 +8,7 @@ const statsResults = document.querySelector("#stats-results");
 const statsTotal = document.querySelector("#stats-total");
 const statsByLocation = document.querySelector("#stats-by-location");
 const statsByPath = document.querySelector("#stats-by-path");
+const statsByDevice = document.querySelector("#stats-by-device");
 
 function currentWorkerUrl() {
   return workerUrlInput.value.trim().replace(/\/+$/, "");
@@ -88,6 +89,7 @@ async function loadStats() {
   statsTotal.textContent = `总阅读次数：${result.totalViews || 0}`;
   renderStatsTable(statsByLocation, result.byLocation || [], locationLabel);
   renderStatsTable(statsByPath, result.byPath || [], (row) => row.title || row.path);
+  renderStatsTable(statsByDevice, result.byDevice || [], (row) => row.device);
   statsResults.hidden = false;
   statsStatus.textContent = "已更新统计。";
   statsStatus.dataset.tone = "success";
