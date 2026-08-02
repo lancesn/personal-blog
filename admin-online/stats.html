@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>阅读统计 · 蓬窗灯影录 Online Studio</title>
-    <link rel="stylesheet" href="../styles.css?v=20260801-poster-dark-mode-colors" />
+    <link rel="stylesheet" href="../styles.css?v=20260801-device-tracking" />
   </head>
   <body class="studio-page">
     <main class="studio-shell">
@@ -12,7 +12,7 @@
         <div>
           <p class="studio-kicker">Online Studio</p>
           <h1>阅读统计</h1>
-          <p>统计文章的阅读次数，按地区和文章分别汇总。</p>
+          <p>统计文章的阅读次数，按地区、文章和设备分别汇总。</p>
         </div>
         <div class="studio-header-actions">
           <button class="theme-toggle" type="button" aria-label="切换深浅色">☼</button>
@@ -60,10 +60,16 @@
               <table class="stats-table" id="stats-by-path"></table>
             </div>
           </div>
+          <div>
+            <h3>按设备</h3>
+            <div class="stats-table-wrap">
+              <table class="stats-table" id="stats-by-device"></table>
+            </div>
+          </div>
         </div>
       </section>
     </main>
-    <script src="../script.js?v=20260801-poster-dark-mode-colors"></script>
-    <script src="./stats.js?v=20260801-poster-dark-mode-colors"></script>
+    <script src="../script.js?v=20260801-device-tracking"></script>
+    <script src="./stats.js?v=20260801-device-tracking"></script>
   </body>
 </html>

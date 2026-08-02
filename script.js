@@ -1028,6 +1028,17 @@ if (readingProgress && protectedContent) {
   updateReadingProgress();
 }
 
+function detectReadingDevice() {
+  const ua = navigator.userAgent || "";
+  if (/iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) return "iPad";
+  if (/iPhone/.test(ua)) return "iPhone";
+  if (/Android/.test(ua)) return /Mobile/.test(ua) ? "Android 手机" : "Android 平板";
+  if (/Macintosh/.test(ua)) return "Mac";
+  if (/Windows/.test(ua)) return "Windows";
+  if (/Linux/.test(ua)) return "Linux";
+  return "其他";
+}
+
 if (article && !document.body.classList.contains("studio-page")) {
   // *.workers.dev is commonly blocked in mainland China, silently dropping
   // reads from Chinese visitors. track.silencegate.com is a Cloudflare
@@ -1035,7 +1046,7 @@ if (article && !document.body.classList.contains("studio-page")) {
   // Worker — unlike the bare silencegate.com apex, this subdomain actually
   // is proxied through Cloudflare, so it should be reachable in China.
   const trackUrl = "https://track.silencegate.com/track";
-  const payload = JSON.stringify({ path: window.location.pathname });
+  const payload = JSON.stringify({ path: window.location.pathname, device: detectReadingDevice() });
   // "text/plain" keeps this a CORS-simple request (no preflight), which is
   // what lets sendBeacon fire reliably cross-origin without needing the
   // Worker's CORS response headers to match — the browser never reads the
