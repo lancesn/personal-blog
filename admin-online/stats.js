@@ -65,10 +65,37 @@ function locationLabel(row) {
   return parts.join(" · ");
 }
 
-function renderStatsTable(table, rows, label) {
-  table.innerHTML = rows.length
-    ? `<tbody>${rows.map((row) => `<tr><td>${escapeHtml(label(row))}</td><td>${escapeHtml(String(row.views))}</td></tr>`).join("")}</tbody>`
-    : `<tbody><tr><td colspan="2">暂无数据。</td></tr></tbody>`;
+function renderStatsTable(table, rows, label, { collapseAfter } = {}) {
+  if (!rows.length) {
+    table.innerHTML = `<tbody><tr><td colspan="2">暂无数据。</td></tr></tbody>`;
+    return;
+  }
+
+  const renderRow = (row) => `<tr><td>${escapeHtml(label(row))}</td><td>${escapeHtml(String(row.views))}</td></tr>`;
+
+  if (!collapseAfter || rows.length <= collapseAfter) {
+    table.innerHTML = `<tbody>${rows.map(renderRow).join("")}</tbody>`;
+    return;
+  }
+
+  const visibleRows = rows.slice(0, collapseAfter);
+  const extraRows = rows.slice(collapseAfter);
+  table.innerHTML = `<tbody>${visibleRows.map(renderRow).join("")}</tbody><tbody data-extra hidden>${extraRows
+    .map(renderRow)
+    .join("")}</tbody><tbody><tr><td class="stats-table-toggle-cell" colspan="2"><button type="button" class="stats-table-toggle" data-toggle>展开其余 ${extraRows.length} 条 ▾</button></td></tr></tbody>`;
+
+  const extraBody = table.querySelector("[data-extra]");
+  const toggleButton = table.querySelector("[data-toggle]");
+  toggleButton.addEventListener("click", () => {
+    const collapsed = extraBody.hasAttribute("hidden");
+    if (collapsed) {
+      extraBody.removeAttribute("hidden");
+      toggleButton.textContent = "收起 ▴";
+    } else {
+      extraBody.setAttribute("hidden", "");
+      toggleButton.textContent = `展开其余 ${extraRows.length} 条 ▾`;
+    }
+  });
 }
 
 async function loadStats() {
@@ -87,8 +114,8 @@ async function loadStats() {
 
   const result = await apiRequest("/stats");
   statsTotal.textContent = `总阅读次数：${result.totalViews || 0}`;
-  renderStatsTable(statsByLocation, result.byLocation || [], locationLabel);
-  renderStatsTable(statsByPath, result.byPath || [], (row) => row.title || row.path);
+  renderStatsTable(statsByLocation, result.byLocation || [], locationLabel, { collapseAfter: 10 });
+  renderStatsTable(statsByPath, result.byPath || [], (row) => row.title || row.path, { collapseAfter: 10 });
   renderStatsTable(statsByDevice, result.byDevice || [], (row) => row.device);
   statsResults.hidden = false;
   statsStatus.textContent = "已更新统计。";

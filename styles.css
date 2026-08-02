@@ -2181,6 +2181,29 @@ img {
   text-overflow: ellipsis;
 }
 
+.stats-table-toggle-cell,
+#stats-by-path .stats-table-toggle-cell {
+  width: auto;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+  text-align: left;
+}
+
+.stats-table-toggle {
+  border: 0;
+  background: transparent;
+  padding: 6px 0;
+  color: var(--primary-strong);
+  font-weight: 750;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.stats-table-toggle:hover {
+  text-decoration: underline;
+}
+
 #stats-by-path td:last-child {
   width: 44px;
 }
