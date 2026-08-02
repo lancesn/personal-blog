@@ -2171,6 +2171,20 @@ img {
   color: var(--muted);
 }
 
+#stats-by-path {
+  table-layout: fixed;
+}
+
+#stats-by-path td:first-child {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#stats-by-path td:last-child {
+  width: 44px;
+}
+
 @media (max-width: 720px) {
   .studio-header,
   .studio-workspace,
