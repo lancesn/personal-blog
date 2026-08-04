@@ -4,9 +4,9 @@ date: 2026-08-05
 description: 风从远处的山脊吹来，越过石墙、草地和一排排古老的橡树，最后停留在湖面。湖水没有海的喧闹，也没有江河的奔流，只是一层一层缓缓推开细碎的波纹，像有人轻轻翻阅一本读了很多年的旧书。 夏天...
 readingTime: 
 tags: [别念]
-status: scheduled
+status: published
 publishedAt: 2026-08-04T22:24:00.000Z
-scheduledAt: 2026-08-04T22:24:00.000Z
+scheduledAt: 
 ---
 
 ![house.JPG](../uploads/image-20260720132402.jpg)
