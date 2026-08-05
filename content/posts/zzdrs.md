@@ -1,5 +1,8 @@
 ---
 title: 暂住的肉身
+cover: https://images.unsplash.com/photo-1767141843943-0e37245e49ff?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MjF8fHF1aWV0JTIwZm9yZXN0JTIwcGF0aCUyMHNvbGl0dWRlfGVufDB8MHx8fDE3ODU5MTQyNzN8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: QY Liu
+coverAuthorUrl: https://unsplash.com/@qy_liu?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-21
 description: 人像暂住在肉身里的旅客。 起初嫌房间狭窄，嫌鼻梁不够挺，嫌双腿走得不快，仿佛更换一副形骸，人生就会顺利。 住久了才发现，这房子替你挡过寒，抱过所爱的人，也在最伤心的夜里坚持呼吸。伤...
 readingTime: 
