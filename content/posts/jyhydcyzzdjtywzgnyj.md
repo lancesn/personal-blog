@@ -1,5 +1,8 @@
 ---
 title: 净影慧远《大乘义章》中的戒体与无作观念
+cover: https://images.unsplash.com/photo-1532304854-4248635f2cb5?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MzJ8fG9ic2VydmV8ZW58MHwwfHx8MTc4NTkxNDYyNHww&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Bri Tucker
+coverAuthorUrl: https://unsplash.com/@brianna_santellan?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-13
 description: 北朝义学语境下戒律概念的义理化考察 摘要：净影慧远《大乘义章》以义章体汇集南北朝以来的教理分类，其中关于戒、律仪、三业、无作、三聚戒诸条，是考察中国佛教戒律由制度规范进入义理解...
 readingTime: 
