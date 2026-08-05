@@ -387,9 +387,16 @@ function setCover(cover, authorName, authorUrl) {
   updateCoverPreview();
 }
 
+// Tracks photo IDs already shown in the current picker session, so "换一批"
+// doesn't just redraw the same handful of photos once the Worker's random
+// page happens to repeat — cleared each time the modal is (re)opened or a
+// new search term is submitted.
+let coverModalShownIds = new Set();
+
 function openCoverModal() {
   coverModal.hidden = false;
   coverSearchInput.value = "";
+  coverModalShownIds = new Set();
   loadCoverResults("");
 }
 
@@ -397,28 +404,35 @@ function closeCoverModal() {
   coverModal.hidden = true;
 }
 
+async function fetchFreshCoverPhotos(query, attempt = 0) {
+  const params = new URLSearchParams();
+  if (query) params.set("q", query);
+  params.set("tags", selectedTags().join(","));
+  // Every call must be a distinct URL — the browser's HTTP cache would
+  // otherwise serve back an earlier response for an identical query.
+  params.set("_", `${Date.now()}-${attempt}`);
+  const result = await apiRequest(`/unsplash/search?${params.toString()}`);
+  // Show what's being searched as a placeholder rather than filling the
+  // input's actual value, so the box stays empty and ready to type a
+  // custom search into instead of needing to be cleared first.
+  if (!query && result.query) coverSearchInput.placeholder = result.query;
+
+  const fresh = result.results.filter((photo) => !coverModalShownIds.has(photo.id));
+  if (fresh.length || attempt >= 5) return fresh;
+  return fetchFreshCoverPhotos(query, attempt + 1);
+}
+
 async function loadCoverResults(query) {
   coverModalGrid.innerHTML = "";
   coverModalStatus.textContent = "正在搜索…";
   try {
-    const params = new URLSearchParams();
-    if (query) params.set("q", query);
-    params.set("tags", selectedTags().join(","));
-    // "换一批" re-requests the exact same URL (same query, same tags) to get
-    // a different random page from the Worker — without a cache-busting
-    // param the browser's HTTP cache can serve the first response again
-    // instead of hitting the network, making refresh look like a no-op.
-    params.set("_", Date.now().toString());
-    const result = await apiRequest(`/unsplash/search?${params.toString()}`);
-    // Show what's being searched as a placeholder rather than filling the
-    // input's actual value, so the box stays empty and ready to type a
-    // custom search into instead of needing to be cleared first.
-    if (!query && result.query) coverSearchInput.placeholder = result.query;
-    if (!result.results.length) {
-      coverModalStatus.textContent = "没有搜到图片，换个关键词试试。";
+    const fresh = await fetchFreshCoverPhotos(query);
+    if (!fresh.length) {
+      coverModalStatus.textContent = "这个关键词的图片都看过了，换个关键词试试。";
       return;
     }
-    coverModalGrid.innerHTML = result.results
+    fresh.forEach((photo) => coverModalShownIds.add(photo.id));
+    coverModalGrid.innerHTML = fresh
       .map(
         (photo, index) => `<button type="button" data-cover-index="${index}">
           <img src="${escapeHtml(photo.thumb)}" alt="" loading="lazy" />
@@ -427,7 +441,7 @@ async function loadCoverResults(query) {
       .join("");
     coverModalGrid.querySelectorAll("[data-cover-index]").forEach((button) => {
       button.addEventListener("click", () => {
-        const photo = result.results[Number(button.dataset.coverIndex)];
+        const photo = fresh[Number(button.dataset.coverIndex)];
         setCover(photo.url, photo.authorName, photo.authorUrl);
         apiRequest("/unsplash/select", {
           method: "POST",
@@ -888,12 +902,16 @@ coverModalClose.addEventListener("click", closeCoverModal);
 coverModal.addEventListener("click", (event) => {
   if (event.target === coverModal) closeCoverModal();
 });
-coverSearchButton.addEventListener("click", () => loadCoverResults(coverSearchInput.value.trim()));
+function searchCover() {
+  coverModalShownIds = new Set();
+  loadCoverResults(coverSearchInput.value.trim());
+}
+coverSearchButton.addEventListener("click", searchCover);
 coverRefreshButton.addEventListener("click", () => loadCoverResults(coverSearchInput.value.trim()));
 coverSearchInput.addEventListener("keydown", (event) => {
   if (event.key !== "Enter") return;
   event.preventDefault();
-  loadCoverResults(coverSearchInput.value.trim());
+  searchCover();
 });
 
 workerUrlInput.value = localStorage.getItem("workerUrl") || workerUrlInput.value;

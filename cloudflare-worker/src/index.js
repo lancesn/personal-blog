@@ -599,7 +599,10 @@ async function searchUnsplash(env, searchParams) {
   const query = searchParams.get("q")?.trim() || unsplashQueryForTags(tags);
   // Different random page each call (rather than always page 1) so the
   // "换一批" refresh button in the picker actually surfaces a different set.
-  const page = 1 + Math.floor(Math.random() * 3);
+  // A wider page range (rather than just 1-3) gives the client's own
+  // already-shown-photo dedup a much bigger pool to draw fresh results from
+  // before it has to retry.
+  const page = 1 + Math.floor(Math.random() * 8);
   const results = await unsplashSearch(env, query, { perPage: 12, page });
 
   return {
