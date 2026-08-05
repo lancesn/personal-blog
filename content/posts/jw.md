@@ -1,11 +1,15 @@
 ---
 title: 旧物
+cover: https://images.unsplash.com/photo-1608906236748-e2e002b61fe2?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MjR8fCVFNiU5NyVBNyVFNyU4OSVBOXxlbnwwfDB8fHwxNzg1OTIwMzEyfDA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Thomas Kinto
+coverAuthorUrl: https://unsplash.com/@thomaskinto?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-04
-description: 
+description: 翻开微微泛黄的抄写本，我沿着笔画看下去，仿佛还能看见当年的手指。那手指曾经递过茶，拂过书页，牵过我，也松开过我。岁月最厉害的地方，是它不争辩。它只把一切留下，把人带走。 那时我们都...
 readingTime: 
 tags: [随笔]
 status: published
 publishedAt: 2026-07-04T02:55:54.166Z
+scheduledAt: 
 ---
 
 翻开微微泛黄的抄写本，我沿着笔画看下去，仿佛还能看见当年的手指。那手指曾经递过茶，拂过书页，牵过我，也松开过我。岁月最厉害的地方，是它不争辩。它只把一切留下，把人带走。
