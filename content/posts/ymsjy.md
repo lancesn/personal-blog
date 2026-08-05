@@ -1,11 +1,15 @@
 ---
 title: 月明似旧游
+cover: https://images.unsplash.com/photo-1527901031195-a21e7b21052c?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MzZ8fG1vb258ZW58MHwwfHx8MTc4NTkxNTI4Mnww&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Kym MacKinnon
+coverAuthorUrl: https://unsplash.com/@vixenly?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-09
-description: 
+description: 江湖二八，风尘正盛。有人从苍梧来，说南山云气终日不散，松声绕寺，石径深处尚有旧人题字。字迹经雨水侵蚀，只剩零落数笔，远远看去，像一群人站在暮色里，衣冠俱已模糊，神情却还清醒。 苍梧...
 readingTime: 
 tags: [散文, 随笔]
 status: published
 publishedAt: 2026-07-12T12:38:49.776Z
+scheduledAt: 
 ---
 
 江湖二八，风尘正盛。有人从苍梧来，说南山云气终日不散，松声绕寺，石径深处尚有旧人题字。字迹经雨水侵蚀，只剩零落数笔，远远看去，像一群人站在暮色里，衣冠俱已模糊，神情却还清醒。
