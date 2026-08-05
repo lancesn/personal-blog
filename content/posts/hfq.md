@@ -1,8 +1,10 @@
 ---
 title: 荷风轻
+cover: https://images.unsplash.com/photo-1625980953551-50502b3b8b2f?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8M3x8TG90dXMlMjBmbG93ZXJ8ZW58MHwwfHx8MTc4NTkxMzg3NXww&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Sora Sagano
+coverAuthorUrl: https://unsplash.com/@sorasagano?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-22
 description: 这一池荷，大约已经开了许多天。
-有些叶子还鲜绿，有些边缘已经泛黄卷起，被风吹出细细的裂口。水面浮着安静的光，偶尔荡开一点纹路，又很快合拢，像什么都没有发生过。
 readingTime: 
 tags: [日常, 随笔]
 status: published
