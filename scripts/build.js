@@ -8,7 +8,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260801-stats-collapse-top10";
+const assetVersion = "20260805-unsplash-live-cover";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -279,13 +279,26 @@ function renderPostCard(post, { forSearch = false } = {}) {
   const searchAttrs = forSearch
     ? ` data-search-card data-title="${escapeHtml(post.title)}" data-tags="${escapeHtml(post.tags.join(" "))}" data-body="${escapeHtml(post.plainText)}"`
     : "";
+  const cover = post.cover
+    ? `<div class="post-card-media">
+              <a href="./posts/${post.slug}.html" tabindex="-1" aria-hidden="true">
+                <img class="post-card-cover" src="${escapeHtml(post.cover)}" alt="" loading="lazy" width="96" height="96" />
+              </a>
+              ${post.coverAuthor
+                ? `<p class="post-card-cover-credit">📷 <a href="${escapeHtml(post.coverAuthorUrl || "https://unsplash.com/?utm_source=silencegate-blog&utm_medium=referral")}" target="_blank" rel="noopener noreferrer">${escapeHtml(post.coverAuthor)}</a></p>`
+                : ""}
+            </div>`
+    : "";
   return `<article class="post-card"${searchAttrs}>
-            <time datetime="${post.date}">${formatDate(post.date)}</time>
-            <h3><a class="post-title-link" href="./posts/${post.slug}.html">${escapeHtml(post.title)}</a></h3>
-            <a class="post-excerpt-link" href="./posts/${post.slug}.html">${escapeHtml(post.description)}</a>
-            <div class="post-card-footer">
-              <a class="post-card-readmore" href="./posts/${post.slug}.html">读全文</a>
-              ${renderTagLinks(post.tags)}
+            ${cover}
+            <div class="post-card-body">
+              <time datetime="${post.date}">${formatDate(post.date)}</time>
+              <h3><a class="post-title-link" href="./posts/${post.slug}.html">${escapeHtml(post.title)}</a></h3>
+              <a class="post-excerpt-link" href="./posts/${post.slug}.html">${escapeHtml(post.description)}</a>
+              <div class="post-card-footer">
+                <a class="post-card-readmore" href="./posts/${post.slug}.html">读全文</a>
+                ${renderTagLinks(post.tags)}
+              </div>
             </div>
           </article>`;
 }
