@@ -1,11 +1,15 @@
 ---
 title: 削苹果
+cover: https://images.unsplash.com/photo-1770623304593-94aa14c42748?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MzB8fHplbiUyMGdhcmRlbiUyMG1lZGl0YXRpb258ZW58MHwwfHx8MTc4NTkyOTU5Mnww&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Korra 7
+coverAuthorUrl: https://unsplash.com/@cocokorra7?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-06-27
 description: 一个苹果放在案板上。红黄相间，带一点凉气，刚从冰箱里拿出来。 手拿起小刀，刀刃朝外，开始削皮。 先不急，看一眼这个苹果的形状。它不是很圆，一侧微微凹进去，那大概是它长在树上时，被另...
 readingTime: 
 tags: [日常, 正念]
 status: published
 publishedAt: 2026-07-03T13:01:17.403Z
+scheduledAt: 
 ---
 
 一个苹果放在案板上。红黄相间，带一点凉气，刚从冰箱里拿出来。
