@@ -8,7 +8,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260805-cover-images-trial";
+const assetVersion = "20260801-stats-collapse-top10";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -105,20 +105,17 @@ function parseMarkdownFile(source, fileName) {
     if (!data[key]) throw new Error(`${fileName} 缺少 ${key}`);
   }
 
-  const tags = parseListField(data.tags);
-
   return {
     ...data,
     description: data.description || excerptFromMarkdown(match[2]),
     publishedAt: data.publishedAt || "",
-    tags,
+    tags: parseListField(data.tags),
     aliases: parseListField(data.aliases),
     status: data.status || "published",
     sourceSlug: fileName.replace(/\.md$/, ""),
     slug: data.slug || fileName.replace(/\.md$/, ""),
     body: match[2].trim(),
-    plainText: plainTextFromMarkdown(match[2]),
-    cover: data.cover || pickCoverForTags(tags)
+    plainText: plainTextFromMarkdown(match[2])
   };
 }
 
@@ -215,39 +212,6 @@ const slugAliases = {
 
 const namedHeadingSections = new Set(["引言", "前言", "结论", "小结", "结语", "摘要", "关键词"]);
 
-// Trial feature: a small curated pool of Unsplash photos matched by tag, used
-// as a fallback list-card cover when a post has no manual `cover:` frontmatter.
-// Not a live Unsplash API integration (no search, no key) — just a fixed set
-// of hotlinked CDN URLs picked to fit this blog's themes.
-const coverPool = {
-  zen: "https://images.unsplash.com/photo-1761092409160-590d57eb0aaf?w=640&h=640&q=60&fm=jpg&fit=crop&auto=format",
-  study: "https://images.unsplash.com/photo-1756993263826-9b4bae15e2b2?w=640&h=640&q=60&fm=jpg&fit=crop&auto=format",
-  tech: "https://images.unsplash.com/photo-1752223638233-4c9545333f89?w=640&h=640&q=60&fm=jpg&fit=crop&auto=format",
-  solitude: "https://images.unsplash.com/photo-1766342761004-811eeb2af3de?w=640&h=640&q=60&fm=jpg&fit=crop&auto=format",
-  default: "https://images.unsplash.com/photo-1762115839715-fbd4e2c65260?w=640&h=640&q=60&fm=jpg&fit=crop&auto=format"
-};
-
-const tagCoverBucket = {
-  禅: "zen",
-  正念: "zen",
-  清言: "zen",
-  研究: "study",
-  技术: "tech",
-  独处: "solitude",
-  别念: "solitude",
-  日常: "solitude",
-  随笔: "solitude",
-  散文: "solitude"
-};
-
-function pickCoverForTags(tags) {
-  for (const tag of tags) {
-    const bucket = tagCoverBucket[tag];
-    if (bucket) return coverPool[bucket];
-  }
-  return coverPool.default;
-}
-
 function slugify(value) {
   const text = String(value || "").trim();
   if (slugOverrides[text]) return slugOverrides[text];
@@ -315,21 +279,13 @@ function renderPostCard(post, { forSearch = false } = {}) {
   const searchAttrs = forSearch
     ? ` data-search-card data-title="${escapeHtml(post.title)}" data-tags="${escapeHtml(post.tags.join(" "))}" data-body="${escapeHtml(post.plainText)}"`
     : "";
-  const cover = post.cover
-    ? `<a class="post-card-media" href="./posts/${post.slug}.html" tabindex="-1" aria-hidden="true">
-              <img class="post-card-cover" src="${escapeHtml(post.cover)}" alt="" loading="lazy" width="96" height="96" />
-            </a>`
-    : "";
   return `<article class="post-card"${searchAttrs}>
-            ${cover}
-            <div class="post-card-body">
-              <time datetime="${post.date}">${formatDate(post.date)}</time>
-              <h3><a class="post-title-link" href="./posts/${post.slug}.html">${escapeHtml(post.title)}</a></h3>
-              <a class="post-excerpt-link" href="./posts/${post.slug}.html">${escapeHtml(post.description)}</a>
-              <div class="post-card-footer">
-                <a class="post-card-readmore" href="./posts/${post.slug}.html">读全文</a>
-                ${renderTagLinks(post.tags)}
-              </div>
+            <time datetime="${post.date}">${formatDate(post.date)}</time>
+            <h3><a class="post-title-link" href="./posts/${post.slug}.html">${escapeHtml(post.title)}</a></h3>
+            <a class="post-excerpt-link" href="./posts/${post.slug}.html">${escapeHtml(post.description)}</a>
+            <div class="post-card-footer">
+              <a class="post-card-readmore" href="./posts/${post.slug}.html">读全文</a>
+              ${renderTagLinks(post.tags)}
             </div>
           </article>`;
 }
