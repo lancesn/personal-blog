@@ -1,5 +1,8 @@
 ---
 title: 坐卧白云间
+cover: https://images.unsplash.com/photo-1761634731476-abb2df18357d?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8N3x8emVuJTIwZ2FyZGVuJTIwbWVkaXRhdGlvbnxlbnwwfDJ8fHwxNzg1OTExNTMxfDA&ixlib=rb-4.1.0&w=640&h=640&fit=crop&q=60&fm=jpg
+coverAuthor: Nuno Alves
+coverAuthorUrl: https://unsplash.com/@nunoviegasalves?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-08-02
 description: 山后有一座小庵，庵门常年半掩。门前无匾，阶上多苔，雨后有蜗牛负壳而过，留下细细银痕。庵中住一老僧，名号久无人称，只因他常在云雾深处坐卧，山下人便叫他白云和尚。 有一行脚僧，自北方来...
 readingTime: 
