@@ -218,6 +218,9 @@ function parseMarkdown(source, fileName, sha, options = {}) {
     date: data.date || "",
     description: data.description || excerptFromMarkdown(body),
     quote: data.quote || "",
+    cover: data.cover || "",
+    coverAuthor: data.coverAuthor || "",
+    coverAuthorUrl: data.coverAuthorUrl || "",
     readingTime: data.readingTime || "",
     tags: parseListField(data.tags),
     status: data.status || "published",
@@ -472,8 +475,15 @@ function serializePost(payload, previous = {}, slug = "") {
   const quote = String(payload.quote || "").trim().replace(/\s+/g, " ");
   const quoteLine = quote ? `\nquote: ${quote}` : "";
 
+  const cover = String(payload.cover || "").trim();
+  const coverLine = cover ? `\ncover: ${cover}` : "";
+  const coverAuthor = String(payload.coverAuthor || "").trim();
+  const coverAuthorLine = coverAuthor ? `\ncoverAuthor: ${coverAuthor}` : "";
+  const coverAuthorUrl = String(payload.coverAuthorUrl || "").trim();
+  const coverAuthorUrlLine = coverAuthorUrl ? `\ncoverAuthorUrl: ${coverAuthorUrl}` : "";
+
   return `---
-title: ${String(payload.title || "").trim()}${slugLine}${aliasesLine}${quoteLine}
+title: ${String(payload.title || "").trim()}${slugLine}${aliasesLine}${quoteLine}${coverLine}${coverAuthorLine}${coverAuthorUrlLine}
 date: ${payload.date}
 description: ${String(payload.description || "").trim()}
 readingTime: ${String(payload.readingTime || "").trim()}
@@ -510,6 +520,62 @@ async function writePost(env, slug, payload, previous) {
   };
 }
 
+// Trial feature: auto-pick a cover image from Unsplash's search API, based
+// on the post's tags, the first time a post is saved without one. Chinese
+// tags don't search well on Unsplash, so each bucket maps to a hand-picked
+// English query; picking randomly among the top results (rather than always
+// the first) keeps posts sharing a tag from all showing the same photo.
+const unsplashQueryBuckets = [
+  { tags: ["禅", "正念", "清言"], query: "zen garden meditation" },
+  { tags: ["研究"], query: "old books study desk" },
+  { tags: ["技术"], query: "minimalist desk laptop" },
+  { tags: ["独处", "别念", "日常", "随笔", "散文"], query: "quiet forest path solitude" }
+];
+const unsplashDefaultQuery = "chinese ink painting mountains";
+
+function unsplashQueryForTags(tagsField) {
+  const tags = String(tagsField || "")
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+
+  for (const bucket of unsplashQueryBuckets) {
+    if (tags.some((tag) => bucket.tags.includes(tag))) return bucket.query;
+  }
+  return unsplashDefaultQuery;
+}
+
+async function fetchUnsplashCover(env, tagsField) {
+  const accessKey = env.UNSPLASH_ACCESS_KEY;
+  if (!accessKey) return null;
+
+  const query = unsplashQueryForTags(tagsField);
+  const searchUrl = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=30&orientation=squarish`;
+  const response = await fetch(searchUrl, { headers: { Authorization: `Client-ID ${accessKey}` } });
+  if (!response.ok) return null;
+
+  const data = await response.json();
+  const results = data.results || [];
+  if (!results.length) return null;
+
+  const photo = results[Math.floor(Math.random() * results.length)];
+
+  // Unsplash's API guidelines require pinging this endpoint whenever a photo
+  // fetched via the API is put to use; fire-and-forget since it's tracking
+  // only and shouldn't block or fail the save.
+  if (photo.links?.download_location) {
+    fetch(`${photo.links.download_location}&client_id=${accessKey}`).catch(() => {});
+  }
+
+  return {
+    url: `${photo.urls.raw}&w=640&h=640&fit=crop&q=60&fm=jpg`,
+    authorName: photo.user?.name || "",
+    authorUrl: photo.user?.links?.html
+      ? `${photo.user.links.html}?utm_source=silencegate-blog&utm_medium=referral`
+      : ""
+  };
+}
+
 async function savePost(env, slug, payload) {
   if (!payload.title || !payload.date || !payload.body) {
     throw httpError("标题、日期、正文不能为空。", 400);
@@ -520,6 +586,24 @@ async function savePost(env, slug, payload) {
     previous = await getPost(env, slug);
   } catch (error) {
     if (error.status !== 404) throw error;
+  }
+
+  if (!previous?.cover) {
+    try {
+      const cover = await fetchUnsplashCover(env, payload.tags);
+      if (cover) {
+        payload.cover = cover.url;
+        payload.coverAuthor = cover.authorName;
+        payload.coverAuthorUrl = cover.authorUrl;
+      }
+    } catch {
+      // Non-fatal: publishing should never fail just because Unsplash is
+      // unreachable or rate-limited. The post is simply saved without a cover.
+    }
+  } else {
+    payload.cover = previous.cover;
+    payload.coverAuthor = previous.coverAuthor;
+    payload.coverAuthorUrl = previous.coverAuthorUrl;
   }
 
   return writePost(env, slug, payload, previous);

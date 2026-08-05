@@ -575,7 +575,63 @@ h3 {
 
 .post-card {
   position: relative;
+  display: flex;
+  gap: 16px;
   padding: 22px;
+}
+
+.post-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-card-media {
+  flex: none;
+  display: block;
+  width: 96px;
+}
+
+.post-card-cover {
+  display: block;
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--soft);
+}
+
+.post-card-cover-credit {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.3;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.post-card-cover-credit a {
+  color: inherit;
+}
+
+.post-card-cover-credit a:hover {
+  color: var(--text);
+}
+
+@media (max-width: 640px) {
+  .post-card-media {
+    width: 72px;
+  }
+
+  .post-card-cover {
+    width: 72px;
+    height: 72px;
+  }
+
+  .post-card-cover-credit {
+    font-size: 10px;
+  }
 }
 
 .post-card h3 {
