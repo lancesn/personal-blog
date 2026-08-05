@@ -1,11 +1,15 @@
 ---
 title: 今日出梅
+cover: https://images.unsplash.com/photo-1705786363773-efab29986caf?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MzN8fHBsdW0lMjByYWlufGVufDB8MHx8fDE3ODU5MTU3MjB8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Taso Katsionis
+coverAuthorUrl: https://unsplash.com/@tasokats?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-07
 description: 清晨推窗，先听见檐下的水声停了。连日来，雨像一位久坐不去的客人，在屋瓦、树叶、石阶、竹篱之间反复说话。说得久了，人也不再分辨它的意思，只觉得天地潮湿，衣袍潮湿，书页潮湿，连心里那些...
 readingTime: 
 tags: [日常, 随笔]
 status: published
 publishedAt: 2026-07-06T09:17:06.754Z
+scheduledAt: 
 ---
 
 ![Gemini_Generated_Image_nr3a88nr3a88nr3a.jpg](../uploads/image-20260706113215.jpg)
