@@ -1,5 +1,8 @@
 ---
 title: 《杂阿含经》“如实知”的观行义涵及其心行次第
+cover: https://images.unsplash.com/photo-1699202700754-1e5cbf0f8660?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MzJ8fGJ1ZGRoYXxlbnwwfDB8fHwxNzg1OTE0MzM2fDA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Jochen van Wylick
+coverAuthorUrl: https://unsplash.com/@jochenvw?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-20
 description: 以五受阴观与味患离为中心 摘要 如实知处在触受与取著、对象呈现与欲贪反应之间。凡夫面对乐、苦、不苦不乐受时，依旧有取相习惯而受贪、恚、痴支配；正思惟则把注意从对象的可爱、可厌之相移...
 readingTime: 
