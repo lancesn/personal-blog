@@ -1,8 +1,8 @@
 ---
 title: “四寻思”观的修习对象
-cover: https://images.unsplash.com/photo-1764933173717-6521ebf4c7e2?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8Mnx8b2xkJTIwYm9va3MlMjBzdHVkeSUyMGRlc2t8ZW58MHwyfHx8MTc4NTkxMjYyNHww&ixlib=rb-4.1.0&w=640&h=640&fit=crop&q=60&fm=jpg
-coverAuthor: Puscas Adryan
-coverAuthorUrl: https://unsplash.com/@adryan_studio?utm_source=silencegate-blog&utm_medium=referral
+cover: https://images.unsplash.com/photo-1665744466722-3cd07cf72b0a?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MjB8fCVFNCVCRCU5QiVFNiU5NSU5OXxlbnwwfDB8fHwxNzg1OTEzNjIzfDA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Abhisek Hazra
+coverAuthorUrl: https://unsplash.com/@teetan?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-25
 description: 四寻思，即「名寻思、事寻思、自性假立寻思、差别假立寻思」。有人以为名寻思只是分析词语，事寻思只是观察外物，自性与差别寻思则是给前两项再作分类。也有人一听到「唯识」，便把四寻思理解成...
 readingTime: 
