@@ -1,5 +1,8 @@
 ---
 title: 唯识学转依理论与修行实践
+cover: https://images.unsplash.com/photo-1564981797816-1043664bf78d?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MTR8fEFjYWRlbWljfGVufDB8MHx8fDE3ODU5MTM5NTV8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Drahomír Hugo Posteby-Mach
+coverAuthorUrl: https://unsplash.com/@postebymach?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-24
 description: 瑜伽行派的全部理论工作最终收束到一个问题上：一个被烦恼与无明彻底结构化的生命，如何可能发生根本性质的改变。这个问题在唯识文献中的专名是「转依」，它同时是这一学派修道论与果位论的核心...
 readingTime: 
