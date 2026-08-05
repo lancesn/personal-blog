@@ -1,11 +1,15 @@
 ---
 title: 过客相寻
+cover: https://images.unsplash.com/photo-1471086569966-db3eebc25a59?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MzR8fHplbnxlbnwwfDB8fHwxNzg1OTE0NzQ5fDA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Sarah Dorweiler
+coverAuthorUrl: https://unsplash.com/@sarahdorweiler?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-12
 description: 山门外有一条旧路，路旁种着松树。松树一年四季都没有多少变化，只是树皮渐渐粗糙，枝干渐渐舒展。雨水顺着树身流下，到了秋天，松针落满石阶，风过时发出细微的声音。 多年以后，再从这里经过...
 readingTime: 
 tags: [日常, 随笔]
 status: published
 publishedAt: 2026-07-12T11:32:16.638Z
+scheduledAt: 
 ---
 
 ![ChatGPT Image 2026年7月12日 19_25_26.jpg](../uploads/image-20260712112822.jpg)
