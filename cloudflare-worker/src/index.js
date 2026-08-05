@@ -550,7 +550,7 @@ async function fetchUnsplashCover(env, tagsField) {
   if (!accessKey) return null;
 
   const query = unsplashQueryForTags(tagsField);
-  const searchUrl = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=30&orientation=squarish`;
+  const searchUrl = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=30&orientation=landscape`;
   const response = await fetch(searchUrl, { headers: { Authorization: `Client-ID ${accessKey}` } });
   if (!response.ok) return null;
 
@@ -568,7 +568,7 @@ async function fetchUnsplashCover(env, tagsField) {
   }
 
   return {
-    url: `${photo.urls.raw}&w=640&h=640&fit=crop&q=60&fm=jpg`,
+    url: `${photo.urls.raw}&w=1200&h=675&fit=crop&q=70&fm=jpg`,
     authorName: photo.user?.name || "",
     authorUrl: photo.user?.links?.html
       ? `${photo.user.links.html}?utm_source=silencegate-blog&utm_medium=referral`

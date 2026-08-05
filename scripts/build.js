@@ -8,7 +8,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260805-unsplash-live-cover";
+const assetVersion = "20260805-cover-hero-bg";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -279,18 +279,15 @@ function renderPostCard(post, { forSearch = false } = {}) {
   const searchAttrs = forSearch
     ? ` data-search-card data-title="${escapeHtml(post.title)}" data-tags="${escapeHtml(post.tags.join(" "))}" data-body="${escapeHtml(post.plainText)}"`
     : "";
-  const cover = post.cover
-    ? `<div class="post-card-media">
-              <a href="./posts/${post.slug}.html" tabindex="-1" aria-hidden="true">
-                <img class="post-card-cover" src="${escapeHtml(post.cover)}" alt="" loading="lazy" width="96" height="96" />
-              </a>
-              ${post.coverAuthor
-                ? `<p class="post-card-cover-credit">📷 <a href="${escapeHtml(post.coverAuthorUrl || "https://unsplash.com/?utm_source=silencegate-blog&utm_medium=referral")}" target="_blank" rel="noopener noreferrer">${escapeHtml(post.coverAuthor)}</a></p>`
-                : ""}
-            </div>`
+  const coverBg = post.cover
+    ? `<img class="post-card-bg" src="${escapeHtml(post.cover)}" alt="" loading="lazy" />
+            <div class="post-card-scrim" aria-hidden="true"></div>
+            ${post.coverAuthor
+              ? `<a class="post-card-credit" href="${escapeHtml(post.coverAuthorUrl || "https://unsplash.com/?utm_source=silencegate-blog&utm_medium=referral")}" target="_blank" rel="noopener noreferrer">📷 ${escapeHtml(post.coverAuthor)}</a>`
+              : ""}`
     : "";
-  return `<article class="post-card"${searchAttrs}>
-            ${cover}
+  return `<article class="post-card${post.cover ? " has-cover" : ""}"${searchAttrs}>
+            ${coverBg}
             <div class="post-card-body">
               <time datetime="${post.date}">${formatDate(post.date)}</time>
               <h3><a class="post-title-link" href="./posts/${post.slug}.html">${escapeHtml(post.title)}</a></h3>
