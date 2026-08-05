@@ -1,5 +1,8 @@
 ---
 title: 两枚莲蓬
+cover: https://images.unsplash.com/photo-1566099007555-bd58eb349a10?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MjZ8fCVFOCU4RSVCMiVFOCU5MyVBQ3xlbnwwfDB8fHwxNzg1OTIxMDYxfDA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Paul Xie
+coverAuthorUrl: https://unsplash.com/@paulxie?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-02
 description: 午后的阳光渐渐离开南面阳台，院中的颜色从耀眼的亮白转成温柔的旧黄。凉风起来以后，树枝一下一下摇动，屋里也跟着暗了几分。窗框留下长长的影子，先停在地上，随后一点点移到墙边。你把这样的...
 readingTime: 
