@@ -1,5 +1,8 @@
 ---
 title: 慧苑《续华严经略疏刊定记》对法藏华严学的异读：判教尺度、十玄重组与注疏体例
+cover: https://images.unsplash.com/photo-1764933173717-6521ebf4c7e2?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8Mnx8b2xkJTIwYm9va3MlMjBzdHVkeSUyMGRlc2t8ZW58MHwyfHx8MTc4NTkxMjYyNHww&ixlib=rb-4.1.0&w=640&h=640&fit=crop&q=60&fm=jpg
+coverAuthor: Puscas Adryan
+coverAuthorUrl: https://unsplash.com/@adryan_studio?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-30
 description: 慧苑《续华严经略疏刊定记》承接法藏未竟的八十卷《华严经》注疏，在判教、十玄与释经门次上另立方案。既有叙述多以澄观的批评为中心，把这些差异归入“背师”框架。以《刊定记》卷一悬谈...
 readingTime: 
