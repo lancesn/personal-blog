@@ -1,7 +1,7 @@
 ---
 title: 坐卧白云间
 date: 2026-08-02
-description: 
+description: 山后有一座小庵，庵门常年半掩。门前无匾，阶上多苔，雨后有蜗牛负壳而过，留下细细银痕。庵中住一老僧，名号久无人称，只因他常在云雾深处坐卧，山下人便叫他白云和尚。 有一行脚僧，自北方来...
 readingTime: 
 tags: [禅]
 status: published
