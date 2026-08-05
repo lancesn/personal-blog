@@ -1,11 +1,15 @@
 ---
 title: 山窗夜雨
+cover: https://images.unsplash.com/photo-1498847559558-1e4b1a7f7a2f?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8M3x8JUU1JUIxJUIxJUU5JTlCJUE4fGVufDB8MHx8fDE3ODU5MjExMjZ8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: A A
+coverAuthorUrl: https://unsplash.com/@unsplashaa1?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-02
 description: 山中入夜早，暮色从松梢落下来，先暗了溪石，再暗了竹篱，最后才贴到小窗上。窗纸被湿气润得微明，灯火在案头瘦瘦地亮着，一卷经书摊开，字迹像刚从雨声里浮出，又像随时会被雨声带回去。 雨从...
 readingTime: 
 tags: [独处, 清言, 日常]
 status: published
 publishedAt: 2026-07-02T05:52:17.899Z
+scheduledAt: 
 ---
 
 ![ChatGPT Image 2026年7月2日 13_47_14.png](../uploads/image-20260702054824.png)
