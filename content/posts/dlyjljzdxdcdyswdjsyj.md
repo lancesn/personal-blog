@@ -1,11 +1,15 @@
 ---
 title: 遁伦《瑜伽论记》中的修道次第与《声闻地》解释研究
+cover: https://images.unsplash.com/photo-1762186541157-6ce4df0a6ee0?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MTN8fG9sZCUyMGJvb2tzJTIwc3R1ZHklMjBkZXNrfGVufDB8MHx8fDE3ODU5MTU4MDl8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Sofie D.
+coverAuthorUrl: https://unsplash.com/@needeeja?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-05
 description: 【摘要】《瑜伽师地论》以十七地为主干，兼含心识分析、禅定分类与三乘行位说明。遁伦《瑜伽论记》是现存最完整的全本注疏之一，通过分科、释名、引说与会通，把这部百卷论书重新编排为层级分明...
 readingTime: 
 tags: [研究]
 status: published
 publishedAt: 2026-07-04T10:22:48.661Z
+scheduledAt: 
 ---
 
 **【摘要】**《瑜伽师地论》以十七地为主干，兼含心识分析、禅定分类与三乘行位说明。遁伦《瑜伽论记》是现存最完整的全本注疏之一，通过分科、释名、引说与会通，把这部百卷论书重新编排为层级分明的讲学文本。本文以《声闻地》为切入点，考察《瑜伽论记》整理声闻修行材料的方式及其与《菩萨地》、整体行位安排之间的关系。分析分三层展开：其一，遁伦对“瑜伽”“地”与境行果等总纲概念的解释；其二，《声闻地》中种姓、所缘、九住心、七种作意与现观断证的次第；其三，声闻材料进入唐代法相语境后的术语转换与类目归摄。研究显示，《瑜伽论记》的价值在于把印度论书的修行知识转写为可检索、可分科、可讲授的注疏形态：声闻行法在三乘框架中获得新的解释坐标，其自身修学程序仍保持完整。这一个案可为玄奘译场之后东亚瑜伽行派知识的再组织提供具体说明。
