@@ -404,6 +404,11 @@ async function loadCoverResults(query) {
     const params = new URLSearchParams();
     if (query) params.set("q", query);
     params.set("tags", selectedTags().join(","));
+    // "换一批" re-requests the exact same URL (same query, same tags) to get
+    // a different random page from the Worker — without a cache-busting
+    // param the browser's HTTP cache can serve the first response again
+    // instead of hitting the network, making refresh look like a no-op.
+    params.set("_", Date.now().toString());
     const result = await apiRequest(`/unsplash/search?${params.toString()}`);
     if (!query && result.query) coverSearchInput.value = result.query;
     if (!result.results.length) {
