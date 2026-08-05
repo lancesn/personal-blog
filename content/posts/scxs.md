@@ -1,5 +1,8 @@
 ---
 title: 似曾相识
+cover: https://images.unsplash.com/photo-1681822158576-89f27b8c3708?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MjZ8fEElMjBzZW5zZSUyMG9mJTIwZCVDMyVBOWolQzMlQTAlMjB2dXxlbnwwfDB8fHwxNzg1OTE0NDMxfDA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Derek Lee
+coverAuthorUrl: https://unsplash.com/@derekleej?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-17
 description: 生活偶尔递来一个似曾相识的刹那：拐角的光、陌生人的侧脸、杯子落桌的声音，都像在另一个世界发生过。 那感觉短得无法验证，却让现实裂开一道缝。也许记忆并非整齐的仓库，而是一片水域，旧日...
 readingTime: 
