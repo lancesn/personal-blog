@@ -1,11 +1,15 @@
 ---
 title: 从“释文生成宗义”到“玄谈统摄释文”
+cover: https://images.unsplash.com/photo-1784032514423-9d700799a19a?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MjN8fG9sZCUyMGJvb2tzJTIwc3R1ZHklMjBkZXNrfGVufDB8MHx8fDE3ODU5MTU4MDl8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Anne Laure P
+coverAuthorUrl: https://unsplash.com/@byannel?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-06-29
 description: 初唐华严宗祖师法藏所撰《十二门论宗致义记》，长期以来多被视为一部对龙树《十二门论》的注释著作。既有研究多从义理层面切入，讨论法藏如何吸收中观思想，如何会通华严与三论，以及其判教思想...
 readingTime: 
 tags: [研究]
 status: published
 publishedAt: 2026-07-05T10:10:47.817Z
+scheduledAt: 
 ---
 
 初唐华严宗祖师法藏所撰《十二门论宗致义记》，长期以来多被视为一部对龙树《十二门论》的注释著作。既有研究多从义理层面切入，讨论法藏如何吸收中观思想，如何会通华严与三论，以及其判教思想的形成过程。近年相关研究逐渐显示，该书的价值还在于其呈现出新的佛教注释体裁。透过与吉藏《十二门论疏》的系统比较，可以看出中国佛教注释学在初唐时期出现一次重要转向，即从“释文生成宗义”转入“玄谈统摄释文”。这一转向使《宗致义记》不只是一部中观论疏，也成为观察汉传佛教宗派解释制度成熟化的重要文本。《宗致义记》的结构极具辨识度。全书分为两大部分，前半为九门玄谈，后半为《十二门论》正文逐门解释。九门玄谈包括教起所因、藏部所摄、显教分齐、教所被机、能诠教体、所诠宗趣、造论时代、传译缘起与释论题目等内容。法藏在玄谈中集中讨论《十二门论》在整体佛教思想体系中的位置，并借五教判、法界缘起等华严宗理论框架，对龙树中观思想作总体定位。进入正文释文以后，论述方式明显收束，更多采用中观传统的论证程序，围绕原典文句进行解释。
