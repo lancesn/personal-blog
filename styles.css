@@ -575,35 +575,7 @@ h3 {
 
 .post-card {
   position: relative;
-  display: flex;
-  gap: 16px;
   padding: 22px;
-}
-
-.post-card-body {
-  flex: 1;
-  min-width: 0;
-}
-
-.post-card-media {
-  flex: none;
-  display: block;
-}
-
-.post-card-cover {
-  display: block;
-  width: 96px;
-  height: 96px;
-  border-radius: 8px;
-  object-fit: cover;
-  background: var(--soft);
-}
-
-@media (max-width: 640px) {
-  .post-card-cover {
-    width: 72px;
-    height: 72px;
-  }
 }
 
 .post-card h3 {
