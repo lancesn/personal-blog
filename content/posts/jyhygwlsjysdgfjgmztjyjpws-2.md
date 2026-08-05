@@ -1,5 +1,8 @@
 ---
 title: 净影慧远《观无量寿经义疏》的观佛结构、灭罪条件与九品往生
+cover: https://images.unsplash.com/photo-1491382825904-a4c6dca98e8c?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MjF8fG9ic2VydmV8ZW58MHwwfHx8MTc4NTkxNDU2MXww&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Joshua Earle
+coverAuthorUrl: https://unsplash.com/@joshuaearle?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-07-16
 description: 摘要 《观无量寿经》的汉地解释常由善导的凡夫正机与称名往生说获得说明，善导以前的义疏遂容易被视为后起宗义的前史。本文以净影慧远《观无量寿经义疏》为中心，重新核定其观法分科、下品灭罪...
 readingTime: 
