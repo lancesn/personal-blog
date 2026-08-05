@@ -18,6 +18,18 @@ const insertImageButton = document.querySelector("#insert-image");
 const imageFileInput = document.querySelector("#image-file");
 const importButton = document.querySelector("#import-post");
 const importFileInput = document.querySelector("#import-file");
+const chooseCoverButton = document.querySelector("#choose-cover");
+const clearCoverButton = document.querySelector("#clear-cover");
+const coverPreview = document.querySelector("#cover-preview");
+const coverPreviewImg = document.querySelector("#cover-preview-img");
+const coverPreviewCredit = document.querySelector("#cover-preview-credit");
+const coverModal = document.querySelector("#cover-modal");
+const coverModalGrid = document.querySelector("#cover-modal-grid");
+const coverModalStatus = document.querySelector("#cover-modal-status");
+const coverSearchInput = document.querySelector("#cover-search");
+const coverSearchButton = document.querySelector("#cover-search-btn");
+const coverRefreshButton = document.querySelector("#cover-refresh-btn");
+const coverModalClose = document.querySelector("#cover-modal-close");
 const markdownToolbar = document.querySelector(".studio-toolbar");
 const editorModeButtons = document.querySelectorAll("[data-editor-mode]");
 const studioCompose = document.querySelector(".studio-compose");
@@ -355,7 +367,71 @@ function resetForm() {
   deletePostButton.hidden = true;
   feedbackPanel.hidden = true;
   updatePreview();
+  updateCoverPreview();
   document.querySelectorAll(".studio-post-item").forEach((item) => item.removeAttribute("aria-current"));
+}
+
+function updateCoverPreview() {
+  const cover = form.elements.cover.value;
+  coverPreview.hidden = !cover;
+  if (!cover) return;
+  coverPreviewImg.src = cover;
+  const author = form.elements.coverAuthor.value;
+  coverPreviewCredit.textContent = author ? `📷 ${author}` : "";
+}
+
+function setCover(cover, authorName, authorUrl) {
+  form.elements.cover.value = cover || "";
+  form.elements.coverAuthor.value = authorName || "";
+  form.elements.coverAuthorUrl.value = authorUrl || "";
+  updateCoverPreview();
+}
+
+function openCoverModal() {
+  coverModal.hidden = false;
+  coverSearchInput.value = "";
+  loadCoverResults("");
+}
+
+function closeCoverModal() {
+  coverModal.hidden = true;
+}
+
+async function loadCoverResults(query) {
+  coverModalGrid.innerHTML = "";
+  coverModalStatus.textContent = "正在搜索…";
+  try {
+    const params = new URLSearchParams();
+    if (query) params.set("q", query);
+    params.set("tags", selectedTags().join(","));
+    const result = await apiRequest(`/unsplash/search?${params.toString()}`);
+    if (!query && result.query) coverSearchInput.value = result.query;
+    if (!result.results.length) {
+      coverModalStatus.textContent = "没有搜到图片，换个关键词试试。";
+      return;
+    }
+    coverModalGrid.innerHTML = result.results
+      .map(
+        (photo, index) => `<button type="button" data-cover-index="${index}">
+          <img src="${escapeHtml(photo.thumb)}" alt="" loading="lazy" />
+        </button>`
+      )
+      .join("");
+    coverModalGrid.querySelectorAll("[data-cover-index]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const photo = result.results[Number(button.dataset.coverIndex)];
+        setCover(photo.url, photo.authorName, photo.authorUrl);
+        apiRequest("/unsplash/select", {
+          method: "POST",
+          body: JSON.stringify({ downloadLocation: photo.downloadLocation })
+        }).catch(() => {});
+        closeCoverModal();
+      });
+    });
+    coverModalStatus.textContent = "";
+  } catch (error) {
+    coverModalStatus.textContent = error.message;
+  }
 }
 
 function renderTagFilter() {
@@ -450,6 +526,7 @@ async function loadPost(slug) {
   form.elements.date.value = post.date;
   form.elements.description.value = post.description || "";
   form.elements.quote.value = post.quote || "";
+  setCover(post.cover, post.coverAuthor, post.coverAuthorUrl);
   form.elements.readingTime.value = post.readingTime || "";
   setSelectedTags(post.tags || []);
   form.elements.status.value = post.status || "published";
@@ -796,6 +873,19 @@ importButton.addEventListener("click", () => importFileInput.click());
 importFileInput.addEventListener("change", () => {
   const file = importFileInput.files[0];
   if (file) importFile(file);
+});
+chooseCoverButton.addEventListener("click", openCoverModal);
+clearCoverButton.addEventListener("click", () => setCover("", "", ""));
+coverModalClose.addEventListener("click", closeCoverModal);
+coverModal.addEventListener("click", (event) => {
+  if (event.target === coverModal) closeCoverModal();
+});
+coverSearchButton.addEventListener("click", () => loadCoverResults(coverSearchInput.value.trim()));
+coverRefreshButton.addEventListener("click", () => loadCoverResults(coverSearchInput.value.trim()));
+coverSearchInput.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter") return;
+  event.preventDefault();
+  loadCoverResults(coverSearchInput.value.trim());
 });
 
 workerUrlInput.value = localStorage.getItem("workerUrl") || workerUrlInput.value;
