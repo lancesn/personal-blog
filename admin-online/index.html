@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>蓬窗灯影录 Online Studio</title>
-    <link rel="stylesheet" href="../styles.css?v=20260805-cover-hero-bg" />
+    <link rel="stylesheet" href="../styles.css?v=20260805-cover-picker" />
   </head>
   <body class="studio-page">
     <main class="studio-shell">
@@ -129,6 +129,24 @@
           </label>
 
           <div class="studio-field">
+            <span>封面图（文章列表用）</span>
+            <input name="cover" type="hidden" />
+            <input name="coverAuthor" type="hidden" />
+            <input name="coverAuthorUrl" type="hidden" />
+            <div class="cover-picker">
+              <div class="cover-picker-preview" id="cover-preview" hidden>
+                <img id="cover-preview-img" src="" alt="" />
+                <p class="cover-picker-credit" id="cover-preview-credit"></p>
+              </div>
+              <div class="cover-picker-actions">
+                <button class="button" type="button" id="choose-cover">选择封面图</button>
+                <button class="button" type="button" id="clear-cover">清除封面</button>
+              </div>
+              <p class="cover-picker-hint">留空则发布时按标签自动配一张。</p>
+            </div>
+          </div>
+
+          <div class="studio-field">
             <span>正文 Markdown</span>
             <input id="import-file" type="file" accept=".md,.markdown,.txt,.docx" hidden />
             <div class="studio-toolbar" aria-label="Markdown 快捷工具栏">
@@ -190,7 +208,20 @@
         </form>
       </section>
     </main>
-    <script src="../script.js?v=20260805-cover-hero-bg"></script>
-    <script src="./online-admin.js?v=20260805-cover-hero-bg"></script>
+
+    <div class="cover-modal" id="cover-modal" hidden>
+      <div class="cover-modal-panel">
+        <div class="cover-modal-head">
+          <input id="cover-search" type="text" placeholder="搜索关键词，如 zen garden" />
+          <button class="button" type="button" id="cover-search-btn">搜索</button>
+          <button class="button" type="button" id="cover-refresh-btn">换一批</button>
+          <button class="button" type="button" id="cover-modal-close" aria-label="关闭">✕</button>
+        </div>
+        <div class="cover-modal-grid" id="cover-modal-grid"></div>
+        <p class="cover-modal-status" id="cover-modal-status"></p>
+      </div>
+    </div>
+    <script src="../script.js?v=20260805-cover-picker"></script>
+    <script src="./online-admin.js?v=20260805-cover-picker"></script>
   </body>
 </html>

@@ -2211,6 +2211,138 @@ img {
   margin-top: 14px;
 }
 
+.cover-picker {
+  display: grid;
+  gap: 10px;
+}
+
+.cover-picker-preview {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  aspect-ratio: 16 / 9;
+  max-width: 320px;
+}
+
+.cover-picker-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cover-picker-credit {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.cover-picker-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cover-picker-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.cover-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+}
+
+.cover-modal[hidden] {
+  display: none;
+}
+
+.cover-modal-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  padding: 18px;
+}
+
+.cover-modal-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cover-modal-head input {
+  flex: 1;
+  min-width: 160px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  min-height: 42px;
+  padding: 0 12px;
+}
+
+.cover-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.cover-modal-grid button {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  aspect-ratio: 16 / 10;
+  padding: 0;
+  cursor: pointer;
+  background: var(--soft);
+}
+
+.cover-modal-grid button:hover {
+  border-color: var(--primary);
+}
+
+.cover-modal-grid img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cover-modal-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .cover-modal-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 #stats-total {
   font-weight: 700;
   color: var(--text);

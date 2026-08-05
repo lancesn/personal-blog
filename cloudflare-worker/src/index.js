@@ -45,6 +45,12 @@ export default {
       if (request.method === "GET" && path === "/stats") {
         return json(await getStats(env), corsHeaders);
       }
+      if (request.method === "GET" && path === "/unsplash/search") {
+        return json(await searchUnsplash(env, url.searchParams), corsHeaders);
+      }
+      if (request.method === "POST" && path === "/unsplash/select") {
+        return json(await selectUnsplashPhoto(env, await request.json()), corsHeaders);
+      }
 
       return json({ error: "接口不存在。" }, corsHeaders, 404);
     } catch (error) {
@@ -520,11 +526,11 @@ async function writePost(env, slug, payload, previous) {
   };
 }
 
-// Trial feature: auto-pick a cover image from Unsplash's search API, based
-// on the post's tags, the first time a post is saved without one. Chinese
-// tags don't search well on Unsplash, so each bucket maps to a hand-picked
-// English query; picking randomly among the top results (rather than always
-// the first) keeps posts sharing a tag from all showing the same photo.
+// Trial feature: cover images sourced from Unsplash's search API — either
+// auto-picked from the post's tags when a post is saved without one, or
+// manually chosen by the admin via the "选择封面图" picker. Chinese tags
+// don't search well on Unsplash, so each bucket maps to a hand-picked
+// English query for the auto-pick and as the picker's default search term.
 const unsplashQueryBuckets = [
   { tags: ["禅", "正念", "清言"], query: "zen garden meditation" },
   { tags: ["研究"], query: "old books study desk" },
@@ -545,35 +551,73 @@ function unsplashQueryForTags(tagsField) {
   return unsplashDefaultQuery;
 }
 
-async function fetchUnsplashCover(env, tagsField) {
-  const accessKey = env.UNSPLASH_ACCESS_KEY;
-  if (!accessKey) return null;
+function unsplashAuthorUrl(user) {
+  return user?.links?.html ? `${user.links.html}?utm_source=silencegate-blog&utm_medium=referral` : "";
+}
 
-  const query = unsplashQueryForTags(tagsField);
-  const searchUrl = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=30&orientation=landscape`;
+async function unsplashSearch(env, query, { perPage = 30, page = 1 } = {}) {
+  const accessKey = env.UNSPLASH_ACCESS_KEY;
+  if (!accessKey) return [];
+
+  const searchUrl = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=${perPage}&page=${page}&orientation=landscape`;
   const response = await fetch(searchUrl, { headers: { Authorization: `Client-ID ${accessKey}` } });
-  if (!response.ok) return null;
+  if (!response.ok) return [];
 
   const data = await response.json();
-  const results = data.results || [];
+  return data.results || [];
+}
+
+async function fetchUnsplashCover(env, tagsField) {
+  if (!env.UNSPLASH_ACCESS_KEY) return null;
+
+  const query = unsplashQueryForTags(tagsField);
+  const results = await unsplashSearch(env, query, { perPage: 30 });
   if (!results.length) return null;
 
   const photo = results[Math.floor(Math.random() * results.length)];
-
-  // Unsplash's API guidelines require pinging this endpoint whenever a photo
-  // fetched via the API is put to use; fire-and-forget since it's tracking
-  // only and shouldn't block or fail the save.
-  if (photo.links?.download_location) {
-    fetch(`${photo.links.download_location}&client_id=${accessKey}`).catch(() => {});
-  }
+  pingUnsplashDownload(env, photo.links?.download_location);
 
   return {
     url: `${photo.urls.raw}&w=1200&h=675&fit=crop&q=70&fm=jpg`,
     authorName: photo.user?.name || "",
-    authorUrl: photo.user?.links?.html
-      ? `${photo.user.links.html}?utm_source=silencegate-blog&utm_medium=referral`
-      : ""
+    authorUrl: unsplashAuthorUrl(photo.user)
   };
+}
+
+function pingUnsplashDownload(env, downloadLocation) {
+  // Unsplash's API guidelines require pinging this endpoint whenever a photo
+  // fetched via the API is put to use; fire-and-forget since it's tracking
+  // only and shouldn't block or fail the save.
+  if (!downloadLocation || !env.UNSPLASH_ACCESS_KEY) return;
+  fetch(`${downloadLocation}&client_id=${env.UNSPLASH_ACCESS_KEY}`).catch(() => {});
+}
+
+async function searchUnsplash(env, searchParams) {
+  if (!env.UNSPLASH_ACCESS_KEY) throw httpError("Worker 缺少 UNSPLASH_ACCESS_KEY 环境变量。", 500);
+
+  const tags = searchParams.get("tags") || "";
+  const query = searchParams.get("q")?.trim() || unsplashQueryForTags(tags);
+  // Different random page each call (rather than always page 1) so the
+  // "换一批" refresh button in the picker actually surfaces a different set.
+  const page = 1 + Math.floor(Math.random() * 3);
+  const results = await unsplashSearch(env, query, { perPage: 12, page });
+
+  return {
+    query,
+    results: results.map((photo) => ({
+      id: photo.id,
+      thumb: `${photo.urls.raw}&w=320&h=200&fit=crop&q=60&fm=jpg`,
+      url: `${photo.urls.raw}&w=1200&h=675&fit=crop&q=70&fm=jpg`,
+      authorName: photo.user?.name || "",
+      authorUrl: unsplashAuthorUrl(photo.user),
+      downloadLocation: photo.links?.download_location || ""
+    }))
+  };
+}
+
+async function selectUnsplashPhoto(env, body) {
+  pingUnsplashDownload(env, body?.downloadLocation);
+  return { ok: true };
 }
 
 async function savePost(env, slug, payload) {
@@ -588,7 +632,12 @@ async function savePost(env, slug, payload) {
     if (error.status !== 404) throw error;
   }
 
-  if (!previous?.cover) {
+  // payload.cover round-trips through the admin form (populated from the
+  // post's existing cover on load, replaced by the "选择封面图" picker, or
+  // cleared by the admin), so it's the source of truth whenever set — only
+  // an empty value means "no cover chosen yet", which is when a new one
+  // gets auto-picked.
+  if (!payload.cover) {
     try {
       const cover = await fetchUnsplashCover(env, payload.tags);
       if (cover) {
@@ -600,10 +649,6 @@ async function savePost(env, slug, payload) {
       // Non-fatal: publishing should never fail just because Unsplash is
       // unreachable or rate-limited. The post is simply saved without a cover.
     }
-  } else {
-    payload.cover = previous.cover;
-    payload.coverAuthor = previous.coverAuthor;
-    payload.coverAuthorUrl = previous.coverAuthorUrl;
   }
 
   return writePost(env, slug, payload, previous);
