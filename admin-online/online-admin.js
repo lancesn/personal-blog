@@ -410,7 +410,10 @@ async function loadCoverResults(query) {
     // instead of hitting the network, making refresh look like a no-op.
     params.set("_", Date.now().toString());
     const result = await apiRequest(`/unsplash/search?${params.toString()}`);
-    if (!query && result.query) coverSearchInput.value = result.query;
+    // Show what's being searched as a placeholder rather than filling the
+    // input's actual value, so the box stays empty and ready to type a
+    // custom search into instead of needing to be cleared first.
+    if (!query && result.query) coverSearchInput.placeholder = result.query;
     if (!result.results.length) {
       coverModalStatus.textContent = "没有搜到图片，换个关键词试试。";
       return;
