@@ -586,6 +586,10 @@ h3 {
   align-items: flex-end;
 }
 
+.post-card[hidden] {
+  display: none;
+}
+
 .post-card-bg {
   position: absolute;
   inset: 0;
