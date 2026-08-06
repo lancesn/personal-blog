@@ -1,8 +1,8 @@
 ---
 title: 冬天的第一场雪
-cover: https://images.unsplash.com/photo-1751234019271-708c0a1bc5aa?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MTF8fHF1aWV0JTIwZm9yZXN0JTIwcGF0aCUyMHNvbGl0dWRlfGVufDB8MHx8fDE3ODU5Mjk2Mjd8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
-coverAuthor: Zoshua Colah
-coverAuthorUrl: https://unsplash.com/@zoshuacolah?utm_source=silencegate-blog&utm_medium=referral
+cover: https://images.unsplash.com/photo-1735710207177-58a17be981e4?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8Mjd8fCVFNCVCOCU4QiVFOSU5QiVBQXxlbnwwfDB8fHwxNzg1OTc0OTg1fDA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Seiya Maeda
+coverAuthorUrl: https://unsplash.com/@seiya_maeda?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-03-11
 description: 有点想念，冬天的雪了。 不是想念很大的雪，也不是想念什么壮阔的景色。只是想起那一年，第一场雪刚刚下过，我们沿着湖区那条小路回酒店。 那条路不宽，一边是矮墙，一边是长得有些荒乱的灌木...
 readingTime: 
