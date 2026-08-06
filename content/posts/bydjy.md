@@ -1,7 +1,10 @@
 ---
 title: 边缘的记忆
+cover: https://images.unsplash.com/photo-1562983527-df8c2f67084e?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8NHx8JUU1JTlCJTlFJUU1JUJGJTg2fGVufDB8MHx8fDE3ODU5NzU2MDR8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Nada Gamal
+coverAuthorUrl: https://unsplash.com/@nada_gamal?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-04-08
-description: 
+description: 记忆不服从重要性，它偏爱边缘。也许那些细节当时没有承担意义，才得以避开反复修改，保存原初的样子。 因此我不再苛求记住全部，忘记不是背叛，是心在漫长岁月里自行取舍。最后留下的一块木纹...
 readingTime: 
 tags: [日常, 随笔]
 status: published
