@@ -1,7 +1,8 @@
 ---
 title: 窗内的四季
+cover: https://silencegate.com/uploads/image-20260806012950.png
 date: 2026-03-03
-description: 
+description: 我在同一扇窗前住了很多年。窗框没有变，外面的树却用枝叶替我记录时间：春天冒出浅绿，夏日撑开浓荫，秋风把它削薄，冬雪又显出黑色的骨骼。 最初我总望向远处，觉得窗是阻隔，外面的路才叫生...
 readingTime: 
 tags: [日常, 随笔]
 status: published
