@@ -1,11 +1,15 @@
 ---
 title: 江南一夜
+cover: https://images.unsplash.com/photo-1766342759725-a2ea97271ab3?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MjR8fHF1aWV0JTIwZm9yZXN0JTIwcGF0aCUyMHNvbGl0dWRlfGVufDB8MHx8fDE3ODU5Mjk2Mjd8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Zed Can
+coverAuthorUrl: https://unsplash.com/@zedcan77?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-06-17
 description: 江水拍堤，波声一阵紧过一阵。夜色沿着长堤缓缓压下来，水面看似昏沉，底下却有无数暗流相逐。风从远处起，先掠过沙洲，再穿过芦苇，最后抵达城下。堤岸边的花木被吹得低伏，零落的花瓣铺满小径...
 readingTime: 
 tags: [独处, 随笔]
 status: published
 publishedAt: 2026-07-14T01:51:23.636Z
+scheduledAt: 
 ---
 
 ![Gemini_Generated_Image_dz07xhdz07xhdz07.jpg](../uploads/image-20260714015055.jpg)
