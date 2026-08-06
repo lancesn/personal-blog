@@ -1,11 +1,15 @@
 ---
 title: 自己手搓静态博客：GitHub Pages、Cloudflare Worker 与在线后台
+cover: https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8Mnx8bWluaW1hbGlzdCUyMGRlc2slMjBsYXB0b3B8ZW58MHwwfHx8MTc4NTk4MDUzNnww&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Luca Bravo
+coverAuthorUrl: https://unsplash.com/@lucabravo?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-02-20
 description: 这是一篇从零到上线的部署记录：如何把一个 Markdown 静态博客放到 GitHub Pages，再用 Cloudflare Worker 做在线后台，让写文章、传图片、发布更新都可以在网页里完成。
 readingTime: 8
 tags: [技术]
 status: published
 publishedAt: 2026-07-05T10:45:00.000Z
+scheduledAt: 
 ---
 
 这篇文章记录我现在这套博客的部署方式，这是一个完全静态博客的方案。文章是 Markdown，页面是静态 HTML，部署靠 GitHub Pages，后台写入靠 Cloudflare Worker，中间没有一台需要长期维护的服务器。
