@@ -1,5 +1,8 @@
 ---
 title: 拂晓的雀声
+cover: https://images.unsplash.com/photo-1766342759725-a2ea97271ab3?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MjR8fHF1aWV0JTIwZm9yZXN0JTIwcGF0aCUyMHNvbGl0dWRlfGVufDB8MHx8fDE3ODU5Mjk2Mjd8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Zed Can
+coverAuthorUrl: https://unsplash.com/@zedcan77?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-03-21
 description: 天还没有完全亮，早雀已经在檐下争论起来。它们的声音细碎、急切，像一把把小剪刀，把夜色从窗纸上剪开。 屋里的人尚未醒透，桌上的书合着，杯底留有昨夜的冷茶。世界看上去什么都没有准备好：...
 readingTime: 
