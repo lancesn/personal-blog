@@ -1,8 +1,8 @@
 ---
 title: 温德米尔的夏天
-cover: https://images.unsplash.com/photo-1774808110802-2792d9b04291?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MjZ8fHF1aWV0JTIwZm9yZXN0JTIwcGF0aCUyMHNvbGl0dWRlfGVufDB8Mnx8fDE3ODU5MTI1NDB8MA&ixlib=rb-4.1.0&w=640&h=640&fit=crop&q=60&fm=jpg
-coverAuthor: Howard Walsh
-coverAuthorUrl: https://unsplash.com/@hswalsh?utm_source=silencegate-blog&utm_medium=referral
+cover: https://images.unsplash.com/photo-1600185947497-9efadf13d099?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8M3x8TGFrZSUyMFdpbmRlcm1lcmV8ZW58MHwwfHx8MTc4NTk4MTg5OXww&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Jonny Gios
+coverAuthorUrl: https://unsplash.com/@supergios?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-08-05
 description: 风从远处的山脊吹来，越过石墙、草地和一排排古老的橡树，最后停留在湖面。湖水没有海的喧闹，也没有江河的奔流，只是一层一层缓缓推开细碎的波纹，像有人轻轻翻阅一本读了很多年的旧书。 夏天...
 readingTime: 
