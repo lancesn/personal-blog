@@ -19,6 +19,8 @@ const imageFileInput = document.querySelector("#image-file");
 const importButton = document.querySelector("#import-post");
 const importFileInput = document.querySelector("#import-file");
 const chooseCoverButton = document.querySelector("#choose-cover");
+const uploadCoverButton = document.querySelector("#upload-cover");
+const coverFileInput = document.querySelector("#cover-file");
 const clearCoverButton = document.querySelector("#clear-cover");
 const coverPreview = document.querySelector("#cover-preview");
 const coverPreviewImg = document.querySelector("#cover-preview-img");
@@ -385,6 +387,34 @@ function setCover(cover, authorName, authorUrl) {
   form.elements.coverAuthor.value = authorName || "";
   form.elements.coverAuthorUrl.value = authorUrl || "";
   updateCoverPreview();
+}
+
+async function uploadCoverFile() {
+  const file = coverFileInput.files[0];
+  if (!file) return;
+
+  try {
+    setStatus("正在上传封面图...");
+    const dataUrl = await readFileAsDataUrl(file);
+    const result = await apiRequest("/uploads", {
+      method: "POST",
+      body: JSON.stringify({
+        name: file.name,
+        type: file.type,
+        data: dataUrl
+      })
+    });
+    // Self-uploaded images aren't Unsplash photos, so there's no
+    // attribution to set — an absolute URL is needed (not the relative
+    // ../uploads/... path /uploads returns for inserting into post body)
+    // since the cover renders on pages at different path depths.
+    setCover(`${siteUrl}/uploads/${result.file}`, "", "");
+    setStatus(`封面图已上传：${result.file}`, "success");
+  } catch (error) {
+    setStatus(error.message, "error");
+  } finally {
+    coverFileInput.value = "";
+  }
 }
 
 // Tracks photo IDs already shown in the current picker session, so "换一批"
@@ -897,6 +927,8 @@ importFileInput.addEventListener("change", () => {
   if (file) importFile(file);
 });
 chooseCoverButton.addEventListener("click", openCoverModal);
+uploadCoverButton.addEventListener("click", () => coverFileInput.click());
+coverFileInput.addEventListener("change", uploadCoverFile);
 clearCoverButton.addEventListener("click", () => setCover("", "", ""));
 coverModalClose.addEventListener("click", closeCoverModal);
 coverModal.addEventListener("click", (event) => {

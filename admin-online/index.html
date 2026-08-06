@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>蓬窗灯影录 Online Studio</title>
-    <link rel="stylesheet" href="../styles.css?v=20260805-fix-hidden-cover-card" />
+    <link rel="stylesheet" href="../styles.css?v=20260806-cover-upload" />
   </head>
   <body class="studio-page">
     <main class="studio-shell">
@@ -140,7 +140,9 @@
               </div>
               <div class="cover-picker-actions">
                 <button class="button" type="button" id="choose-cover">选择封面图</button>
+                <button class="button" type="button" id="upload-cover">上传本地图片</button>
                 <button class="button" type="button" id="clear-cover">清除封面</button>
+                <input id="cover-file" type="file" accept="image/*" hidden />
               </div>
               <p class="cover-picker-hint">留空则发布时按标签自动配一张。</p>
             </div>
@@ -221,7 +223,7 @@
         <p class="cover-modal-status" id="cover-modal-status"></p>
       </div>
     </div>
-    <script src="../script.js?v=20260805-fix-hidden-cover-card"></script>
-    <script src="./online-admin.js?v=20260805-fix-hidden-cover-card"></script>
+    <script src="../script.js?v=20260806-cover-upload"></script>
+    <script src="./online-admin.js?v=20260806-cover-upload"></script>
   </body>
 </html>
