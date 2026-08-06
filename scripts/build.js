@@ -245,6 +245,8 @@ async function exists(targetPath) {
 }
 
 function postShareImage(post) {
+  if (post.cover) return post.cover;
+
   const bodyWithoutCode = post.body.replace(/```[^\n]*\n[\s\S]*?\n```/g, "");
   const imageMatch = bodyWithoutCode.match(/!\[[^\]]*]\(([^)]+)\)/);
   if (imageMatch) {
