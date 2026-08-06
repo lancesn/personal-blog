@@ -1,7 +1,10 @@
 ---
 title: 万物中的你
+cover: https://images.unsplash.com/photo-1761579784735-8c8614002d3e?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MjZ8fHF1aWV0JTIwZm9yZXN0JTIwcGF0aCUyMHNvbGl0dWRlfGVufDB8MHx8fDE3ODU5Mjk2Mjd8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Lianne van Liere
+coverAuthorUrl: https://unsplash.com/@livali_lianne?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-03-26
-description: 
+description: 阿梅曾说，即使所爱的人不再以熟悉的形态显现，也不意味着消失；只要不被悲伤遮住眼睛，还能在万物中看见另一种存在。你还说，如果我难过，就让我尽管难过，你会以另一种形态安慰我陪伴我。那时...
 readingTime: 
 tags: [别念]
 status: published
