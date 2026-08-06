@@ -409,6 +409,11 @@ async function uploadCoverFile() {
     // ../uploads/... path /uploads returns for inserting into post body)
     // since the cover renders on pages at different path depths.
     setCover(`${siteUrl}/uploads/${result.file}`, "", "");
+    // The uploaded file was just committed to GitHub — it won't actually
+    // resolve at that public URL until the next Pages deploy finishes, so
+    // show the local file data instead of letting the preview <img> try
+    // (and fail, showing a broken-image icon) to load the not-yet-live URL.
+    coverPreviewImg.src = dataUrl;
     setStatus(`封面图已上传：${result.file}`, "success");
   } catch (error) {
     setStatus(error.message, "error");
