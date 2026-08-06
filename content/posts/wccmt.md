@@ -1,5 +1,8 @@
 ---
 title: 辋川词摹题
+cover: https://images.unsplash.com/photo-1559473392-71c397acffd6?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8Mjl8fCVFNiVCQSVBQSVFNiVCMCVCNHxlbnwwfDB8fHwxNzg1OTc1MDQwfDA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Tuncay Uyar
+coverAuthorUrl: https://unsplash.com/@tunc?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-05-22
 description: 姓陵山下，溪流自石罅间注出。 初时不过一线清光，贴着苔痕缓缓游走，绕过老松盘屈的根，又从数块青石之间跌下，碎成细白的水花。山中寂静，水声便显得格外分明，仿佛有人伏在林深处低低诵诗，...
 readingTime: 
