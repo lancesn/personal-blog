@@ -1,7 +1,10 @@
 ---
 title: 青石巷
+cover: https://images.unsplash.com/photo-1766342759431-f34d77fd3595?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MTd8fHF1aWV0JTIwZm9yZXN0JTIwcGF0aCUyMHNvbGl0dWRlfGVufDB8MHx8fDE3ODU5Mjk2Mjd8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Zed Can
+coverAuthorUrl: https://unsplash.com/@zedcan77?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-03-16
-description: 
+description: 雨把青石巷洗得发亮，脚步落下，旧水从石缝里轻轻溅起。巷子窄，两把伞相遇，总要有一人侧身。于是陌生人短暂靠近，又很快被各自的门收进去。 巷深处有修伞铺、裁缝店和一扇常年半掩的木门。它...
 readingTime: 
 tags: [日常, 散文, 随笔]
 status: published
