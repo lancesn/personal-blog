@@ -557,21 +557,21 @@ function unsplashAuthorUrl(user) {
 
 async function unsplashSearch(env, query, { perPage = 30, page = 1 } = {}) {
   const accessKey = env.UNSPLASH_ACCESS_KEY;
-  if (!accessKey) return [];
+  if (!accessKey) return { results: [], totalPages: 0 };
 
   const searchUrl = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=${perPage}&page=${page}&orientation=landscape`;
   const response = await fetch(searchUrl, { headers: { Authorization: `Client-ID ${accessKey}` } });
-  if (!response.ok) return [];
+  if (!response.ok) return { results: [], totalPages: 0 };
 
   const data = await response.json();
-  return data.results || [];
+  return { results: data.results || [], totalPages: data.total_pages || 0 };
 }
 
 async function fetchUnsplashCover(env, tagsField) {
   if (!env.UNSPLASH_ACCESS_KEY) return null;
 
   const query = unsplashQueryForTags(tagsField);
-  const results = await unsplashSearch(env, query, { perPage: 30 });
+  const { results } = await unsplashSearch(env, query, { perPage: 30 });
   if (!results.length) return null;
 
   const photo = results[Math.floor(Math.random() * results.length)];
@@ -597,13 +597,19 @@ async function searchUnsplash(env, searchParams) {
 
   const tags = searchParams.get("tags") || "";
   const query = searchParams.get("q")?.trim() || unsplashQueryForTags(tags);
+
   // Different random page each call (rather than always page 1) so the
   // "换一批" refresh button in the picker actually surfaces a different set.
-  // A wider page range (rather than just 1-3) gives the client's own
-  // already-shown-photo dedup a much bigger pool to draw fresh results from
-  // before it has to retry.
-  const page = 1 + Math.floor(Math.random() * 8);
-  const results = await unsplashSearch(env, query, { perPage: 12, page });
+  // A fixed guess at the page range (previously always 1-8) frequently
+  // overshot what a narrower query actually had, wasting the client's
+  // limited dedup retries on empty/sparse pages and making "换一批" run out
+  // of fresh photos after just a round or two even when more real results
+  // existed. Probing page 1 first to read Unsplash's real total_pages keeps
+  // every random pick within actual bounds.
+  const probe = await unsplashSearch(env, query, { perPage: 12, page: 1 });
+  const maxPage = Math.max(1, Math.min(probe.totalPages || 1, 8));
+  const page = maxPage === 1 ? 1 : 1 + Math.floor(Math.random() * maxPage);
+  const { results } = page === 1 ? probe : await unsplashSearch(env, query, { perPage: 12, page });
 
   return {
     query,
