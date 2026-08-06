@@ -1,7 +1,10 @@
 ---
 title: 沙漠上的姑娘
+cover: https://images.unsplash.com/photo-1604994754710-bf8050298639?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8OHx8JUU2JUIyJTk5JUU2JUJDJUEwfGVufDB8MHx8fDE3ODU5NzUwNzR8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Jake Weirick
+coverAuthorUrl: https://unsplash.com/@weirick?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-05-13
-description: 
+description: 考察项目的旅途中，你遇见一峰性情温顺的骆驼。伸手摸它的鼻梁，它没有躲；手掌移到耳朵和脖颈时，它反而转过头来，轻轻蹭了一下。驼铃随着脚步叮当作响，风把细沙推过地面，四周辽阔得几乎没有...
 readingTime: 
 tags: [别念]
 status: published
