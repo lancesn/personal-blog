@@ -1,5 +1,8 @@
 ---
 title: 大地作证
+cover: https://images.unsplash.com/photo-1652969209299-25c19cf42cad?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MXx8JUU1JUE0JUE3JUU1JTlDJUIwfGVufDB8MHx8fDE3ODU5NzU1MDR8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Pham Yen
+coverAuthorUrl: https://unsplash.com/@yenpham_?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-04-19
 description: 阿梅曾说，只要看见那条被雪覆盖的小路，便会确信真的有人陪你走过，那些经历并非一场梦。我回答，即使像梦也没有关系，因为我们确实共同走过，大地可以作证。我笑着拍了拍你的毛线帽，那一瞬间...
 readingTime: 
