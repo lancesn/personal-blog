@@ -1,5 +1,8 @@
 ---
 title: 走路
+cover: https://images.unsplash.com/photo-1682747800766-1a8e0544eb74?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MjV8fCVFOCU4MyU4QyVFNSVCRCVCMXxlbnwwfDB8fHwxNzg1OTc1MjM0fDA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Scot Cris
+coverAuthorUrl: https://unsplash.com/@scotcris?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-05-10
 description: 出门的时候，我换了一双鞋。 门在身后关上，咔嗒一声，很轻。 鞋底踩在地上，软软的，一点点陷下去，又弹回来。 风迎面吹过来，凉的，从脸上擦过，就走了。 我没有要去哪里，就是走。 阳光...
 readingTime: 
