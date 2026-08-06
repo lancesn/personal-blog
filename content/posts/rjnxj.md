@@ -1,11 +1,15 @@
 ---
 title: 人间难相见
+cover: https://images.unsplash.com/photo-1763202364530-b8d9ce87af18?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MTl8fHF1aWV0JTIwZm9yZXN0JTIwcGF0aCUyMHNvbGl0dWRlfGVufDB8MHx8fDE3ODU5Mjk2Mjd8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Tanya Barrow
+coverAuthorUrl: https://unsplash.com/@tanyabarrow?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-06-14
-description: 
+description: 历历相期一日间，来时双鬓已成寒。 年轻的时候，总以为相见是一件寻常事。山不过几重，水不过几程，纵然各自远行，只消一纸书信，一叶轻舟，便能于某个春日的午后，再坐回旧日窗前。那时庭中的...
 readingTime: 
 tags: [日常, 随笔]
 status: published
 publishedAt: 2026-07-13T12:39:29.100Z
+scheduledAt: 
 ---
 
 历历相期一日间，来时双鬓已成寒。
