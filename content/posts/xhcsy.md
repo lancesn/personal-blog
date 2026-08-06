@@ -1,5 +1,8 @@
 ---
 title: 西湖春色驿
+cover: https://images.unsplash.com/photo-1725879642445-854e1dd30185?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8MXx8JUU4JUE1JUJGJUU2JUI5JTk2fGVufDB8MHx8fDE3ODU5NzUyNzN8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Dominic Kurniawan Suryaputra
+coverAuthorUrl: https://unsplash.com/@d_ks11?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-05-04
 description: 州人爱春，却又总说天寒。 这话听来矛盾，城中的柳絮已经过了长堤，湖面上的风也渐渐有了水汽，茶肆门前换上薄帘，卖花人每日清早挑着竹篮，从巷口一直走到桥头。可州人仍裹着旧衣，见面第一句...
 readingTime: 
