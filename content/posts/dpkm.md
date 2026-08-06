@@ -1,7 +1,10 @@
 ---
 title: 道旁枯木
+cover: https://images.unsplash.com/photo-1521675333836-36e707ac1d20?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8M3x8JUU2JTlFJUFGJUU2JTlDJUE4fGVufDB8MHx8fDE3ODU5NzU2MzV8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Zach Reiner
+coverAuthorUrl: https://unsplash.com/@_zachreiner_?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-04-06
-description: 
+description: 路边的树死了，枝干灰白，没有鸟栖。工人在树身画了记号，等来日锯去。可一场雪后，它比所有常青树更醒目，像举着空空的双手，替道路承接寂静。 人们喜欢花木旺盛时的样子，很少肯看枯败。其实...
 readingTime: 
 tags: [散文, 随笔]
 status: published
