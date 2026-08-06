@@ -1,11 +1,15 @@
 ---
 title: 嵩山普寂禅师五则
+cover: https://images.unsplash.com/photo-1470364799705-5cd35cff0c88?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8M3x8emVuJTIwZ2FyZGVuJTIwbWVkaXRhdGlvbnxlbnwwfDB8fHwxNzg1OTI5NTkyfDA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Kari Shea
+coverAuthorUrl: https://unsplash.com/@karishea?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-06-13
 description: 小引 嵩山普寂禅师，神秀之嗣，住嵩岳二十年，后弘化两京，开元二十七年坐灭兴唐寺，世寿八十九，谥大照。北宗以观心看净、方便渐修为家法，故此五则不取棒喝，但以拂尘看净一路立机，依其生平...
 readingTime: 
 tags: [禅]
 status: published
 publishedAt: 2026-07-03T23:46:06.800Z
+scheduledAt: 
 ---
 
 **小引**
