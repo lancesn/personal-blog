@@ -1,7 +1,8 @@
 ---
 title: 一盏茶的时间
+cover: https://silencegate.com/uploads/image-20260806012650.png
 date: 2026-03-06
-description: 
+description: 茶叶落入杯中时，像一群远行者忽然找到岸。沸水注下，它们先被惊起，在水中翻转，随后才缓慢舒展，把一路紧缩的身世重新打开。 我喜欢等茶凉到恰好入口，那几分钟里，不必回答消息，不必决定去...
 readingTime: 
 tags: [日常, 随笔]
 status: published
