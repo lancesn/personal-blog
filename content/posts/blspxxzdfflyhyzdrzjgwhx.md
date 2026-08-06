@@ -1,11 +1,15 @@
 ---
 title: 《百论疏》"破邪显正"的方法论意涵：以"执"的认知结构为核心
+cover: https://images.unsplash.com/photo-1536880879850-e5a87ee99f1d?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8Mjd8fG9sZCUyMGJvb2tzJTIwc3R1ZHklMjBkZXNrfGVufDB8MHx8fDE3ODU5NzQ0NjV8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Debby Hudson
+coverAuthorUrl: https://unsplash.com/@hudsoncrafted?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-06-16
 description: 批判外道，是《百论疏》最显眼的面貌，却不是吉藏最深的关切。 《百论》十品，从破神、破常到破空，几乎每品都在处理某种外道见解。吉藏为之作疏，大量引及数论、胜论、正理派诸系的主张，疏中...
 readingTime: 
 tags: [研究]
 status: published
 publishedAt: 2026-07-05T11:53:36.981Z
+scheduledAt: 
 ---
 
 批判外道，是《百论疏》最显眼的面貌，却不是吉藏最深的关切。
