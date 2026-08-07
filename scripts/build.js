@@ -8,7 +8,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260807-about-archive-avatar-swap";
+const assetVersion = "20260807-search-avatar-static";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -675,7 +675,7 @@ function renderSearch(posts) {
 
     <main class="site-shell">
       <section class="hero section hero-compact">
-        ${pageAvatar("./uploads/search-avatar.jpg", "带放大镜的极简风格浏览器窗口插画")}
+        ${pageAvatar("./uploads/search-avatar.jpg", "夕阳沙丘上的一只小机器人")}
         <h1>搜索</h1>
         <p>按标题、正文和标签查找文章。</p>
       </section>
