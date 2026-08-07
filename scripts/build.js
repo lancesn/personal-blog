@@ -8,7 +8,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260807-static-avatars-revert";
+const assetVersion = "20260807-about-archive-avatar-swap";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -832,7 +832,7 @@ function renderAbout() {
 
     <main class="site-shell">
       <section class="hero section hero-compact">
-        ${pageAvatar("./uploads/about-avatar.jpg", "玻璃球中映出的海边落日")}
+        ${pageAvatar("./uploads/about-avatar.jpg", "山顶剪影，双臂展向暮色")}
         <h1>关于我</h1>
         <p>把复杂之事稍稍放慢，再细看其来路。</p>
       </section>
@@ -895,7 +895,7 @@ function renderArchive(posts) {
 
     <main class="site-shell">
       <section class="hero section hero-compact">
-        ${pageAvatar("./uploads/archive-avatar.jpg", "山顶剪影，双臂展向暮色")}
+        ${pageAvatar("./uploads/archive-avatar.jpg", "玻璃球中映出的海边落日")}
         <h1>存档</h1>
         <p>按时间整理的全部文章。</p>
       </section>
