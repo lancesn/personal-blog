@@ -154,6 +154,10 @@ a {
   margin-top: 12px;
 }
 
+.hero-compact + .section {
+  padding-top: 18px;
+}
+
 .home-hero {
   position: relative;
   min-height: 560px;
