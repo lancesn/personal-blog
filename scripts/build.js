@@ -8,7 +8,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260806-compact-hero";
+const assetVersion = "20260807-about-hero-match";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -831,7 +831,7 @@ function renderAbout() {
     body: `${siteNav("about")}
 
     <main class="site-shell">
-      <section class="hero section about-hero">
+      <section class="hero section hero-compact">
         ${pageAvatar("./uploads/about-avatar.jpg", "极简风格的浏览器窗口插画，圆圈内是山与落日")}
         <h1>关于我</h1>
         <p>把复杂之事稍稍放慢，再细看其来路。</p>
