@@ -266,6 +266,38 @@ a {
   filter: sepia(0.18) saturate(0.72) brightness(0.7) contrast(1.02);
 }
 
+.page-avatar-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 22px;
+}
+
+.hero-compact .page-avatar-wrap {
+  margin-bottom: 14px;
+}
+
+.page-avatar-wrap .page-avatar {
+  display: block;
+  margin: 0;
+}
+
+.page-avatar-credit {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 8px;
+  text-decoration: none;
+}
+
+:root.dark .page-avatar-credit {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.page-avatar-credit:hover {
+  color: var(--text);
+}
+
 h1,
 h2,
 h3,

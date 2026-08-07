@@ -66,6 +66,11 @@ export default {
         console.error(JSON.stringify({ scheduled: true, message: error.message }));
       })
     );
+    ctx.waitUntil(
+      rotateDailyAvatars(env).catch((error) => {
+        console.error(JSON.stringify({ scheduled: true, rotateDailyAvatars: true, message: error.message }));
+      })
+    );
   }
 };
 
@@ -627,6 +632,71 @@ async function searchUnsplash(env, searchParams) {
 async function selectUnsplashPhoto(env, body) {
   pingUnsplashDownload(env, body?.downloadLocation);
   return { ok: true };
+}
+
+// Trial feature: rotate the small circular illustration on 博客/搜索/存档/关于
+// to a real Unsplash photo once a day, a different one per page. Runs off the
+// existing 10-minute cron (see `scheduled` below) rather than any per-visit
+// fetch, so a normal page load never depends on Unsplash being reachable —
+// the photo is baked into the static site by the next Pages build after this
+// commits, exactly like the post cover-image auto-pick.
+const dailyAvatarQueries = {
+  blog: "notebook writing desk",
+  search: "vintage compass exploration",
+  archive: "old library shelves books",
+  about: "mountain sunset"
+};
+const dailyAvatarsPath = "content/daily-avatars.json";
+
+async function readDailyAvatarsFile(env) {
+  try {
+    const detail = await githubRequest(
+      env,
+      `/contents/${encodeContentPath(dailyAvatarsPath)}?ref=${encodeURIComponent(branch(env))}`
+    );
+    return { data: JSON.parse(decodeBase64(detail.content)), sha: detail.sha };
+  } catch (error) {
+    if (error.status === 404) return { data: null, sha: null };
+    throw error;
+  }
+}
+
+async function rotateDailyAvatars(env) {
+  if (!env.UNSPLASH_ACCESS_KEY) return;
+
+  const today = new Date().toISOString().slice(0, 10);
+  const { data: existing, sha } = await readDailyAvatarsFile(env);
+  if (existing?.date === today) return;
+
+  const avatars = {};
+  for (const [page, query] of Object.entries(dailyAvatarQueries)) {
+    const { results } = await unsplashSearch(env, query, { perPage: 12, page: 1 });
+    if (!results.length) continue;
+
+    const photo = results[Math.floor(Math.random() * results.length)];
+    pingUnsplashDownload(env, photo.links?.download_location);
+    avatars[page] = {
+      url: `${photo.urls.raw}&w=320&h=320&fit=crop&q=70&fm=jpg`,
+      authorName: photo.user?.name || "",
+      authorUrl: unsplashAuthorUrl(photo.user)
+    };
+  }
+  // If every query failed (e.g. Unsplash is down), leave the file untouched
+  // rather than writing an empty rotation — the next cron tick ten minutes
+  // later will just try again, and the site keeps showing yesterday's photos
+  // (or the static illustration fallback) in the meantime.
+  if (!Object.keys(avatars).length) return;
+
+  const content = JSON.stringify({ date: today, avatars }, null, 2);
+  await githubRequest(env, `/contents/${encodeContentPath(dailyAvatarsPath)}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      message: `Rotate daily avatars: ${today}`,
+      content: encodeBase64(content),
+      branch: branch(env),
+      ...(sha ? { sha } : {})
+    })
+  });
 }
 
 async function savePost(env, slug, payload) {
