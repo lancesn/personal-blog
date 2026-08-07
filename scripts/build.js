@@ -8,7 +8,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260806-cover-upload-preview-fix";
+const assetVersion = "20260806-compact-hero";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -641,7 +641,7 @@ function renderBlog(posts, currentPage = 1) {
     body: `${nav}
 
     <main class="site-shell">
-      <section class="hero section">
+      <section class="hero section hero-compact">
         ${avatar}
         <h1>博客</h1>
         <p>一些想法、文章和折腾记录。</p>
@@ -674,7 +674,7 @@ function renderSearch(posts) {
     body: `${siteNav("search")}
 
     <main class="site-shell">
-      <section class="hero section">
+      <section class="hero section hero-compact">
         ${pageAvatar("./uploads/search-avatar.jpg", "带放大镜的极简风格浏览器窗口插画")}
         <h1>搜索</h1>
         <p>按标题、正文和标签查找文章。</p>
@@ -894,7 +894,7 @@ function renderArchive(posts) {
     body: `${siteNav("archive")}
 
     <main class="site-shell">
-      <section class="hero section">
+      <section class="hero section hero-compact">
         ${pageAvatar("./uploads/archive-avatar.jpg", "极简风格的浏览器窗口插画")}
         <h1>存档</h1>
         <p>按时间整理的全部文章。</p>
