@@ -8,27 +8,11 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260807-page-avatar-credit-clip";
+const assetVersion = "20260807-static-avatars-revert";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
 const rasterImageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp"]);
-
-// Populated from content/daily-avatars.json if present — a Cloudflare Worker
-// cron rotates this file once a day with a fresh Unsplash photo per utility
-// page (see rotateDailyAvatars in cloudflare-worker/src/index.js). Falls back
-// to the static illustration files below when missing (e.g. before the first
-// rotation has ever run) or when a specific page's entry hasn't landed yet.
-let dailyAvatars = {};
-
-async function loadDailyAvatars() {
-  try {
-    const raw = await readFile(path.join(root, "content", "daily-avatars.json"), "utf8");
-    dailyAvatars = JSON.parse(raw).avatars || {};
-  } catch {
-    dailyAvatars = {};
-  }
-}
 
 function escapeHtml(value) {
   return value
@@ -519,17 +503,8 @@ function profileAvatar() {
   return `<img class="profile-avatar" src="./uploads/lance-profile.jpg" alt="Lance Shen" />`;
 }
 
-function pageAvatar(src = "./uploads/lance-profile.jpg", alt = "Lance Shen", dailyKey = "") {
-  const daily = dailyKey ? dailyAvatars[dailyKey] : null;
-  if (!daily) return `<img class="profile-avatar page-avatar" src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" />`;
-
-  const credit = daily.authorName
-    ? `<a class="page-avatar-credit" href="${escapeHtml(daily.authorUrl || "https://unsplash.com/?utm_source=silencegate-blog&utm_medium=referral")}" target="_blank" rel="noopener noreferrer">📷 ${escapeHtml(daily.authorName)}</a>`
-    : "";
-  return `<span class="page-avatar-wrap">
-          <img class="profile-avatar page-avatar" src="${escapeHtml(daily.url)}" alt="${escapeHtml(alt)}" />
-          ${credit}
-        </span>`;
+function pageAvatar(src = "./uploads/lance-profile.jpg", alt = "Lance Shen") {
+  return `<img class="profile-avatar page-avatar" src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" />`;
 }
 
 const homeHeroImages = [
@@ -645,8 +620,8 @@ function renderBlog(posts, currentPage = 1) {
   const pageScript = scriptTag(prefix);
   const nav = currentPage === 1 ? siteNav("blog") : siteNav("blog").replaceAll("./", "../../");
   const avatar = currentPage === 1
-    ? pageAvatar("./uploads/blog-avatar.jpg", "极简风格的浏览器窗口插画", "blog")
-    : pageAvatar("../../uploads/blog-avatar.jpg", "极简风格的浏览器窗口插画", "blog");
+    ? pageAvatar("./uploads/blog-avatar.jpg", "暮色中枝叶间的一盏灯笼")
+    : pageAvatar("../../uploads/blog-avatar.jpg", "暮色中枝叶间的一盏灯笼");
   const cards = currentPage === 1
     ? postCards
     : postCards
@@ -700,7 +675,7 @@ function renderSearch(posts) {
 
     <main class="site-shell">
       <section class="hero section hero-compact">
-        ${pageAvatar("./uploads/search-avatar.jpg", "带放大镜的极简风格浏览器窗口插画", "search")}
+        ${pageAvatar("./uploads/search-avatar.jpg", "带放大镜的极简风格浏览器窗口插画")}
         <h1>搜索</h1>
         <p>按标题、正文和标签查找文章。</p>
       </section>
@@ -857,7 +832,7 @@ function renderAbout() {
 
     <main class="site-shell">
       <section class="hero section hero-compact">
-        ${pageAvatar("./uploads/about-avatar.jpg", "极简风格的浏览器窗口插画，圆圈内是山与落日", "about")}
+        ${pageAvatar("./uploads/about-avatar.jpg", "玻璃球中映出的海边落日")}
         <h1>关于我</h1>
         <p>把复杂之事稍稍放慢，再细看其来路。</p>
       </section>
@@ -920,7 +895,7 @@ function renderArchive(posts) {
 
     <main class="site-shell">
       <section class="hero section hero-compact">
-        ${pageAvatar("./uploads/archive-avatar.jpg", "极简风格的浏览器窗口插画", "archive")}
+        ${pageAvatar("./uploads/archive-avatar.jpg", "山顶剪影，双臂展向暮色")}
         <h1>存档</h1>
         <p>按时间整理的全部文章。</p>
       </section>
@@ -1309,7 +1284,6 @@ async function syncDistToRoot() {
 }
 
 async function build() {
-  await loadDailyAvatars();
   await rm(distDir, { recursive: true, force: true });
   await mkdir(path.join(distDir, "posts"), { recursive: true });
   await mkdir(path.join(distDir, "tags"), { recursive: true });
