@@ -285,13 +285,13 @@ a {
   position: absolute;
   right: 4px;
   bottom: 4px;
-  color: rgba(0, 0, 0, 0.4);
-  font-size: 8px;
+  color: rgba(0, 0, 0, 0.22);
+  font-size: 7px;
   text-decoration: none;
 }
 
 :root.dark .page-avatar-credit {
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .page-avatar-credit:hover {
