@@ -410,11 +410,6 @@ h1 {
   gap: 44px;
 }
 
-.about-hero {
-  padding-top: 116px;
-  padding-bottom: 34px;
-}
-
 .about-section {
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
