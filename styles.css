@@ -133,6 +133,27 @@ a {
   text-align: center;
 }
 
+/* Utility pages (博客/搜索/存档) don't need the same amount of hero
+   whitespace as the homepage — their actual tools (post list, search box,
+   filters) should show up sooner. */
+.hero.hero-compact {
+  padding: 64px 0 56px;
+}
+
+.hero-compact .page-avatar {
+  width: 96px;
+  height: 96px;
+  margin-bottom: 14px;
+}
+
+.hero-compact h1 {
+  margin-top: 10px;
+}
+
+.hero-compact p {
+  margin-top: 12px;
+}
+
 .home-hero {
   position: relative;
   min-height: 560px;
