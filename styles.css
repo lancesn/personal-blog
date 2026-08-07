@@ -266,53 +266,6 @@ a {
   filter: sepia(0.18) saturate(0.72) brightness(0.7) contrast(1.02);
 }
 
-.page-avatar-wrap {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 22px;
-  border-radius: 50%;
-  overflow: hidden;
-  /* The ring shadow moves here from .profile-avatar (below) — applying it to
-     the same element as overflow:hidden would just clip it away. */
-  box-shadow: 0 0 0 6px var(--bg);
-}
-
-.hero-compact .page-avatar-wrap {
-  margin-bottom: 14px;
-}
-
-.page-avatar-wrap .page-avatar {
-  display: block;
-  margin: 0;
-  box-shadow: none;
-}
-
-.page-avatar-credit {
-  /* Clipped to the circle by the wrap's overflow:hidden above, so it can
-     never visually poke out past the round frame the way a naive
-     bottom-right corner overlay would (the wrap's own box is a square,
-     with the circle's edge cutting well inside that corner). */
-  position: absolute;
-  right: 4px;
-  bottom: 3px;
-  left: 4px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  text-align: right;
-  color: rgba(0, 0, 0, 0.22);
-  font-size: 7px;
-  text-decoration: none;
-}
-
-:root.dark .page-avatar-credit {
-  color: rgba(255, 255, 255, 0.3);
-}
-
-.page-avatar-credit:hover {
-  color: var(--text);
-}
-
 h1,
 h2,
 h3,
