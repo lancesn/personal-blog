@@ -1,5 +1,8 @@
 ---
 title: 湖上清晨
+cover: https://images.unsplash.com/photo-1760533167385-a5cf0859e596?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8Nzd8fHF1aWV0JTIwZm9yZXN0JTIwcGF0aCUyMHNvbGl0dWRlfGVufDB8MHx8fDE3ODcyMTYyMjJ8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: runda choo
+coverAuthorUrl: https://unsplash.com/@rundachoo?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-08-20
 description: 天刚亮，湖面还未从夜色里完全醒来。 远处的山林隐在薄雾之后，只露出几层模糊的树影。那些高大的松树沿着水岸生长，枝干被晨光照亮，深绿之中浮着一层柔和的金色。风尚未来，湖水平静得近乎透...
 readingTime: 
