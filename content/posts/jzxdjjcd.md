@@ -1,5 +1,8 @@
 ---
 title: 九住心的进阶次第
+cover: https://images.unsplash.com/photo-1697807665472-908cfe732b8e?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8Mzh8fG9sZCUyMGJvb2tzJTIwc3R1ZHklMjBkZXNrfGVufDB8MHx8fDE3ODc4Nzg5MDJ8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Clay Banks
+coverAuthorUrl: https://unsplash.com/@claybanks?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-08-28
 description: 止观修习的困难，往往不在于是否能够按时上座，也不只取决于时间的长短。呼吸可以观得分明，坐姿可以保持端正，心却仍会不断离开所缘。初坐时尚能维持觉察，稍后便随念而转，待到重新觉知时，散...
 readingTime: 
