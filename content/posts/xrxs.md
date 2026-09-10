@@ -1,12 +1,12 @@
 ---
 title: 心若溪水
 date: 2026-09-10
-description: 
+description: 若我心能如那溪水，流经幽谷，穿越石岸，不问归期，只在流动中，满载星辰的倒影。 溪水大约从未想过自己要去哪里，它从山间一处无人知晓的泉眼出发，经过苔藓覆盖的石缝，绕过横卧多年的枯木，...
 readingTime: 
 tags: [日常, 随笔]
-status: scheduled
+status: published
 publishedAt: 2026-09-10T04:21:00.000Z
-scheduledAt: 2026-09-10T04:21:00.000Z
+scheduledAt: 
 ---
 
 若我心能如那溪水，流经幽谷，穿越石岸，不问归期，只在流动中，满载星辰的倒影。
