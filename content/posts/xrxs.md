@@ -1,5 +1,8 @@
 ---
 title: 心若溪水
+cover: https://images.unsplash.com/photo-1587006181023-458d22b60033?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8NDN8fCVFNiVCQSVBQSVFNiVCNSU4MXxlbnwwfDB8fHwxNzg5MDc4ODk4fDA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Saurav Kundu
+coverAuthorUrl: https://unsplash.com/@sav_here?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-09-10
 description: 若我心能如那溪水，流经幽谷，穿越石岸，不问归期，只在流动中，满载星辰的倒影。 溪水大约从未想过自己要去哪里，它从山间一处无人知晓的泉眼出发，经过苔藓覆盖的石缝，绕过横卧多年的枯木，...
 readingTime: 
