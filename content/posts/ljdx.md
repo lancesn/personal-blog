@@ -1,12 +1,12 @@
 ---
 title: 林间独行
 date: 2026-10-30
-description: 
+description: 午后的林子很静。 阳光穿过层层叠叠的枝叶，落在地上，碎成深浅不一的光斑。脚踩过松针与枯叶，发出细微的声响。林间没有笔直的路，只有被雨水冲淡的泥径，绕过石头，穿过低矮的灌木，慢慢伸向...
 readingTime: 
 tags: [独处, 随笔]
-status: scheduled
+status: published
 publishedAt: 2026-10-30T04:17:00.000Z
-scheduledAt: 2026-10-30T04:17:00.000Z
+scheduledAt: 
 ---
 
 午后的林子很静。
