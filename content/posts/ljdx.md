@@ -1,5 +1,8 @@
 ---
 title: 林间独行
+cover: https://images.unsplash.com/photo-1762118032906-72848be10f31?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8NTV8fHF1aWV0JTIwZm9yZXN0JTIwcGF0aCUyMHNvbGl0dWRlfGVufDB8MHx8fDE3OTMzNTQ4OTZ8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: Tunahan Kuzgun
+coverAuthorUrl: https://unsplash.com/@tunahankuzgun?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-10-30
 description: 午后的林子很静。 阳光穿过层层叠叠的枝叶，落在地上，碎成深浅不一的光斑。脚踩过松针与枯叶，发出细微的声响。林间没有笔直的路，只有被雨水冲淡的泥径，绕过石头，穿过低矮的灌木，慢慢伸向...
 readingTime: 
