@@ -86,8 +86,6 @@ scheduledAt:
 
 ![雾中远山](https://images.unsplash.com/photo-1770962294429-ea415866bc90)
 
-摄影：[Benny Liu](https://unsplash.com/photos/misty-mountains-at-dawn-with-soft-light-nnx0hes9Agc) / Unsplash
-
 晨雾未散，山色如旧。一只鸟从竹梢飞起，掠过空庭，转眼没入林间。
 
 那一刻，忽然想起梦中的旧桥与流水。
