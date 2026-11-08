@@ -5,14 +5,14 @@ coverAuthor: Cayden Huang
 coverAuthorUrl: https://unsplash.com/photos/a-blurry-photo-of-rain-drops-on-a-window-4kKptjMSaU0
 date: 2026-11-08
 description: 夜雨中梦回江南旧城，看旧日悲喜随岁月流转，醒来仍是一盏灯、一卷书、一窗夜雨。
+readingTime: 
 tags: [阅读笔记, 随笔]
 status: published
 publishedAt: 2026-11-08T01:38:01.170Z
+scheduledAt: 
 ---
 
 ![夜雨幽窗](https://images.unsplash.com/photo-1532249991072-89f3389e8e80)
-
-摄影：[Cayden Huang](https://unsplash.com/photos/a-blurry-photo-of-rain-drops-on-a-window-4kKptjMSaU0) / Unsplash
 
 夜雨落了半宿。
 
@@ -21,8 +21,6 @@ publishedAt: 2026-11-08T01:38:01.170Z
 梦里却是江南旧城。
 
 ![梦里旧巷](https://images.unsplash.com/photo-1750086332426-81443ba6efab)
-
-摄影：[Zhen Yao](https://unsplash.com/photos/a-stone-archway-frames-a-traditional-chinese-alley-ZHE18Dfigks) / Unsplash
 
 城中有一条长巷，青石铺地，两旁人家粉墙黛瓦，门前多种石榴与芭蕉。巷口有座小桥，桥下流水潺潺，临水一间茶肆，常有闲人围坐。卖茶的老人须发尚黑，见我经过，笑着招呼，仿佛多年不见，只隔了一个清晨。
 
@@ -53,8 +51,6 @@ publishedAt: 2026-11-08T01:38:01.170Z
 我在桥头站了很久。
 
 ![花落水中](https://images.unsplash.com/photo-1717446483192-a4c059c62ecd)
-
-摄影：[Muhammad Hassan Javed](https://unsplash.com/photos/a-pink-flower-floating-on-top-of-a-body-of-water-1fiirarqTFI) / Unsplash
 
 流水从桥洞下穿过，水面漂着一片落花。想伸手捞起，花已随水远去。正怅然间，雨声忽然大了起来，街巷、桥梁、屋舍，都渐渐隐入雨幕。那些熟悉的面容，也一个接着一个模糊了。
 
