@@ -8,7 +8,7 @@ const contentDir = path.join(root, "content", "posts");
 const distDir = path.join(root, "dist");
 const uploadsDir = path.join(root, "uploads");
 const siteUrl = "https://silencegate.com";
-const assetVersion = "20260807-hero-section-gap-fix";
+const assetVersion = "20261111-blockquote";
 const blogPageSize = 20;
 const defaultShareImage = absoluteUrl("uploads/blog-avatar.jpg");
 const maxUploadImageWidth = 1600;
@@ -415,6 +415,17 @@ function markdownToHtml(markdown) {
         html.push(`<h${level} id="${id}">${inlineMarkdown(text)}</h${level}>`);
         continue;
       }
+    }
+
+    if (lines.every((line) => /^>\s?/.test(line))) {
+      const paragraphs = lines
+        .map((line) => line.replace(/^>\s?/, ""))
+        .join("\n")
+        .split(/\n\s*\n/)
+        .map((paragraph) => paragraph.split("\n").map((line) => inlineMarkdown(line.trim())).join("<br />"))
+        .filter(Boolean);
+      html.push(`<blockquote>${paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}</blockquote>`);
+      continue;
     }
 
     if (lines.every((line) => line.startsWith("- "))) {

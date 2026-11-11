@@ -1381,6 +1381,21 @@ h3 {
   margin-inline: 0;
 }
 
+.article-content blockquote {
+  margin: 26px 0 0;
+  padding: 4px 0 4px 20px;
+  border-left: 3px solid color-mix(in srgb, var(--primary) 55%, var(--line));
+}
+
+.article-content blockquote p {
+  margin-top: 0;
+  color: color-mix(in srgb, var(--text) 82%, var(--muted));
+}
+
+.article-content blockquote p + p {
+  margin-top: 12px;
+}
+
 .article-content img {
   display: block;
   max-width: 100%;
