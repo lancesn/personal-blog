@@ -1,5 +1,8 @@
 ---
 title: 《念处经》“观身如身”修习次第
+cover: https://images.unsplash.com/photo-1760840415387-fc8ff3f11dff?ixid=M3wxMDE3OTQ0fDB8MXxzZWFyY2h8NzZ8fG9sZCUyMGJvb2tzJTIwc3R1ZHklMjBkZXNrfGVufDB8MHx8fDE3OTQ0Nzc3MDR8MA&ixlib=rb-4.1.0&w=1200&h=675&fit=crop&q=70&fm=jpg
+coverAuthor: byVlado
+coverAuthorUrl: https://unsplash.com/@vlado_?utm_source=silencegate-blog&utm_medium=referral
 date: 2026-11-11
 description: 禅坐时能够注意呼吸，走路时也记得脚步，身体一有疼痛便知道紧张或松弛，这些经验已经接近身念处的门口，却还没有穷尽《念处经》所谓“观身如身”的含义。许多用功停在身体感觉的清楚层面，能够...
 readingTime: 
